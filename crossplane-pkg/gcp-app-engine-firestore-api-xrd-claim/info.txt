@@ -1,0 +1,3 @@
+# Provide rust clap CLI to create the XRD claim (API request) to push to Git to trigger
+ArgoCD to GitOps deploy the GCP resources to GCP Cloud
+
