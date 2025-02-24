@@ -5,6 +5,7 @@ Crossplane, Crossplane GCP Provider and ArgoCD Kubernetes-Native Provisioning of
 
 ## Crossplane XRD API Structure (Helm)
 ```
+...
 crossplane/
 ├── Chart.yaml                # Helm Chart metadata
 ├── values.yaml               # Global values for Helm templates
@@ -60,4 +61,5 @@ crossplane/
 │   │   │   ├── firestore-composition.yaml
 │   │   │   ├── firestore-claim.yaml
 │   │   ├── values.yaml
+...
 ```
