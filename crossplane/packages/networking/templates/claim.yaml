@@ -1,0 +1,10 @@
+apiVersion: networking.example.com/v1alpha1
+kind: GCPNetworkingClaim
+metadata:
+  name: networking-claim
+spec:
+  projectId: {{ .Values.projectId }}
+  sharedVpcName: {{ .Values.networking.sharedVpcName }}
+  spokeVpcs: {{ .Values.networking.spokeVpcs }}
+  firewallRules: {{ .Values.networking.firewallRules }}
+  privateLink: {{ .Values.networking.privateLink }}

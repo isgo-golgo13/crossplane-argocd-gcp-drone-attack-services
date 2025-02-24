@@ -1,0 +1,60 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: gcp-networking
+spec:
+  compositeTypeRef:
+    apiVersion: networking.example.com/v1alpha1
+    kind: XGCPNetworking
+  resources:
+    - name: shared-vpc
+      base:
+        apiVersion: compute.gcp.crossplane.io/v1beta1
+        kind: Network
+        spec:
+          forProvider:
+            autoCreateSubnetworks: false
+            routingConfig:
+              routingMode: REGIONAL
+          providerConfigRef:
+            name: gcp-provider
+      patches:
+        - fromFieldPath: "spec.sharedVpcName"
+          toFieldPath: "metadata.name"
+        - fromFieldPath: "spec.projectId"
+          toFieldPath: "spec.forProvider.project"
+
+    - name: firewall-rules
+      base:
+        apiVersion: compute.gcp.crossplane.io/v1beta1
+        kind: Firewall
+        spec:
+          forProvider:
+            direction: INGRESS
+            networkSelector:
+              matchControllerRef: true
+            allowed: []
+          providerConfigRef:
+            name: gcp-provider
+      patches:
+        - fromFieldPath: "spec.firewallRules"
+          toFieldPath: "spec.forProvider.allowed"
+        - fromFieldPath: "spec.projectId"
+          toFieldPath: "spec.forProvider.project"
+
+    - name: private-link
+      condition: "{{ .Values.networking.privateLink }}"
+      base:
+        apiVersion: servicenetworking.gcp.crossplane.io/v1beta1
+        kind: Connection
+        spec:
+          forProvider:
+            networkSelector:
+              matchControllerRef: true
+            reservedPeeringRanges:
+              - name: services-range
+          providerConfigRef:
+            name: gcp-provider
+      patches:
+        - fromFieldPath: "spec.projectId"
+          toFieldPath: "spec.forProvider.project"
