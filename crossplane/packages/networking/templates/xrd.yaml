@@ -1,0 +1,51 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xgcpnetworking.example.com
+spec:
+  group: networking.example.com
+  names:
+    kind: XGCPNetworking
+    plural: xgcpnetworkings
+  claimNames:
+    kind: GCPNetworkingClaim
+    plural: gcpnetworkingclaims
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                projectId:
+                  type: string
+                sharedVpcName:
+                  type: string
+                spokeVpcs:
+                  type: array
+                  items:
+                    type: string
+                firewallRules:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      sourceRanges:
+                        type: array
+                        items:
+                          type: string
+                      allowed:
+                        type: array
+                        items:
+                          type: string
+                privateLink:
+                  type: boolean
+              required:
+                - projectId
+                - sharedVpcName

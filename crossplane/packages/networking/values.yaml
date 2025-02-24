@@ -1,0 +1,18 @@
+projectId: "cp-gcp-project"
+
+networking:
+  sharedVpcName: "shared-vpc"
+  spokeVpcs:
+    - "gke-vpc"
+    - "cloudrun-vpc"
+    - "appengine-vpc"
+
+  firewallRules:
+    - name: "allow-http-https"
+      sourceRanges:
+        - "0.0.0.0/0"
+      allowed:
+        - "TCP:80"
+        - "TCP:443"
+
+  privateLink: true
