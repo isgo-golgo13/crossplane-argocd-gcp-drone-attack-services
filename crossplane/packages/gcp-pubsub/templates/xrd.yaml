@@ -1,0 +1,48 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xgcppubsub.example.com
+spec:
+  group: pubsub.example.com
+  names:
+    kind: XGCPPubSub
+    plural: xgcppubsubs
+  claimNames:
+    kind: GCPPubSubClaim
+    plural: gcppubsubclaims
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                projectId:
+                  type: string
+                topics:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      subscribers:
+                        type: array
+                        items:
+                          type: string
+                eventarcTriggers:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      destinationService:
+                        type: string
+              required:
+                - projectId
+                - topics

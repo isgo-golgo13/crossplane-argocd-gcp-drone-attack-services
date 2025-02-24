@@ -1,0 +1,17 @@
+projectId: "cp-gcp-drone-svcs-project"
+
+pubsub:
+  topics:
+    - name: "apigee-events"
+      subscribers:
+        - "gke-backend-service"
+        - "cloudrun-service"
+        - "appengine-service"
+
+  eventarcTriggers:
+    - name: "route-to-gke"
+      destinationService: "gke-backend-service"
+    - name: "route-to-cloudrun"
+      destinationService: "cloudrun-service"
+    - name: "route-to-appengine"
+      destinationService: "appengine-service"

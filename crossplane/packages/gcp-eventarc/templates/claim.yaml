@@ -1,0 +1,7 @@
+apiVersion: eventarc.example.com/v1alpha1
+kind: GCPEventArcClaim
+metadata:
+  name: eventarc-claim
+spec:
+  projectId: {{ .Values.projectId }}
+  triggers: {{ .Values.eventarc.triggers }}

@@ -1,0 +1,39 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xgcpeventarc.example.com
+spec:
+  group: eventarc.example.com
+  names:
+    kind: XGCPEventArc
+    plural: xgcpeventarcs
+  claimNames:
+    kind: GCPEventArcClaim
+    plural: gcpeventarcclaims
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                projectId:
+                  type: string
+                triggers:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      topic:
+                        type: string
+                      destinationService:
+                        type: string
+              required:
+                - projectId
+                - triggers
