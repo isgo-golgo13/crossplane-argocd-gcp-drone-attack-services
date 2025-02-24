@@ -1,4 +1,4 @@
-projectId: "cp-gcp-project"
+projectId: "cp-gcp-drone-svcs-project"
 
 networking:
   sharedVpcName: "shared-vpc"
