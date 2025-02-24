@@ -1,0 +1,63 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: gcp-pubsub-eventarc
+spec:
+  compositeTypeRef:
+    apiVersion: pubsub.example.com/v1alpha1
+    kind: XGCPPubSub
+  resources:
+    - name: pubsub-topics
+      base:
+        apiVersion: pubsub.gcp.crossplane.io/v1beta1
+        kind: Topic
+        spec:
+          forProvider:
+            labels:
+              environment: production
+          providerConfigRef:
+            name: gcp-provider
+      patches:
+        - fromFieldPath: "spec.projectId"
+          toFieldPath: "spec.forProvider.project"
+        - fromFieldPath: "spec.topics[0].name"
+          toFieldPath: "metadata.name"
+
+    - name: pubsub-subscriptions
+      base:
+        apiVersion: pubsub.gcp.crossplane.io/v1beta1
+        kind: Subscription
+        spec:
+          forProvider:
+            topicSelector:
+              matchControllerRef: true
+            ackDeadlineSeconds: 10
+          providerConfigRef:
+            name: gcp-provider
+      patches:
+        - fromFieldPath: "spec.topics[0].subscribers"
+          toFieldPath: "spec.forProvider.pushConfig.pushEndpoint"
+
+    - name: eventarc-triggers
+      base:
+        apiVersion: eventarc.gcp.crossplane.io/v1beta1
+        kind: Trigger
+        spec:
+          forProvider:
+            eventFilters:
+              - attribute: "type"
+                value: "apigee.request"
+            transport:
+              pubsub:
+                topic: "apigee-events"
+            destination:
+              cloudRun:
+                service: "backend-service"
+                region: "us-central1"
+          providerConfigRef:
+            name: gcp-provider
+      patches:
+        - fromFieldPath: "spec.eventarcTriggers[0].name"
+          toFieldPath: "metadata.name"
+        - fromFieldPath: "spec.eventarcTriggers[0].destinationService"
+          toFieldPath: "spec.forProvider.destination.cloudRun.service"

@@ -1,0 +1,8 @@
+apiVersion: pubsub.example.com/v1alpha1
+kind: GCPPubSubClaim
+metadata:
+  name: pubsub-eventarc-claim
+spec:
+  projectId: {{ .Values.projectId }}
+  topics: {{ .Values.pubsub.topics }}
+  eventarcTriggers: {{ .Values.pubsub.eventarcTriggers }}
