@@ -1,0 +1,9 @@
+apiVersion: databases.example.com/v1alpha1
+kind: GCPSpannerClaim
+metadata:
+  name: spanner-claim
+spec:
+  projectId: {{ .Values.projectId }}
+  instanceName: {{ .Values.spanner.instanceName }}
+  region: {{ .Values.spanner.region }}
+  nodeCount: {{ .Values.spanner.nodeCount }}

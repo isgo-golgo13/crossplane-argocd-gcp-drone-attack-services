@@ -1,0 +1,10 @@
+projectId: "cp-gcp-drone-svcs-project"
+
+spanner:
+  instanceName: "spanner-instance"
+  region: "us-west4"
+  nodeCount: 3
+
+firestore:
+  databaseId: "firestore-db"
+  region: "us-west4"
