@@ -22,7 +22,7 @@ spec:
             destination:
               cloudRun:
                 service: "backend-service"
-                region: "us-central1"
+                region: "us-west4"
           providerConfigRef:
             name: gcp-provider
       patches:

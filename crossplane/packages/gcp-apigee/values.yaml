@@ -1,6 +1,6 @@
-projectId: "cp-gcp-project"
+projectId: "cp-gcp-drone-svcs-project"
 
 apigee:
-  region: "us-central1"
+  region: "us-west4"
   gatewayName: "apigee-gateway"
   privateLink: true
