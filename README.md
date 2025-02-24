@@ -8,7 +8,7 @@ Crossplane, Crossplane GCP Provider and ArgoCD Kubernetes-Native Provisioning of
 crossplane/
 ├── Chart.yaml                # Helm Chart metadata
 ├── values.yaml               # Global values for Helm templates
-├── modules/
+├── packages/
 │   ├── networking/           # VPCs, Private Links, Firewall, IAM
 │   │   ├── templates/
 │   │   │   ├── xrd.yaml
