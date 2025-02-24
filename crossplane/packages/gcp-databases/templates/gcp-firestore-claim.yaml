@@ -1,0 +1,8 @@
+apiVersion: databases.example.com/v1alpha1
+kind: GCPFirestoreClaim
+metadata:
+  name: firestore-claim
+spec:
+  projectId: {{ .Values.projectId }}
+  databaseId: {{ .Values.firestore.databaseId }}
+  region: {{ .Values.firestore.region }}
