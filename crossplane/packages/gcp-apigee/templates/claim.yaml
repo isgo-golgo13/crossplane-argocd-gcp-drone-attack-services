@@ -1,0 +1,9 @@
+apiVersion: apigee.example.com/v1alpha1
+kind: GCPApigeeClaim
+metadata:
+  name: apigee-claim
+spec:
+  projectId: {{ .Values.projectId }}
+  region: {{ .Values.apigee.region }}
+  gatewayName: {{ .Values.apigee.gatewayName }}
+  privateLink: {{ .Values.apigee.privateLink }}

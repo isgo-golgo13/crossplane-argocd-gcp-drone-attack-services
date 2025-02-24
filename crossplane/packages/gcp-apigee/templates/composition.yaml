@@ -1,0 +1,41 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: gcp-apigee
+spec:
+  compositeTypeRef:
+    apiVersion: apigee.example.com/v1alpha1
+    kind: XGCPApigee
+  resources:
+    - name: apigee-instance
+      base:
+        apiVersion: apigee.gcp.crossplane.io/v1beta1
+        kind: Instance
+        spec:
+          forProvider:
+            displayName: "Apigee Gateway"
+            region: "us-central1"
+            authorizedNetwork: "shared-vpc"
+          providerConfigRef:
+            name: gcp-provider
+      patches:
+        - fromFieldPath: "spec.projectId"
+          toFieldPath: "spec.forProvider.project"
+        - fromFieldPath: "spec.gatewayName"
+          toFieldPath: "metadata.name"
+        - fromFieldPath: "spec.region"
+          toFieldPath: "spec.forProvider.region"
+
+    - name: private-link
+      condition: "{{ .Values.apigee.privateLink }}"
+      base:
+        apiVersion: servicenetworking.gcp.crossplane.io/v1beta1
+        kind: Connection
+        spec:
+          forProvider:
+            networkSelector:
+              matchControllerRef: true
+            reservedPeeringRanges:
+              - name: services-range
+          providerConfigRef:
+            name: gcp-provider
