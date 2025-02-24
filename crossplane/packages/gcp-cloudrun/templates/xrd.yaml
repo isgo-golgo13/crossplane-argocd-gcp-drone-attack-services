@@ -1,0 +1,33 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xgcpcloudrun.example.com
+spec:
+  group: cloudrun.example.com
+  names:
+    kind: XGCPCloudRun
+    plural: xgcpcloudruns
+  claimNames:
+    kind: GCPCloudRunClaim
+    plural: gcpcloudrunclaims
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                projectId:
+                  type: string
+                serviceName:
+                  type: string
+                region:
+                  type: string
+              required:
+                - projectId
+                - serviceName
+                - region

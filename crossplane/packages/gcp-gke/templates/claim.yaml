@@ -1,0 +1,9 @@
+apiVersion: gke.example.com/v1alpha1
+kind: GCPGKEClaim
+metadata:
+  name: gke-claim
+spec:
+  projectId: {{ .Values.projectId }}
+  clusterName: {{ .Values.gke.clusterName }}
+  region: {{ .Values.gke.region }}
+  nodeCount: {{ .Values.gke.nodeCount }}

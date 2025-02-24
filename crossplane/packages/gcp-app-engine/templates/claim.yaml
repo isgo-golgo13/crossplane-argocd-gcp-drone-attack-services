@@ -1,0 +1,8 @@
+apiVersion: appengine.example.com/v1alpha1
+kind: GCPAppEngineClaim
+metadata:
+  name: appengine-claim
+spec:
+  projectId: {{ .Values.projectId }}
+  appId: {{ .Values.appengine.appId }}
+  region: {{ .Values.appengine.region }}

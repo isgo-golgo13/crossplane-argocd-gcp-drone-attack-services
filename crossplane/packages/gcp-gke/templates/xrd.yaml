@@ -1,15 +1,15 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: CompositeResourceDefinition
 metadata:
-  name: xgcpappengine.example.com
+  name: xgcpgke.example.com
 spec:
-  group: appengine.example.com
+  group: gke.example.com
   names:
-    kind: XGCPAppEngine
-    plural: xgcpappengines
+    kind: XGCPGKE
+    plural: xgcpgkes
   claimNames:
-    kind: GCPAppEngineClaim
-    plural: gcpappengineclaims
+    kind: GCPGKEClaim
+    plural: gcpgkeclaims
   versions:
     - name: v1alpha1
       served: true
@@ -23,11 +23,13 @@ spec:
               properties:
                 projectId:
                   type: string
-                appId:
+                clusterName:
                   type: string
                 region:
                   type: string
+                nodeCount:
+                  type: integer
               required:
                 - projectId
-                - appId
+                - clusterName
                 - region

@@ -1,0 +1,23 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: gcp-appengine
+spec:
+  compositeTypeRef:
+    apiVersion: appengine.example.com/v1alpha1
+    kind: XGCPAppEngine
+  resources:
+    - name: app-engine-app
+      base:
+        apiVersion: appengine.gcp.crossplane.io/v1beta1
+        kind: Application
+        spec:
+          forProvider:
+            locationId: "us-central1"
+            providerConfigRef:
+              name: gcp-provider
+      patches:
+        - fromFieldPath: "spec.appId"
+          toFieldPath: "metadata.name"
+        - fromFieldPath: "spec.region"
+          toFieldPath: "spec.forProvider.locationId"
