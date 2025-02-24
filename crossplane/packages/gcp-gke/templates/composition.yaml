@@ -1,0 +1,28 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: gcp-gke
+spec:
+  compositeTypeRef:
+    apiVersion: gke.example.com/v1alpha1
+    kind: XGCPGKE
+  resources:
+    - name: gke-cluster
+      base:
+        apiVersion: container.gcp.crossplane.io/v1beta1
+        kind: Cluster
+        spec:
+          forProvider:
+            location: "us-central1"
+            initialNodeCount: 3
+            networkRef:
+              name: shared-vpc
+          providerConfigRef:
+            name: gcp-provider
+      patches:
+        - fromFieldPath: "spec.clusterName"
+          toFieldPath: "metadata.name"
+        - fromFieldPath: "spec.region"
+          toFieldPath: "spec.forProvider.location"
+        - fromFieldPath: "spec.nodeCount"
+          toFieldPath: "spec.forProvider.initialNodeCount"

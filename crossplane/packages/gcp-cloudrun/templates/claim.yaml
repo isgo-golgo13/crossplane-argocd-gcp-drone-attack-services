@@ -1,0 +1,8 @@
+apiVersion: cloudrun.example.com/v1alpha1
+kind: GCPCloudRunClaim
+metadata:
+  name: cloudrun-claim
+spec:
+  projectId: {{ .Values.projectId }}
+  serviceName: {{ .Values.cloudrun.serviceName }}
+  region: {{ .Values.cloudrun.region }}

@@ -1,0 +1,6 @@
+projectId: "cp-gcp-drone-svcs-project"
+
+gke:
+  clusterName: "gke-cluster"
+  region: "us-central1"
+  nodeCount: 3
