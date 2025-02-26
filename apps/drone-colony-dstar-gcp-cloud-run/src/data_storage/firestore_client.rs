@@ -11,7 +11,7 @@ pub struct FirestoreClient {
 impl FirestoreClient {
     /// Initializes Firestore Connection
     pub async fn new() -> Self {
-        let db = FirestoreDb::new("your-gcp-project-id").await.unwrap();
+        let db = FirestoreDb::new("xxxx-gcp-project-id").await.unwrap();
         FirestoreClient { db }
     }
 
