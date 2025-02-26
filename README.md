@@ -84,4 +84,5 @@ The following applications are provided for this project.
         - `drones` Drone Convoy Sortie Logic
         - `data-storage` Structs, GCP Spanner Connections, Read/Write APIs
 
-- Double A*Star Pathfinding (Ant Colony Variant) Drone Sortie Tracking and Status for GCP CloudRun App
+- Double A*Star Pathfinding Drone Sortie Tracking and Status for GCP CloudRun App
+- Double A*Star Pathfinding Drone Sortie Tracking and Status for GCP AppEngine App
