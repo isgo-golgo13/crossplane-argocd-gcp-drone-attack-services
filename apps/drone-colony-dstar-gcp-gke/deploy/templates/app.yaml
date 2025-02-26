@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: drone-colony
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: drone-colony
@@ -12,11 +12,40 @@ spec:
       labels:
         app: drone-colony
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
       containers:
         - name: drone-colony
           image: "{{ .Values.image }}"
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
           env:
             - name: SPANNER_INSTANCE
               value: "{{ .Values.spanner.instance }}"
             - name: SPANNER_DB
               value: "{{ .Values.spanner.database }}"
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "500m"
+              memory: "1Gi"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
