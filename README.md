@@ -71,6 +71,25 @@ Crossplane, Crossplane GCP Provider and ArgoCD Kubernetes-Native Provisioning of
 
 ## Crossplane XRD API Request (Claim) Architecture Workflow
 
+**Prerequsites for the workflow
+
+- Docker
+- Kubernetes Cluster (Kind, K3D, GCP, Azure ...)
+- Helm 3.12+
+- ArgoCD Helm Chart Installed w/ ArgoCD ApplicationSet Controller enabled (default is disabled)
+    - Deploys to `argocd` namespace
+- Crossplane Helm Chart Installed
+    - Deploys to `crossplane-system` namespace
+
+
+To change the sources 
+
+- Requires Go 1.23+
+- Requires Rust 1.75+
+
+
+
+
 
 ## GCP Applications (GCP GKE App, GCP CloudRun App, GCP AppEngine App)
 
