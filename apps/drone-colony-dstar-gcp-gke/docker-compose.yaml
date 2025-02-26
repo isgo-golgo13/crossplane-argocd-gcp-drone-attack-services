@@ -1,0 +1,5 @@
+version: "3"
+services:
+  drone-colony:
+    image: drone-colony-dstar-gcp-gke
+    restart: always
