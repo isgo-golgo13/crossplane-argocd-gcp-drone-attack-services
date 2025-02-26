@@ -74,7 +74,8 @@ Crossplane, Crossplane GCP Provider and ArgoCD Kubernetes-Native Provisioning of
 **Prerequsites for the workflow
 
 - Docker
-- Kubernetes Cluster (Kind, K3D, GCP, Azure ...)
+- Kubernetes Cluster (GCP)
+- GCP Cloud Account 
 - Helm 3.12+
 - ArgoCD Helm Chart Installed w/ ArgoCD ApplicationSet Controller enabled (default is disabled)
     - Deploys to `argocd` namespace
