@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: drone-colony
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: drone-colony
+  template:
+    metadata:
+      labels:
+        app: drone-colony
+    spec:
+      containers:
+        - name: drone-colony
+          image: "{{ .Values.image }}"
+          env:
+            - name: SPANNER_INSTANCE
+              value: "{{ .Values.spanner.instance }}"
+            - name: SPANNER_DB
+              value: "{{ .Values.spanner.database }}"

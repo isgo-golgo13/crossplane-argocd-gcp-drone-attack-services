@@ -1,0 +1,4 @@
+image: "gcr.io/cp-gcp-drone-svcs-project/drone-colony-dstar-gke"
+spanner:
+  instance: "spanner-instance"
+  database: "drone_tracking"
