@@ -3,3 +3,5 @@ projectId: "cp-gcp-drone-svcs-project"
 cloudrun:
   serviceName: "cloudrun-api"
   region: "us-west4"
+  image: "gcr.io/cp-gcp-drone-svcs-project/cloudrun-api"
+  providerConfig: "gcp-provider"

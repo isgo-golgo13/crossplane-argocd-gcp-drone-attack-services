@@ -1,6 +1,8 @@
 projectId: "cp-gcp-drone-svcs-project"
 
 eventarc:
+  providerConfig: "gcp-provider"
+  region: "us-west4"
   triggers:
     - name: "route-to-gke"
       topic: "apigee-events"

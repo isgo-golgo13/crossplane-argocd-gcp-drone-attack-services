@@ -16,7 +16,7 @@ spec:
             labels:
               environment: production
           providerConfigRef:
-            name: gcp-provider
+            name: {{ .Values.pubsub.providerConfig }}
       patches:
         - fromFieldPath: "spec.projectId"
           toFieldPath: "spec.forProvider.project"
@@ -33,7 +33,7 @@ spec:
               matchControllerRef: true
             ackDeadlineSeconds: 10
           providerConfigRef:
-            name: gcp-provider
+            name: {{ .Values.pubsub.providerConfig }}
       patches:
         - fromFieldPath: "spec.topics[0].subscribers"
           toFieldPath: "spec.forProvider.pushConfig.pushEndpoint"
@@ -49,13 +49,13 @@ spec:
                 value: "apigee.request"
             transport:
               pubsub:
-                topic: "apigee-events"
+                topic: "{{ .Values.pubsub.topics[0].name }}"
             destination:
               cloudRun:
-                service: "backend-service"
-                region: "us-west4"
+                service: "{{ .Values.pubsub.eventarcTriggers[0].destinationService }}"
+                region: "{{ .Values.pubsub.region }}"
           providerConfigRef:
-            name: gcp-provider
+            name: {{ .Values.pubsub.providerConfig }}
       patches:
         - fromFieldPath: "spec.eventarcTriggers[0].name"
           toFieldPath: "metadata.name"

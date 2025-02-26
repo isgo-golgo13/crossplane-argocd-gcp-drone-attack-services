@@ -1,6 +1,10 @@
-projectId: "cp-gcp-drone-svcs-project"
+projectId: "my-gcp-project"
 
 apigee:
-  region: "us-west4"
   gatewayName: "apigee-gateway"
+  region: "us-west4"
+  authorizedNetwork: "shared-vpc"
   privateLink: true
+  providerConfig: "gcp-provider"
+  peeringRanges:
+    - "services-range"

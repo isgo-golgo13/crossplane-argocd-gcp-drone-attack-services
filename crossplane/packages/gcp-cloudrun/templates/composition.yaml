@@ -15,9 +15,9 @@ spec:
           template:
             spec:
               containers:
-                - image: "gcr.io/my-project/my-app"
+                - image: {{ .Values.cloudrun.image }}
           providerConfigRef:
-            name: gcp-provider
+            name: {{ .Values.cloudrun.providerConfig }}
       patches:
         - fromFieldPath: "spec.serviceName"
           toFieldPath: "metadata.name"

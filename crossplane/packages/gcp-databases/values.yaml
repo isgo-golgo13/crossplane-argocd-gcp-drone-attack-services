@@ -4,7 +4,10 @@ spanner:
   instanceName: "spanner-instance"
   region: "us-west4"
   nodeCount: 3
+  providerConfig: "gcp-provider"
 
 firestore:
   databaseId: "firestore-db"
   region: "us-west4"
+  providerConfig: "gcp-provider"
+  type: "FIRESTORE_NATIVE"

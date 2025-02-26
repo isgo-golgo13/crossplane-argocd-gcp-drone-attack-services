@@ -16,3 +16,6 @@ networking:
         - "TCP:443"
 
   privateLink: true
+  providerConfig: "gcp-provider"
+  reservedPeeringRanges:
+    - "services-range"

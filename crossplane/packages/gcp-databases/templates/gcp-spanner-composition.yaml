@@ -13,11 +13,11 @@ spec:
         kind: Instance
         spec:
           forProvider:
-            config: "regional-us-central1"
-            displayName: "Spanner Instance"
-            nodeCount: 3
+            config: "regional-{{ .Values.spanner.region }}"
+            displayName: {{ .Values.spanner.instanceName }}
+            nodeCount: {{ .Values.spanner.nodeCount }}
           providerConfigRef:
-            name: gcp-provider
+            name: {{ .Values.spanner.providerConfig }}
       patches:
         - fromFieldPath: "spec.instanceName"
           toFieldPath: "metadata.name"

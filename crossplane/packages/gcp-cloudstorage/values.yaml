@@ -1,0 +1,15 @@
+projectId: "cp-gcp-drone-svcs-project"
+
+cloudstorage:
+  providerConfig: "gcp-provider"
+  buckets:
+    - name: "drone-data-bucket"
+      location: "us-west4"
+      storageClass: "STANDARD"
+      versioning: true
+      publicAccessPrevention: "enforced"
+    - name: "drone-logs-bucket"
+      location: "us-west4"
+      storageClass: "NEARLINE"
+      versioning: false
+      publicAccessPrevention: "enforced"
