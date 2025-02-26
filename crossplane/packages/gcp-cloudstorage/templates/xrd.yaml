@@ -1,0 +1,40 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xgcpcloudstorage.example.com
+spec:
+  group: cloudstorage.example.com
+  names:
+    kind: XGCPCloudStorage
+    plural: xgcpcloudstorages
+  claimNames:
+    kind: GCPCloudStorageClaim
+    plural: gcpcloudstorageclaims
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                projectId:
+                  type: string
+                bucketName:
+                  type: string
+                location:
+                  type: string
+                storageClass:
+                  type: string
+                versioning:
+                  type: boolean
+                publicAccessPrevention:
+                  type: string
+              required:
+                - projectId
+                - bucketName
+                - location
+                - storageClass

@@ -13,12 +13,12 @@ spec:
         kind: Cluster
         spec:
           forProvider:
-            location: "us-central1"
-            initialNodeCount: 3
+            location: {{ .Values.gke.region }}
+            initialNodeCount: {{ .Values.gke.nodeCount }}
             networkRef:
-              name: shared-vpc
+              name: {{ .Values.gke.networkRef }}
           providerConfigRef:
-            name: gcp-provider
+            name: {{ .Values.gke.providerConfig }}
       patches:
         - fromFieldPath: "spec.clusterName"
           toFieldPath: "metadata.name"

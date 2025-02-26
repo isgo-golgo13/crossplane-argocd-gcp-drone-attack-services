@@ -18,13 +18,13 @@ spec:
                 value: "apigee.request"
             transport:
               pubsub:
-                topic: "apigee-events"
+                topic: "{{ .Values.eventarc.triggers[0].topic }}"
             destination:
               cloudRun:
-                service: "backend-service"
-                region: "us-west4"
+                service: "{{ .Values.eventarc.triggers[0].destinationService }}"
+                region: "{{ .Values.eventarc.region }}"
           providerConfigRef:
-            name: gcp-provider
+            name: "{{ .Values.eventarc.providerConfig }}"
       patches:
         - fromFieldPath: "spec.triggers[0].name"
           toFieldPath: "metadata.name"

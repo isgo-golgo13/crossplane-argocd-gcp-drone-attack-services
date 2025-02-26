@@ -3,3 +3,4 @@ projectId: "cp-gcp-drone-svcs-project"
 appengine:
   appId: "appengine-app"
   region: "us-west4"
+  providerConfig: "gcp-provider"

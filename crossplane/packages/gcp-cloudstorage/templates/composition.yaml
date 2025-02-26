@@ -1,0 +1,33 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: gcp-cloudstorage
+spec:
+  compositeTypeRef:
+    apiVersion: cloudstorage.example.com/v1alpha1
+    kind: XGCPCloudStorage
+  resources:
+    - name: cloud-storage-bucket
+      base:
+        apiVersion: storage.gcp.crossplane.io/v1beta1
+        kind: Bucket
+        spec:
+          forProvider:
+            location: "{{ .Values.cloudstorage.buckets[0].location }}"
+            storageClass: "{{ .Values.cloudstorage.buckets[0].storageClass }}"
+            versioning:
+              enabled: "{{ .Values.cloudstorage.buckets[0].versioning }}"
+            publicAccessPrevention: "{{ .Values.cloudstorage.buckets[0].publicAccessPrevention }}"
+          providerConfigRef:
+            name: "{{ .Values.cloudstorage.providerConfig }}"
+      patches:
+        - fromFieldPath: "spec.bucketName"
+          toFieldPath: "metadata.name"
+        - fromFieldPath: "spec.location"
+          toFieldPath: "spec.forProvider.location"
+        - fromFieldPath: "spec.storageClass"
+          toFieldPath: "spec.forProvider.storageClass"
+        - fromFieldPath: "spec.versioning"
+          toFieldPath: "spec.forProvider.versioning.enabled"
+        - fromFieldPath: "spec.publicAccessPrevention"
+          toFieldPath: "spec.forProvider.publicAccessPrevention"

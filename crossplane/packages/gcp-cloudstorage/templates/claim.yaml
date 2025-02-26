@@ -1,0 +1,11 @@
+apiVersion: cloudstorage.example.com/v1alpha1
+kind: GCPCloudStorageClaim
+metadata:
+  name: cloudstorage-claim
+spec:
+  projectId: {{ .Values.projectId }}
+  bucketName: {{ .Values.cloudstorage.buckets[0].name }}
+  location: {{ .Values.cloudstorage.buckets[0].location }}
+  storageClass: {{ .Values.cloudstorage.buckets[0].storageClass }}
+  versioning: {{ .Values.cloudstorage.buckets[0].versioning }}
+  publicAccessPrevention: {{ .Values.cloudstorage.buckets[0].publicAccessPrevention }}

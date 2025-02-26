@@ -17,7 +17,7 @@ spec:
             routingConfig:
               routingMode: REGIONAL
           providerConfigRef:
-            name: gcp-provider
+            name: {{ .Values.networking.providerConfig }}
       patches:
         - fromFieldPath: "spec.sharedVpcName"
           toFieldPath: "metadata.name"
@@ -33,17 +33,15 @@ spec:
             direction: INGRESS
             networkSelector:
               matchControllerRef: true
-            allowed: []
+            allowed: {{ .Values.networking.firewallRules }}
           providerConfigRef:
-            name: gcp-provider
+            name: {{ .Values.networking.providerConfig }}
       patches:
-        - fromFieldPath: "spec.firewallRules"
-          toFieldPath: "spec.forProvider.allowed"
         - fromFieldPath: "spec.projectId"
           toFieldPath: "spec.forProvider.project"
 
     - name: private-link
-      condition: "{{ .Values.networking.privateLink }}"
+      condition: {{ .Values.networking.privateLink }}
       base:
         apiVersion: servicenetworking.gcp.crossplane.io/v1beta1
         kind: Connection
@@ -51,10 +49,9 @@ spec:
           forProvider:
             networkSelector:
               matchControllerRef: true
-            reservedPeeringRanges:
-              - name: services-range
+            reservedPeeringRanges: {{ .Values.networking.reservedPeeringRanges }}
           providerConfigRef:
-            name: gcp-provider
+            name: {{ .Values.networking.providerConfig }}
       patches:
         - fromFieldPath: "spec.projectId"
           toFieldPath: "spec.forProvider.project"

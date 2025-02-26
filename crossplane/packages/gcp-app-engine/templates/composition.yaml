@@ -13,9 +13,9 @@ spec:
         kind: Application
         spec:
           forProvider:
-            locationId: "us-central1"
-            providerConfigRef:
-              name: gcp-provider
+            locationId: {{ .Values.appengine.region }}
+          providerConfigRef:
+            name: {{ .Values.appengine.providerConfig }}
       patches:
         - fromFieldPath: "spec.appId"
           toFieldPath: "metadata.name"

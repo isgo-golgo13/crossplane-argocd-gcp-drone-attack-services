@@ -1,6 +1,7 @@
 projectId: "cp-gcp-drone-svcs-project"
 
 pubsub:
+  providerConfig: "gcp-provider"
   topics:
     - name: "apigee-events"
       subscribers:
@@ -15,3 +16,4 @@ pubsub:
       destinationService: "cloudrun-service"
     - name: "route-to-appengine"
       destinationService: "appengine-service"
+  region: "us-west4"

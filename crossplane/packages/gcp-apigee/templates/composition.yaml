@@ -13,11 +13,11 @@ spec:
         kind: Instance
         spec:
           forProvider:
-            displayName: "Apigee Gateway"
-            region: "us-central1"
-            authorizedNetwork: "shared-vpc"
+            displayName: {{ .Values.apigee.gatewayName }}
+            region: {{ .Values.apigee.region }}
+            authorizedNetwork: {{ .Values.apigee.authorizedNetwork }}
           providerConfigRef:
-            name: gcp-provider
+            name: {{ .Values.apigee.providerConfig }}
       patches:
         - fromFieldPath: "spec.projectId"
           toFieldPath: "spec.forProvider.project"
@@ -27,7 +27,7 @@ spec:
           toFieldPath: "spec.forProvider.region"
 
     - name: private-link
-      condition: "{{ .Values.apigee.privateLink }}"
+      condition: {{ .Values.apigee.privateLink }}
       base:
         apiVersion: servicenetworking.gcp.crossplane.io/v1beta1
         kind: Connection
@@ -35,7 +35,6 @@ spec:
           forProvider:
             networkSelector:
               matchControllerRef: true
-            reservedPeeringRanges:
-              - name: services-range
+            reservedPeeringRanges: {{ .Values.apigee.peeringRanges }}
           providerConfigRef:
-            name: gcp-provider
+            name: {{ .Values.apigee.providerConfig }}
