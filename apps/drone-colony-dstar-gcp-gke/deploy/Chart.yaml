@@ -1,0 +1,6 @@
+apiVersion: v2
+name: drone-colony-dstar-gcp-gke
+description: A Helm chart for deploying the Drone Convoy Pathfinding service on GKE
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
