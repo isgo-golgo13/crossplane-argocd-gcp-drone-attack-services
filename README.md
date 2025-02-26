@@ -78,7 +78,7 @@ The following applications are provided for this project.
 
 - Double A*Star Pathfinding Drone Sortie Tracking and Status for GCP GKE App
     - Double A*Star Algorithm is a derivative of Ant Colony (Follow-the-Leader) Variant
-    - Developed in Rust 
+    - Developed in **Rust** 
     - Runs autonomously without external API requests.
     - Stores sortie status progressions to GCP Spanner DB
     - Provides the following project crates:
@@ -87,12 +87,12 @@ The following applications are provided for this project.
 
 - Double A*Star Pathfinding Drone Sortie Tracking and Status for GCP CloudRun App
     - Double A*Star Algorithm is a derivative of Ant Colony (Follow-the-Leader) Variant
-    - Developed in Go
+    - Developed in **Go**
     - Runs autonomously without external API requests.
     - Stores sortie status progressions to GCP Firestore NoSQL DB
 
 - Double A*Star Pathfinding Drone Sortie Tracking and Status for GCP AppEngine App
     - Double A*Star Algorithm is a derivative of Ant Colony (Follow-the-Leader) Variant
-    - Developed in Go
+    - Developed in **Go**
     - Runs autonomously without external API requests.
     - Stores sortie status progressions to GCP Firestore NoSQL DB
