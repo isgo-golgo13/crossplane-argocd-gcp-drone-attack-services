@@ -81,6 +81,7 @@ The following applications are provided for this project.
     - Developed in **Rust** 
     - Runs autonomously without external API requests.
     - Stores sortie status progressions to GCP Spanner DB
+        - Syncs to GCP Spanner DB at 25 Waypoint Radio Towers
     - Provides the following project crates:
         - `drones` Drone Convoy Sortie Logic
         - `data-storage` Structs, GCP Spanner Connections, Read/Write APIs
@@ -90,9 +91,11 @@ The following applications are provided for this project.
     - Developed in **Go**
     - Runs autonomously without external API requests.
     - Stores sortie status progressions to GCP Firestore NoSQL DB
+        - Syncs to GCP Firestore DB at 25 Waypoint Radio Towers
 
 - Double A*Star Pathfinding Drone Sortie Tracking and Status for GCP AppEngine App
     - Double A*Star Algorithm is a derivative of Ant Colony (Follow-the-Leader) Variant
     - Developed in **Go**
     - Runs autonomously without external API requests.
     - Stores sortie status progressions to GCP Firestore NoSQL DB
+        - Syncs to GCP Firestore DB at 25 Waypoint Radio Towers
