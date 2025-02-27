@@ -272,4 +272,3 @@ The following applications are provided for this project.
 - checkov.io
 - https://argoproj.github.io/cd/
 - https://argoproj.github.io/rollouts/
-- 
