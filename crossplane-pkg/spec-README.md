@@ -7,5 +7,15 @@ trigger ArgoCD to provision requested Crossplane GCP resources to GCP.
 
 ```shell
 cd crossplane-pkg/crossplane-pkg-request-cli
-cargo run -- request --project-name drone-colony --gke --cloudrun --spanner --firestore
+cargo run -- request --project-name drone-colony \
+  --gke \
+  --cloudrun \
+  --appengine \
+  --apigee \
+  --spanner \
+  --firestore \
+  --pubsub \
+  --eventarc \
+  --networking \
+  --iam
 ```

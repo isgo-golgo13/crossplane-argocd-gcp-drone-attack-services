@@ -207,8 +207,30 @@ spec:
 
 To provision the resources to Git and trigger ArgoCD to deploy the GCP resources to target GCP cloud project the following workflow is.
 
-- 
 
+```shell
+cd crossplane-pkg/crossplane-pkg-request-cli
+cargo run -- request --project-name drone-colony \
+  --gke \
+  --cloudrun \
+  --appengine \
+  --apigee \
+  --spanner \
+  --firestore \
+  --pubsub \
+  --eventarc \
+  --networking \
+  --iam
+```
+
+Profile of the proceeding CLI issuance is as follows.
+
+- `--project-name drone-colony` Assigns a unique name to all claims.
+- `--gke` Creates GKE Cluster Claim (gcp-gke-claim.yaml in `crossplane-pkg/`)  
+- `--cloudrun` Creates Cloud Run Service Claim (gcp-cloudrun-claim.yaml in `crossplane-pkg/`)
+- `--appengine` Creates App Engine Claim (gcp-appengine-claim.yaml in `crossplane-pkg/`)
+- `--apigee` Creates Apigee API Gateway Claim (gcp-apigee-claim.yaml in `crossplane-pkg/`)
+- `--spanner` Creates Spanner DB Claim (gcp-spanner-claim.yaml in `crossplane-pkg/`) 
 
 
 
