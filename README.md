@@ -5,7 +5,19 @@ Crossplane, Crossplane GCP Provider and ArgoCD Kubernetes-Native Provisioning of
 
 Crossplane provides a Control-Plane-Oriented (CPO) GitOps-driven auto-drift-detection and auto-drift-delta reconcilation with defensive regulative guards to prevent sidedoor changes NOT recorded in Git as the source of truth. Crossplane uses "Control-Theory" state-machine logic to constantly analyze the desired state of resource configuraitions in Git and auto-sync (reconcile) the differences to guarantee the live state (the live state of cloud resources or scoped resources in Kubernetes Clusters such as cluster apps and cluster add-ons are gang-synced without drift gaps).
 
-Crossplane uses Kubernetes as points-in-record for each `api-group` (apiVersion: v1, apiVersion: apps/v1, apiVersion: autoscaling/v1, apiVersion: batch/v1, apiVersion: networkijng.k8s.io/v1, apiVersion: policy/v1, apiVersion: storage.k8s.io/v1, apiVersion: authorization.k8s.io/v1, apiVerrsion: apiextensions.k8s.io/v1 ...) and allows extensions as a API driven system. The configuraion for Crossplane is declarative and advises that it is used as an API through Git to provide transaction reversal if required for safety. To counter Crossplane with Terraform, Terraform is NOT API driven. Terraform requires its state file to track records of its recorded resources. 
+Crossplane uses Kubernetes as points-in-record controller for each `api-group` 
+
+- apiVersion: v1
+- apiVersion: apps/v1, 
+- apiVersion: autoscaling/v1
+- apiVersion: batch/v1
+- apiVersion: networkijng.k8s.io/v1
+- apiVersion: policy/v1
+- apiVersion: storage.k8s.io/v1
+- apiVersion: authorization.k8s.io/v1
+- apiVerrsion: apiextensions.k8s.io/v1
+
+This allows for API driven point extensions to each of these api groups, not changing all-or-nothing entirety. The configuraion for Crossplane is declarative and advises that it is used as an API through Git to provide transaction reversal if required for safety. To counter Crossplane with Terraform, Terraform is NOT API driven. Terraform requires its state file to track records of its recorded resources. 
 
 Crosspane API resources are driven to Git as Kubernetes Custom Resources using its CRDs that are installed on the Kubernetes Cluster. Crossplane requires a GitOps agent controller to coordinate the auto-drift detection changes in Git that deviate from the live state in the cloud or Kubernetes workload Clusters. These Kubernetes-Native GitOps agents are.
 
