@@ -260,3 +260,9 @@ The following applications are provided for this project.
     - Runs autonomously without external API requests.
     - Stores sortie status progressions to GCP Firestore NoSQL DB
         - Syncs to GCP Firestore DB at 25 Waypoint Radio Towers
+
+
+
+
+
+## References
