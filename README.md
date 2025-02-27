@@ -108,9 +108,106 @@ The Crossplane equivalent structure of Terraform modules is through a templated 
 
 A view into how to provide the packaging for GCP GKE Cluster is provided here with the three required CRs.
 
-- xrd.yaml ()
-- composition.yaml ()
+- xrd.yaml (CompositeResourceDefinition resource)
+- composition.yaml (Composition resource)
 - claim.yaml ()
+
+The `XRD` (CompositeResourceDefinition) for GCP GKE Cluster is as follows.
+
+```
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xgcpgke.enginevector.io
+spec:
+  group: gke.enginevector.io
+  names:
+    kind: XGCPGKE
+    plural: xgcpgkes
+  claimNames:
+    kind: GCPGKEClaim
+    plural: gcpgkeclaims
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                projectId:
+                  type: string
+                clusterName:
+                  type: string
+                region:
+                  type: string
+                nodeCount:
+                  type: integer
+              required:
+                - projectId
+                - clusterName
+                - region
+```
+
+The `Composition` for GCP GKE Cluster is as follows.
+
+```
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: gcp-gke
+spec:
+  compositeTypeRef:
+    apiVersion: gke.enginevector.io/v1alpha1
+    kind: XGCPGKE
+  resources:
+    - name: gke-cluster
+      base:
+        apiVersion: container.gcp.crossplane.io/v1beta1
+        kind: Cluster
+        spec:
+          forProvider:
+            location: {{ .Values.gke.region }}
+            initialNodeCount: {{ .Values.gke.nodeCount }}
+            networkRef:
+              name: {{ .Values.gke.networkRef }}
+          providerConfigRef:
+            name: {{ .Values.gke.providerConfig }}
+      patches:
+        - fromFieldPath: "spec.clusterName"
+          toFieldPath: "metadata.name"
+        - fromFieldPath: "spec.region"
+          toFieldPath: "spec.forProvider.location"
+        - fromFieldPath: "spec.nodeCount"
+          toFieldPath: "spec.forProvider.initialNodeCount"
+```
+
+The `Claim` for GCP GKE Cluster is as follows.
+
+```
+apiVersion: gke.example.com/v1alpha1
+kind: GCPGKEClaim
+metadata:
+  name: gke-claim
+spec:
+  projectId: {{ .Values.projectId }}
+  clusterName: {{ .Values.gke.clusterName }}
+  region: {{ .Values.gke.region }}
+  nodeCount: {{ .Values.gke.nodeCount }}
+```
+
+
+This pattern of Crossplane resources follows in the rest of the 10 GCP resources.
+
+
+
+
+
+
+
 
 
 ## Crossplane XRD API Request (Claim) Architecture Workflow
