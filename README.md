@@ -200,7 +200,7 @@ spec:
 ```
 
 
-This pattern of Crossplane resources follows in the rest of the 10 GCP resources.
+**This pattern of Crossplane resources follows in the rest of the 10 GCP resources.**
 
 
 
@@ -233,7 +233,7 @@ To change the sources
 
 
 
-## GCP Applications (GCP GKE App, GCP CloudRun App, GCP AppEngine App)
+## GCP Applications (GCP GKE App, GCP CloudRun App, GCP AppEngine App*)
 
 The following applications are provided for this project.
 
@@ -249,11 +249,12 @@ The following applications are provided for this project.
 
 - Double A*Star Pathfinding Drone Sortie Tracking and Status for GCP CloudRun App
     - Double A*Star Algorithm is a derivative of Ant Colony (Follow-the-Leader) Variant
-    - Developed in **Go**
+    - Developed in **Rust**
     - Runs autonomously without external API requests.
     - Stores sortie status progressions to GCP Firestore NoSQL DB
         - Syncs to GCP Firestore DB at 25 Waypoint Radio Towers
 
+**See for Git Addition**
 - Double A*Star Pathfinding Drone Sortie Tracking and Status for GCP AppEngine App
     - Double A*Star Algorithm is a derivative of Ant Colony (Follow-the-Leader) Variant
     - Developed in **Go**
@@ -266,3 +267,9 @@ The following applications are provided for this project.
 
 
 ## References
+
+- crossplane.io
+- checkov.io
+- https://argoproj.github.io/cd/
+- https://argoproj.github.io/rollouts/
+- 
