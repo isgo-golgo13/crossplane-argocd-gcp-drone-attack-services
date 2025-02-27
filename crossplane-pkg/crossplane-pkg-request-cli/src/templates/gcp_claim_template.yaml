@@ -1,7 +1,0 @@
-apiVersion: gke.enginevector.io/v1alpha1
-kind: XGCPGKE
-metadata:
-  name: default
-spec:
-  nodeCount: 3
-  region: us-west4
