@@ -1,0 +1,12 @@
+[package]
+name = "crossplane-pkg-request-cli"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = { version = "4.2", features = ["derive"] }  # CLI Argument Parsing
+serde = { version = "1.0", features = ["derive"] } # YAML Serialization
+serde_yaml = "0.9"  # Handle YAML
+git2 = "0.18"       # Push to Git
+anyhow = "1.0"      # Error Handling
+tokio = { version = "1", features = ["full"] }  # Async Execution
