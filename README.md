@@ -35,6 +35,8 @@ As clients call on pre-recorded to Git Terraform modules using `module` syntax a
 
 Crossplane provides a `claim` as serving as a requests for a resource or a coordinated workflow of resources. The clients (application groups) do NOT need to know anything of Crossplane or Kubernetes. The clients would correcty call on a headless CLI to prompt for high-level application-specific inputs or a web-driven UI dashscreen to pull for high-level high-level application-specific inputs using a `Service Options Configuration` design pattern and dispatch this required collection of selected resources to Git. This API takes the collection of inputs, packages its expertise in the configuration and writes this as a Crossplane CR API claim to Git. This packaging processs requires high-degree of opinionated decision proceesing as all of the expertise to provision this is lifted away from application groups. The Crossplane CR API claim or collection of CR API claims written (pushed) to Git triggers ArgoCD to auto-deploy the collected Crossplane requests to create the entire resouces to the target (cloud resources or cloud offered Kubernetes clusters or even off-cloud Kubernetes clusters). Crossplane can create VMs off-cloud, VMs on-cloud and VPCs, storage resources that Terraform can provide without any explicit CI/CD workflows to acheive the results. The workflow is pure Gitflow.
 
+This Kubernetes-Native way of provisioning resources against higher-cognitive templated ways using Terraform is the only way to provide self-service delivery of cloud and Kubernetes resources at-scale and disaster recovery awareness.
+
 The Crossplane equivalent structure of Terraform modules is through a templated architecture of packaging as provided in the Git repo. See the next section `Crossplane XRD API Structure`.
 
 
@@ -103,6 +105,13 @@ The Crossplane equivalent structure of Terraform modules is through a templated 
 │   ├── crossplane-pkg-request-cli
 │   └── spec-README.md
 ```
+
+A view into how to provide the packaging for GCP GKE Cluster is provided here with the three required CRs.
+
+- xrd.yaml ()
+- composition.yaml ()
+- claim.yaml ()
+
 
 ## Crossplane XRD API Request (Claim) Architecture Workflow
 
