@@ -1,6 +1,9 @@
 # Crossplane API, Cluster API and ArgoCD (Control Plane) Cluster for Provisioning GCP Container App Platforms
 Crossplane, Crossplane GCP Provider and ArgoCD Kubernetes-Native Provisioning of GCP GKE, GCP Cloud Run and GCP App Engine Drone Attack Sortie App Services (Rust and Go)
 
+
+![gitops-kubernetes-native-control-plane-crossplane](docs/crossplane-argocd-gitops-flow.png)
+
 ## Archictural Workflow of CNCF Kubernetes-Native Resources Provisioning (Crossplane and ArgoCD)
 
 Crossplane provides a Control-Plane-Oriented (CPO) GitOps-driven auto-drift-detection and auto-drift-delta reconcilation with defensive regulative guards to prevent sidedoor changes NOT recorded in Git as the source of truth. Crossplane uses "Control-Theory" state-machine logic to constantly analyze the desired state of resource configuraitions in Git and auto-sync (reconcile) the differences to guarantee the live state (the live state of cloud resources or scoped resources in Kubernetes Clusters such as cluster apps and cluster add-ons are gang-synced without drift gaps).
@@ -199,11 +202,12 @@ spec:
   nodeCount: {{ .Values.gke.nodeCount }}
 ```
 
-
 **This pattern of Crossplane resources follows in the rest of the 10 GCP resources.**
 
 
+To provision the resources to Git and trigger ArgoCD to deploy the GCP resources to target GCP cloud project the following workflow is.
 
+- 
 
 
 
@@ -261,7 +265,6 @@ The following applications are provided for this project.
     - Runs autonomously without external API requests.
     - Stores sortie status progressions to GCP Firestore NoSQL DB
         - Syncs to GCP Firestore DB at 25 Waypoint Radio Towers
-
 
 
 
