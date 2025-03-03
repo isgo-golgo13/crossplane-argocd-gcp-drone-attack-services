@@ -1,4 +1,4 @@
-projectId: "my-gcp-project"
+projectId: "cp-gcp-drone-svcs-project"
 
 apigee:
   gatewayName: "apigee-gateway"
