@@ -4,7 +4,7 @@ metadata:
   name: gcp-cloudrun
 spec:
   compositeTypeRef:
-    apiVersion: cloudrun.example.com/v1alpha1
+    apiVersion: cloudrun.enginevector.io/v1alpha1
     kind: XGCPCloudRun
   resources:
     - name: cloud-run-service

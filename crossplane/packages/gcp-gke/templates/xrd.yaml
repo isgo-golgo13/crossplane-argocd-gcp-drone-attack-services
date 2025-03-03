@@ -1,9 +1,9 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: CompositeResourceDefinition
 metadata:
-  name: xgcpgke.example.com
+  name: xgcpgke.enginevector.io
 spec:
-  group: gke.example.com
+  group: gke.enginevector.io
   names:
     kind: XGCPGKE
     plural: xgcpgkes

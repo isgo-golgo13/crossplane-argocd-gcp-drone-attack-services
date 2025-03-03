@@ -4,7 +4,7 @@ metadata:
   name: gcp-spanner
 spec:
   compositeTypeRef:
-    apiVersion: databases.example.com/v1alpha1
+    apiVersion: databases.enginevector.io/v1alpha1
     kind: XGCPSpanner
   resources:
     - name: spanner-instance

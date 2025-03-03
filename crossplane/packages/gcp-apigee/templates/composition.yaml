@@ -4,7 +4,7 @@ metadata:
   name: gcp-apigee
 spec:
   compositeTypeRef:
-    apiVersion: apigee.example.com/v1alpha1
+    apiVersion: apigee.enginevector.io/v1alpha1
     kind: XGCPApigee
   resources:
     - name: apigee-instance

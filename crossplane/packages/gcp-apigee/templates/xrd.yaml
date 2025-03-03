@@ -1,9 +1,9 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: CompositeResourceDefinition
 metadata:
-  name: xgcpapigee.example.com
+  name: xgcpapigee.enginevector.io
 spec:
-  group: apigee.example.com
+  group: apigee.enginevector.io
   names:
     kind: XGCPApigee
     plural: xgcpapigees

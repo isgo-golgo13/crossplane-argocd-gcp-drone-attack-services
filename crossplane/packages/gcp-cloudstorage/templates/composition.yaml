@@ -4,7 +4,7 @@ metadata:
   name: gcp-cloudstorage
 spec:
   compositeTypeRef:
-    apiVersion: cloudstorage.example.com/v1alpha1
+    apiVersion: cloudstorage.enginevector.io/v1alpha1
     kind: XGCPCloudStorage
   resources:
     - name: cloud-storage-bucket

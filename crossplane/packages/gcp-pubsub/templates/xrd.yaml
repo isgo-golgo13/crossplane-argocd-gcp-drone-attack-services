@@ -1,9 +1,9 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: CompositeResourceDefinition
 metadata:
-  name: xgcppubsub.example.com
+  name: xgcppubsub.enginevector.io
 spec:
-  group: pubsub.example.com
+  group: pubsub.enginevector.io
   names:
     kind: XGCPPubSub
     plural: xgcppubsubs

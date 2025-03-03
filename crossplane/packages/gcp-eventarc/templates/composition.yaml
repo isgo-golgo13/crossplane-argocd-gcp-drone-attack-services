@@ -4,7 +4,7 @@ metadata:
   name: gcp-eventarc
 spec:
   compositeTypeRef:
-    apiVersion: eventarc.example.com/v1alpha1
+    apiVersion: eventarc.enginevector.io/v1alpha1
     kind: XGCPEventArc
   resources:
     - name: eventarc-triggers

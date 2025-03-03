@@ -1,9 +1,9 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: CompositeResourceDefinition
 metadata:
-  name: xgcpappengine.example.com
+  name: xgcpappengine.enginevector.io  # Change to a template (add to values.yaml)
 spec:
-  group: appengine.example.com
+  group: appengine.enginevector.io     # Change to a template
   names:
     kind: XGCPAppEngine
     plural: xgcpappengines

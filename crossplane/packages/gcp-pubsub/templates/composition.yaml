@@ -4,7 +4,7 @@ metadata:
   name: gcp-pubsub-eventarc
 spec:
   compositeTypeRef:
-    apiVersion: pubsub.example.com/v1alpha1
+    apiVersion: pubsub.enginevector.io/v1alpha1
     kind: XGCPPubSub
   resources:
     - name: pubsub-topics

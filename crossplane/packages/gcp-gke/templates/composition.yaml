@@ -4,7 +4,7 @@ metadata:
   name: gcp-gke
 spec:
   compositeTypeRef:
-    apiVersion: gke.example.com/v1alpha1
+    apiVersion: gke.enginevector.io/v1alpha1
     kind: XGCPGKE
   resources:
     - name: gke-cluster
