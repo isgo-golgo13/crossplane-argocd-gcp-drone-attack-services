@@ -1,9 +1,9 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: CompositeResourceDefinition
 metadata:
-  name: xgcpspanner.example.com
+  name: xgcpspanner.enginevector.io
 spec:
-  group: databases.example.com
+  group: databases.enginevector.io
   names:
     kind: XGCPSpanner
     plural: xgcpspanners

@@ -1,9 +1,9 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: CompositeResourceDefinition
 metadata:
-  name: xgcpnetworking.example.com
+  name: xgcpnetworking.enginevector.io
 spec:
-  group: networking.example.com
+  group: networking.enginevector.io
   names:
     kind: XGCPNetworking
     plural: xgcpnetworkings

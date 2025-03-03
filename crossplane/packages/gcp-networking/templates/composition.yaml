@@ -4,7 +4,7 @@ metadata:
   name: gcp-networking
 spec:
   compositeTypeRef:
-    apiVersion: networking.example.com/v1alpha1
+    apiVersion: networking.enginevector.io/v1alpha1
     kind: XGCPNetworking
   resources:
     - name: shared-vpc

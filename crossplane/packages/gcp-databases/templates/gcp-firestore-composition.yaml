@@ -4,7 +4,7 @@ metadata:
   name: gcp-firestore
 spec:
   compositeTypeRef:
-    apiVersion: databases.example.com/v1alpha1
+    apiVersion: databases.enginevector.io/v1alpha1
     kind: XGCPFirestore
   resources:
     - name: firestore-db

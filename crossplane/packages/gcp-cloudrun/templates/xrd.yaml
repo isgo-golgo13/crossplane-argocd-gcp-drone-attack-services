@@ -1,9 +1,9 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: CompositeResourceDefinition
 metadata:
-  name: xgcpcloudrun.example.com
+  name: xgcpcloudrun.enginevector.io
 spec:
-  group: cloudrun.example.com
+  group: cloudrun.enginevector.io
   names:
     kind: XGCPCloudRun
     plural: xgcpcloudruns
