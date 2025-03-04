@@ -325,19 +325,16 @@ In-Progress
 
 ### GCP Workflow
 
-Provisioning GCP service account credentials for the Crossplane `ProviderConfig` is done as follows using a Azure AD/Azure Entra Federated Workload Identity (Azure Service Principal) and a declarative Kubernetes-Native declarartive (non-static) fetch of the credentials into a Kubernetes Secret using **Kubernetes-Native** `External Secrets Operator` (ESO `ClusterSecretStore` CR and ESO `ExternalSecret` CR) and `Azure Key Vault`.
+Provisioning GCP service account credentials for the Crossplane `ProviderConfig` is done as follows using a GCP IAM Workload Identity and a Kubernetes Secret using **Kubernetes-Native** `External Secrets Operator` (ESO `ClusterSecretStore` CR and ESO `ExternalSecret` CR).
 
 The workflow is as follows.
-
-
-
 
 **In-Progress**
 
 
 ### Azure Workflow
 
-Provisioning Azure Entra service account credentials for the Crossplane `ProviderConfig` is done as follows using Azure Entra (previously Azure AD) for the Service Account) and a declarative **Kubernetes-Native** (non-static) fetch of the credentials into a Kubernetes Secret using Kubernetes-Native `External Secrets Operator` and `Azure Entra Federated Workload Identity`.
+Provisioning Azure Entra service account credentials for the Crossplane `ProviderConfig` is done as follows using Azure Entra (previously Azure AD) for the Service Account) and a Kubernetes Secret using Kubernetes-Native `External Secrets Operator` and `Azure Entra Federated Workload Identity`.
 
 **The workflow is as follows.**
 
