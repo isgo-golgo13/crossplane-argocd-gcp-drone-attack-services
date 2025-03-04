@@ -294,6 +294,21 @@ The following applications are provided for this project.
 
 
 
+## Installing Crossplane and Crossplane Control-Plane Architeture w/ ArgoCD
+
+To install `Crossplane` using the official Helm Chart.
+
+```shell
+```
+
+In-Progress
+
+
+## Cloud Service Account and Crossplane ProviderConfig Workflow (Kubernetes-Native)
+
+In-Progress
+
+
 
 ## References
 
