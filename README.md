@@ -294,7 +294,7 @@ The following applications are provided for this project.
 
 
 
-## Installing Crossplane and Crossplane Control-Plane Architeture w/ ArgoCD
+## Installing Crossplane and Crossplane Control-Plane Architecture w/ ArgoCD
 
 To install `Crossplane` using the official Helm Chart.
 
