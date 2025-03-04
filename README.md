@@ -339,7 +339,7 @@ The workflow is as follows.
 
 Provisioning Azure Entra service account credentials for the Crossplane `ProviderConfig` is done as follows using Azure Entra (previously Azure AD) for the Service Account) and a declarative **Kubernetes-Native** (non-static) fetch of the credentials into a Kubernetes Secret using Kubernetes-Native `External Secrets Operator` and `Azure Entra Federated Workload Identity`.
 
-The workflow is as follows.
+**The workflow is as follows.**
 
 Crossplane will reference a Kubernetes ExternalSecret resource that will generate a Azure Entra Federated Workload Indentity Credential. This credential is short-lived and does **NOT** require additional resource as Azure Key Vault to query at the point of Crossplane `ProviderConfig` deployment.  
 
