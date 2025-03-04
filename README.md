@@ -304,9 +304,29 @@ To install `Crossplane` using the official Helm Chart.
 In-Progress
 
 
-## Cloud Service Account and Crossplane ProviderConfig Workflow (Kubernetes-Native)
+## Cloud Service Account and Crossplane ProviderConfig Workflow
 
-In-Progress
+### GCP Workflow
+
+Provisioning GCP service account credentials for the Crossplane `ProviderConfig` is done as follows using a Azure AD/Azure Entra Federated Workload Identity (Azure Service Principal) and a declarative Kubernetes-Native declarartive (non-static) fetch of the credentials into a Kubernetes Secret using **Kubernetes-Native** `External Secrets Operator` (ESO `ClusterSecretStore` CR and ESO `ExternalSecret` CR) and `Azure Key Vault`.
+
+The workflow is as follows.
+
+**In-Progress**
+
+
+### Azure Workflow
+
+Provisioning GCP service account credentials for the Crossplane `ProviderConfig` is done as follows using GCP IAM (pre-created GCP Service Account and GCP IAM Roles for the Service Account) and a declarative **Kubernetes-Native** (non-static) fetch of the credentials into a Kubernetes Secret using Kubernetes-Native `External Secrets Operator` and `GCP Cloud Secrets Manager`.
+
+The workflow is as follows.
+
+**In-Progress**
+
+
+
+## Crossplane API Anti-Patterns (Non-GitOps w/out ArgoCD)
+
 
 
 
