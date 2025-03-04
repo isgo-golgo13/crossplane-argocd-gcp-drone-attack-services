@@ -296,9 +296,26 @@ The following applications are provided for this project.
 
 ## Installing Crossplane and Crossplane Control-Plane Architecture w/ ArgoCD
 
-To install `Crossplane` using the official Helm Chart.
+To install `Crossplane` in HA configuration using the official Helm Chart.
 
 ```shell
+helm repo add crossplane-stable https://charts.crossplane.io/stable
+helm repo update
+
+helm install crossplane crossplane-stable/crossplane \
+  --namespace crossplane-system \
+  --create-namespace \
+  --set args="{--enable-composition-revisions}" \
+  --set replicas=3 \
+  --set podDisruptionBudget.enabled=true \
+  --set podDisruptionBudget.minAvailable=2 \
+  --set leaderElection.enabled=true \
+  --set rbacManager.enabled=true \
+  --set securityContext.runAsNonRoot=true \
+  --set tolerations[0].key="CriticalAddonsOnly" \
+  --set tolerations[0].operator="Exists" \
+  --set tolerations[1].key="node-role.kubernetes.io/control-plane" \
+  --set tolerations[1].operator="Exists"
 ```
 
 In-Progress
