@@ -340,7 +340,8 @@ The workflow is as follows.
 Provisioning GCP service account credentials for the Crossplane `ProviderConfig` is done as follows using GCP IAM (pre-created GCP Service Account and GCP IAM Roles for the Service Account) and a declarative **Kubernetes-Native** (non-static) fetch of the credentials into a Kubernetes Secret using Kubernetes-Native `External Secrets Operator` and `GCP Cloud Secrets Manager`.
 
 The workflow is as follows.
-
+##
+##
 
 
 ![crossplane-azure-credentials-workflow](docs/azure-provider-config-creds-workflow.png)
