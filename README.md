@@ -329,9 +329,9 @@ Provisioning GCP service account credentials for the Crossplane `ProviderConfig`
 
 The workflow is as follows.
 
+Crossplane will reference a Kubernetes ExternalSecret resource that will generate a GCP IAM Workload Indentity Credential. This credential is short-lived and does NOT require additional resource as GCP Cloud Secrets Manager to query at the point of Crossplane ProviderConfig deployment.
 
-
-![crossplane-azure-credentials-workflow](docs/gcp-provider-config-creds-workflow.png)
+![crossplane-gcp-credentials-workflow](docs/gcp-provider-config-creds-workflow.png)
 
 
 
