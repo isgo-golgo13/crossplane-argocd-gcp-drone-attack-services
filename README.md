@@ -347,7 +347,7 @@ Crossplane will reference a Kubernetes ExternalSecret resource that will generat
 
 
 
-## Crossplane API Anti-Patterns (Non-GitOps w/out ArgoCD)
+## Crossplane API Control-Plane Cluster Configuration (Non-GitOps w/out ArgoCD)
 
 
 
