@@ -329,7 +329,11 @@ Provisioning GCP service account credentials for the Crossplane `ProviderConfig`
 
 The workflow is as follows.
 
-**In-Progress**
+
+
+![crossplane-azure-credentials-workflow](docs/gcp-provider-config-creds-workflow.png)
+
+
 
 
 ### Azure Workflow
