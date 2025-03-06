@@ -333,6 +333,12 @@ Crossplane will reference a Kubernetes ExternalSecret resource that will generat
 
 ![crossplane-azure-credentials-workflow](docs/azure-provider-config-creds-workflow.png)
 
+- Create Azure Entra ID Federated Identity Credential and associate that to the AKS Cluster Managed Identity (AKS would have this provided during AKS Cluster creation).
+- Allow Azure Entra ID Federated Identity Credential to authenticate as Kubernetes Service Account (KSA).
+- External Secrets Operator (ESO) will collect Azure Entra ID Federated Identity token.
+  - This token allows Crossplane to assume the correct Azure role.
+- No Azure Service Principals required or stored in Azure Key Vault required.
+
 
 
 ### Provider and ProviderConfig Package Deployment for the Crossplane Control-Plane Cluster
