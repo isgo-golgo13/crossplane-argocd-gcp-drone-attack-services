@@ -401,6 +401,48 @@ dependencies:
 ```
 
 
+For Azure AKS Crossplane Control-Plane Cluster ProviderConfig Resource the ESO ExternalSecret is a follows (post-rendered from Helm).
+
+```shell
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: azure-federated-token-secret
+  namespace: crossplane-system
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: azure-federated-store
+    kind: ClusterSecretStore
+  target:
+    name: azure-provider-secret  # The Secret that Crossplane will use
+    creationPolicy: Owner
+  data:
+    - secretKey: token
+      remoteRef:
+        key: azure-federated-token
+``` 
+
+The Crossplane Azure `ProviderConfig` references this ExternalSecret as follows (post-rendered from Helm).
+
+```shell
+apiVersion: azure.crossplane.io/v1beta1
+kind: ProviderConfig
+metadata:
+  name: azure-provider
+spec:
+  credentials:
+    source: Secret
+    secretRef:
+      namespace: crossplane-system
+      name: azure-provider-secret     # Created by ESO
+      key: token                      # ESO injects federated token here
+```
+
+
+
+
+
 
 
 ## ChangeLog
