@@ -8,7 +8,8 @@ The API does **NOT** serve as a passive API and does **NOT** side-step push flow
 
 The **advantages** of this are.
 
-- Each Crossplane XR API Claim is recorded to Git first
+- Crossplane XR API Claims are recorded to Git first
+    - This reduces risk of accidental side-step changes
 - Git version tracking, change history, auditing and version reversal workflow of Crossplane XR API Claims
 - Enforces PR workflows (automated or non-automated)
 - ArgoCD consistently guarantees the syncing of Crossplane XR API requested state to the live state
