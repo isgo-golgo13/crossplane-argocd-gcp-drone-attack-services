@@ -335,11 +335,39 @@ Crossplane will reference a Kubernetes ExternalSecret resource that will generat
 
 
 
+### Provider and ProviderConfig Package Deployment for the Crossplane Control-Plane Cluster
+
+To automate the deployment of the Crossplane `Provider` and `ProviderConfig` for the Crossplane Control-Plane Cluster, the required dependencies for this will include. 
+
+- External Secrets Operator (prerequsite)
+- Crossplane Operator (prerequisite)
+- ArgoCD in HA Configuration (optional) - **Highly advised to include as a prerequisite**
 
 
-## Crossplane API Control-Plane Cluster Configuration (Non-GitOps w/out ArgoCD)
+The `Provider Package` Helm Chart will include in the `templates` directory.
 
+- ESO `ExternalSecret` resource
+- ESO `ClusterSecretStore` resource
+- Crossplane `Provider` and `ProviderConfig` resources
 
+The Helm Chart `Chart.yaml` will include the dependencies for Crossplane, ESO and ArgoCD. 
+
+```shell
+crossplane-gitops-control-plane/
+├── templates/
+│   ├── __helpers.tpl
+│   ├── cxp-provider-external-secret.yaml
+│   ├── cxp-provider-cluster-secret-store.yaml
+│   ├── cxp-provider.yaml
+│   ├── cxp-provider-config.yaml
+│
+├── Chart.yaml
+├── values.yaml
+├── values-nonprod.yaml
+├── values-preprod.yaml
+├── values-uat.yaml
+├── values-prod.yaml
+```
 
 
 
