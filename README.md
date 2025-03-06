@@ -342,6 +342,14 @@ Crossplane will reference a Kubernetes ExternalSecret resource that will generat
 
 
 
+
+## ChangeLog
+
+- Develop the Crosplane Service Kit APIs (Go and Rust) the CLI and Dioxus Rust WASM Web UI will call.
+- Develop the Crossplane Compositional Functions (Azure, GCP)
+- Provide KUTTL API Testing for Crossplane XR APIs
+
+
 ## References
 
 - crossplane.io
