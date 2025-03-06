@@ -435,8 +435,8 @@ spec:
     source: Secret
     secretRef:
       namespace: crossplane-system
-      name: azure-provider-secret     # Created by ESO
-      key: token                      # ESO injects federated token here
+      name: azure-provider-secret     # Created through ESO
+      key: token                      # ESO injects this federated token
 ```
 
 
