@@ -320,6 +320,46 @@ Crossplane will reference a Kubernetes ExternalSecret resource that will generat
 ![crossplane-gcp-credentials-workflow](docs/gcp-provider-config-creds-workflow.png)
 
 
+#### Define the Required Export Vars
+
+```shell
+# Set your GCP Project
+export GCP_PROJECT_ID="your-gcp-project-id"
+export GCP_REGION="us-central1"  # Change to your preferred region
+
+# Set the Workload Identity Pool & Provider Name
+export WORKLOAD_IDENTITY_POOL="kind-crossplane-wi-pool"
+export WORKLOAD_IDENTITY_PROVIDER="kind-crossplane-wi-provider"
+
+# Set the GCP IAM Service Account (for Crossplane & ESO)
+export GCP_IAM_SERVICE_ACCOUNT="kind-crossplane-sa"
+export GCP_IAM_SERVICE_ACCOUNT_EMAIL="${GCP_IAM_SERVICE_ACCOUNT}@${GCP_PROJECT_ID}.iam.gserviceaccount.com"
+
+# Set the Kubernetes Namespace and Service Account (in KinD)
+export KIND_K8S_NAMESPACE="crossplane-system"
+export KIND_K8S_SERVICE_ACCOUNT="crossplane-sa"
+```
+
+#### Create a GCP IAM Service Account
+
+```shell
+gcloud iam service-accounts create $GCP_IAM_SERVICE_ACCOUNT \
+  --description="IAM Service Account for KinD Crossplane Workload Identity" \
+  --display-name="KinD Crossplane Workload Identity"
+```
+
+#### Configure Workload Identity Federation
+
+```shell
+gcloud iam workload-identity-pools create $WORKLOAD_IDENTITY_POOL \
+  --project=$GCP_PROJECT_ID \
+  --location="global" \
+  --display-name="KinD Crossplane Workload Identity Pool"
+```
+
+
+
+
 
 
 ### Azure Workflow
@@ -348,6 +388,7 @@ To automate the deployment of the Crossplane `Provider` and `ProviderConfig` for
 - External Secrets Operator (prerequsite)
 - Crossplane Operator (prerequisite)
 - ArgoCD in HA Configuration (optional) - **Highly advised to include as a prerequisite**
+- Cert-Manager
 
 
 The `Provider Package` Helm Chart will include in the `templates` directory.
@@ -362,10 +403,10 @@ The Helm Chart `Chart.yaml` will include the dependencies for Crossplane, ESO an
 crossplane-gitops-control-plane/
 ├── templates/
 │   ├── __helpers.tpl
-│   ├── cxp-provider-external-secret.yaml
-│   ├── cxp-provider-cluster-secret-store.yaml
-│   ├── cxp-provider.yaml
-│   ├── cxp-provider-config.yaml
+│   ├── crossplane-provider-external-secret.yaml
+│   ├── crossplane-provider-cluster-secret-store.yaml
+│   ├── crossplane-provider.yaml
+│   ├── crossplane-provider-config.yaml
 │
 ├── Chart.yaml
 ├── values.yaml
@@ -398,6 +439,10 @@ dependencies:
   - name: crossplane
     version: "1.14.2"  # Match the latest stable version
     repository: "https://charts.crossplane.io/stable"
+
+  - name: cert-manager
+    version: "1.14.2"  # Match the latest stable version
+    repository: "https://charts.jetstack.io"
 ```
 
 
