@@ -320,7 +320,7 @@ Crossplane will reference a Kubernetes ExternalSecret resource that will generat
 ![crossplane-gcp-credentials-workflow](docs/gcp-provider-config-creds-workflow.png)
 
 
-#### Define the Required Export Vars
+#### Export (Required) Vars
 
 ```shell
 # Set the GCP Project
