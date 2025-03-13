@@ -355,6 +355,14 @@ gcloud iam workload-identity-pools create $WORKLOAD_IDENTITY_POOL \
   --project=$GCP_PROJECT_ID \
   --location="global" \
   --display-name="KinD Crossplane Workload Identity Pool"
+
+gcloud iam workload-identity-pools providers create-oidc $WORKLOAD_IDENTITY_PROVIDER \
+  --project=$GCP_PROJECT_ID \
+  --location="global" \
+  --workload-identity-pool=$WORKLOAD_IDENTITY_POOL \
+  --display-name="KinD Crossplane OIDC Provider" \
+  --attribute-mapping="google.subject=assertion.sub" \
+  --issuer-uri="https://container.googleapis.com/v1/projects/${GCP_PROJECT_ID}/locations/${GCP_REGION}/clusters/kind-crossplane-cluster"
 ```
 
 
