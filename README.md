@@ -384,6 +384,28 @@ gcloud projects add-iam-policy-binding $GCP_PROJECT_ID \
 ``` 
 
 
+#### Configure (Associate) KinD Kubernetes Service Account to Workload Identity
+
+```shell
+gcloud iam service-accounts add-iam-policy-binding $GCP_IAM_SERVICE_ACCOUNT_EMAIL \
+  --project=$GCP_PROJECT_ID \
+  --role=roles/iam.workloadIdentityUser \
+  --member="principalSet://iam.googleapis.com/projects/$GCP_PROJECT_ID/locations/global/workloadIdentityPools/$WORKLOAD_IDENTITY_POOL/attribute.google.subject/${KIND_K8S_SERVICE_ACCOUNT}"
+
+kubectl annotate serviceaccount \
+  --namespace $KIND_K8S_NAMESPACE $KIND_K8S_SERVICE_ACCOUNT \
+  iam.gke.io/gcp-service-account=$GCP_IAM_SERVICE_ACCOUNT_EMAIL
+```
+
+
+To deploy this Helm Chart for GCP Provider.
+
+```shell
+helm upgrade --install crossplane-gitops-control-plane ./crossplane-gitops-control-plane \
+  --namespace crossplane-system \
+  --create-namespace \
+  -f values-gcp-nonprod.yaml
+```
 
 
 

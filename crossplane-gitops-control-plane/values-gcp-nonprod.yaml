@@ -1,0 +1,38 @@
+gcp:
+  projectId: "your-gcp-project-id"
+
+crossplane:
+  namespace: "crossplane-system"
+  serviceAccount: "crossplane-sa"
+  providerImage: "crossplane/provider-gcp:v0.22.0"
+
+eso:
+  refreshInterval: "1h"
+
+argocd:
+  enabled: true
+  namespace: "argocd"
+  insecure: true  # Set to false when SSO/TLS is configured
+
+externalSecrets:
+  namespace: "external-secrets"
+  clusterSecretStoreName: "gcp-workload-identity-store"
+
+certManager:
+  enabled: true
+  namespace: "cert-manager"
+
+helm:
+  dependencies:
+    - name: argo-cd
+      version: "5.51.3"
+      repository: "https://argoproj.github.io/argo-helm"
+    - name: external-secrets
+      version: "0.9.10"
+      repository: "https://charts.external-secrets.io"
+    - name: crossplane
+      version: "1.14.2"
+      repository: "https://charts.crossplane.io/stable"
+    - name: cert-manager
+      version: "1.14.2"
+      repository: "https://charts.jetstack.io"
