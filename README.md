@@ -445,7 +445,7 @@ The `Provider Package` Helm Chart will include in the `templates` directory.
 - ESO `ClusterSecretStore` resource
 - Crossplane `Provider` and `ProviderConfig` resources
 
-The Helm Chart `Chart.yaml` will include the dependencies for Crossplane, ESO and ArgoCD. 
+The Helm Chart `Chart.yaml` will include the dependencies for Crossplane, Cert-Manager, ESO and ArgoCD. 
 
 ```shell
 crossplane-gitops-control-plane/
@@ -593,6 +593,11 @@ spec:
 ```
 
 
+The values file for the preceding template resources is as shown.
+
+```
+In-Progress
+```
 
 
 
