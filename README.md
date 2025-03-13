@@ -366,6 +366,24 @@ gcloud iam workload-identity-pools providers create-oidc $WORKLOAD_IDENTITY_PROV
 ```
 
 
+#### Grant the Required GCP IAM Permissions
+
+```shell
+# Bind IAM roles for Crossplane and ESO operations
+gcloud projects add-iam-policy-binding $GCP_PROJECT_ID \
+  --member="serviceAccount:$GCP_IAM_SERVICE_ACCOUNT_EMAIL" \
+  --role="roles/iam.workloadIdentityUser"
+
+gcloud projects add-iam-policy-binding $GCP_PROJECT_ID \
+  --member="serviceAccount:$GCP_IAM_SERVICE_ACCOUNT_EMAIL" \
+  --role="roles/secretmanager.secretAccessor"  # ESO Needs Secret Access
+
+gcloud projects add-iam-policy-binding $GCP_PROJECT_ID \
+  --member="serviceAccount:$GCP_IAM_SERVICE_ACCOUNT_EMAIL" \
+  --role="roles/resourcemanager.projectIamAdmin"  # Crossplane needs IAM access
+``` 
+
+
 
 
 
