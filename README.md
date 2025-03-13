@@ -499,6 +499,112 @@ dependencies:
     repository: "https://charts.jetstack.io"
 ```
 
+The GCP version of the Helm Chart resources are.
+
+
+The Crossplane `Provider` resource.
+
+```
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: crossplane-provider-gcp
+  annotations:
+    meta.helm.sh/release-name: {{ .Release.Name }}
+    meta.helm.sh/release-namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/managed-by: Helm
+spec:
+  package: "{{ .Values.crossplane.providerImage }}"
+```
+
+
+The Crossplane `ProviderConfig` resource.
+
+```
+apiVersion: gcp.crossplane.io/v1beta1
+kind: ProviderConfig
+metadata:
+  name: gcp-provider-config
+  annotations:
+    meta.helm.sh/release-name: {{ .Release.Name }}
+    meta.helm.sh/release-namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/managed-by: Helm
+spec:
+  projectID: {{ .Values.gcp.projectId }}
+  credentials:
+    source: Secret
+    secretRef:
+      namespace: external-secrets
+      name: gcp-crossplane-creds
+      key: credentials.json
+```
+
+The Crossplane Provider `ClusterSecretStore` resource.
+
+```
+apiVersion: external-secrets.io/v1beta1
+kind: ClusterSecretStore
+metadata:
+  name: gcp-workload-identity-store
+  namespace: external-secrets
+  annotations:
+    meta.helm.sh/release-name: {{ .Release.Name }}
+    meta.helm.sh/release-namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/managed-by: Helm
+spec:
+  provider:
+    gcpsm:
+      projectID: {{ .Values.gcp.projectId }}
+      auth:
+        workloadIdentity:
+          clusterResourceNamespace: {{ .Values.crossplane.namespace }}
+          clusterServiceAccount: {{ .Values.crossplane.serviceAccount }}
+``` 
+
+
+The Crossplane Provider `ExternalSecret` resource (safely stored in Git)
+
+```
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: gcp-crossplane-creds
+  namespace: external-secrets
+  annotations:
+    meta.helm.sh/release-name: {{ .Release.Name }}
+    meta.helm.sh/release-namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/managed-by: Helm
+spec:
+  refreshInterval: {{ .Values.eso.refreshInterval }}
+  secretStoreRef:
+    name: gcp-workload-identity-store
+    kind: ClusterSecretStore
+  target:
+    name: gcp-crossplane-creds
+    creationPolicy: Owner
+  data:
+    - secretKey: credentials.json
+      remoteRef:
+        key: gcp-crossplane-creds
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 For Azure AKS Crossplane Control-Plane Cluster ProviderConfig Resource the ESO ExternalSecret is a follows (post-rendered from Helm).
 
