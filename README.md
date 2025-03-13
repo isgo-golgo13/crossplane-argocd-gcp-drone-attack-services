@@ -324,8 +324,8 @@ Crossplane will reference a Kubernetes ExternalSecret resource that will generat
 
 ```shell
 # Set the GCP Project
-export GCP_PROJECT_ID="your-gcp-project-id"
-export GCP_REGION="us-central1"  # Change to preferred region
+export GCP_PROJECT_ID="gcp-project-id"
+export GCP_REGION="us-west4"  # Change to preferred region
 
 # Set the Workload Identity Pool & Provider Name
 export WORKLOAD_IDENTITY_POOL="kind-crossplane-wi-pool"
