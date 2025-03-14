@@ -320,6 +320,7 @@ Crossplane will reference a Kubernetes ExternalSecret resource that will generat
 ![crossplane-gcp-credentials-workflow](docs/gcp-provider-config-creds-workflow.png)
 
 
+
 #### Export (Required) Vars
 
 ```shell
@@ -339,6 +340,53 @@ export GCP_IAM_SERVICE_ACCOUNT_EMAIL="${GCP_IAM_SERVICE_ACCOUNT}@${GCP_PROJECT_I
 export KIND_K8S_NAMESPACE="crossplane-system"
 export KIND_K8S_SERVICE_ACCOUNT="crossplane-sa"
 ```
+
+
+
+The prerequiste GCP CLI commands are required.
+
+GCP Login and Set GCP Project
+```shell
+gcloud auth login
+#gcloud config set project <PROJECT_ID>
+gcloud config set project cxp-gcp
+```
+
+Verify the Set Poject
+
+```shell
+gcloud projects list
+
+
+PROJECT_ID  NAME     PROJECT_NUMBER
+cxp-gcp     cxp-gcp  459613764355
+```
+
+
+
+
+#### Allow the GCP APIs
+
+```shell
+gcloud services enable \
+    iam.googleapis.com \
+    iamcredentials.googleapis.com \
+    cloudresourcemanager.googleapis.com \
+    container.googleapis.com \
+    serviceusage.googleapis.com \
+    cloudbilling.googleapis.com \
+    sqladmin.googleapis.com \
+    dns.googleapis.com \
+    compute.googleapis.com \
+    pubsub.googleapis.com \
+    storage.googleapis.com \
+    monitoring.googleapis.com \
+    logging.googleapis.com \
+    secretmanager.googleapis.com \
+    --project=cxp-gcp
+```
+
+
 
 #### Create a GCP IAM Service Account
 
@@ -468,6 +516,16 @@ crossplane-gcp-control-plane/
 ├── values-gcp-uat.yaml
 └── values.yaml
 ```
+
+
+For production environments that require the Crossplane Control-Plane Cluster in the GCP Cloud running as a GKE Cluster the following workflow will provide how to provision the GCP GKE Crossplane Control-Plane Cluster from a local Crossplane Control-Plane Cluster using a Control-Plane-for-Control-Plane provisioning pattern. 
+
+- Create a GCP GKE Cluster from the KinD Crossplane Control-Plane Cluster through XR API Claim 
+- Provide GCP IAM Workload Identity for the created GCP GKE Cluster
+- Provision the `crossplane-gcp-control-plane` Helm Chart configuring the ESO Secret for the GCP ProviderConfig 
+- Verify this GCP GKE Cluster Crossplane Control-Plane Cluster is finalized to provision GCP resources 
+
+
 
 
 
@@ -801,9 +859,6 @@ In-Progress
 
 
 
-
-
-For Azure AKS Crossplane Control-Plane Cluster ProviderConfig Resource the ESO ExternalSecret is a follows (post-rendered from Helm).
 
 
 
