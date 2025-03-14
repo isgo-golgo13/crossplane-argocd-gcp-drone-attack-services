@@ -359,7 +359,7 @@ gcloud projects list
 
 
 PROJECT_ID  NAME     PROJECT_NUMBER
-cxp-gcp     cxp-gcp  459613764355
+cxp-gcp     cxp-gcp  XXXXXXXXXXXX
 ```
 
 
@@ -385,6 +385,22 @@ gcloud services enable \
     secretmanager.googleapis.com \
     --project=cxp-gcp
 ```
+
+For only the APIs GCP GKE, GCP IAM and GCP Cloud Storage, the CLI change is as follows.
+
+```shell
+gcloud services enable \
+    iam.googleapis.com \
+    iamcredentials.googleapis.com \
+    cloudresourcemanager.googleapis.com \
+    serviceusage.googleapis.com \
+    container.googleapis.com \
+    storage.googleapis.com \
+    secretmanager.googleapis.com \
+    --project=cxp-gcp
+```
+
+
 
 
 
