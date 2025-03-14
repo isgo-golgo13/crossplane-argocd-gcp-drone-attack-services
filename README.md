@@ -401,20 +401,20 @@ kubectl annotate serviceaccount \
 To generate the dependencies for the Helm Chart.
 
 ```shell
-helm dependency build ./crossplane-gitops-control-plane
+helm dependency build ./crossplane-gcp-control-plane
 ```
 
 To verify the dependencies.
 
 ```shell
-helm dependency list ./crossplane-gitops-control-plane
+helm dependency list ./crossplane-gcp-control-plane
 ```
 
 
 To deploy this Helm Chart for GCP Provider to the Crossplane Control-Plane Cluster.
 
 ```shell
-helm upgrade --install crossplane-gitops-control-plane ./crossplane-gitops-control-plane \
+helm upgrade --install crossplane-gcp-control-plane ./crossplane-gcp-control-plane \
   --namespace crossplane-system \
   --create-namespace \
   -f values-gcp-nonprod.yaml
