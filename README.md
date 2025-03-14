@@ -451,6 +451,25 @@ kubectl get providerconfig gcp-provider-config -n crossplane-system -o yaml
 ```
 
 
+The final GCP variant of the Crossplane Provider Helm Chart is as follows.
+
+```shell
+crossplane-gcp-control-plane/
+├── Chart.yaml
+├── templates/
+│   ├── __helpers.tpl
+│   ├── crossplane-provider-cluster-secret-store.yaml
+│   ├── crossplane-provider-config.yaml
+│   ├── crossplane-provider-external-secret.yaml
+│   └── crossplane-provider.yaml
+├── values-gcp-nonprod.yaml
+├── values-gcp-preprod.yaml
+├── values-gcp-prod.yaml
+├── values-gcp-uat.yaml
+└── values.yaml
+```
+
+
 
 
 ### Azure Workflow
