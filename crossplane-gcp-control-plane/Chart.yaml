@@ -1,6 +1,6 @@
 apiVersion: v2
-name: crossplane-gitops-control-plane
-description: A Helm chart for setting up a GitOps-based Crossplane control plane with ArgoCD and External Secrets Operator.
+name: crossplane-gcp-control-plane
+description: A Helm chart for setting up a GCP GitOps-based Crossplane control plane with ArgoCD and External Secrets Operator.
 type: application
 version: 1.0.0
 appVersion: "1.0.0"
