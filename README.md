@@ -537,14 +537,6 @@ Now KinD’s Crossplane control plane can authenticate to Azure without long-liv
 
 
 
-- Create Azure Entra ID Federated Identity Credential and associate that to the AKS Cluster Managed Identity (AKS would have this provided during AKS Cluster creation).
-- Allow Azure Entra ID Federated Identity Credential to authenticate as Kubernetes Service Account (KSA).
-- External Secrets Operator (ESO) will collect Azure Entra ID Federated Identity token.
-  - This token allows Crossplane to assume the correct Azure role.
-- No Azure Service Principals required or stored in Azure Key Vault required.
-
-
-
 ### Provider and ProviderConfig Package Deployment for the Crossplane Control-Plane Cluster
 
 To automate the deployment of the Crossplane `Provider` and `ProviderConfig` for the Crossplane Control-Plane Cluster, the required dependencies for this will include. 
@@ -578,12 +570,6 @@ crossplane-gitops-control-plane/
 ├── values-gcp-preprod.yaml
 ├── values-gcp-uat.yaml
 ├── values-gcp-prod.yaml
-├── values-azure-nonprod.yaml
-├── values-azure-preprod.yaml
-├── values-azure-uat.yaml
-├── values-azure-prod.yaml
-
-... other providers values files ...
 ```
 
 
