@@ -1,0 +1,25 @@
+azure:
+  subscriptionId: "your-subscription-id"
+  tenantId: "your-tenant-id"
+  resourceGroup: "crossplane-rg"
+
+crossplane:
+  namespace: "crossplane-system"
+  serviceAccount: "crossplane-sa"
+  providerImage: "crossplane/provider-azure:v0.24.0"
+
+eso:
+  refreshInterval: "1h"
+
+argocd:
+  enabled: true
+  namespace: "argocd"
+  insecure: true  # Set to false when SSO/TLS is configured
+
+externalSecrets:
+  namespace: "external-secrets"
+  clusterSecretStoreName: "azure-workload-identity-store"
+
+certManager:
+  enabled: true
+  namespace: "cert-manager"
