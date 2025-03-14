@@ -530,7 +530,7 @@ kubectl annotate serviceaccount \
   azure.workload.identity/client-id=$WORKLOAD_IDENTITY_CLIENT_ID
 ```
 
-
+Now KinD’s Crossplane control plane can authenticate to Azure without long-lived credentials.
 
 
 
