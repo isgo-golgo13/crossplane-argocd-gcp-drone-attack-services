@@ -552,6 +552,23 @@ kubectl annotate serviceaccount \
 Now KinD’s Crossplane control plane can authenticate to Azure without long-lived credentials.
 
 
+The final Azure variant of the Crossplane Provider Helm Chart is as follows.
+
+```shell
+crossplane-azure-control-plane/
+├── Chart.yaml
+├── templates/
+│   ├── __helpers.tpl
+│   ├── crossplane-provider-cluster-secret-store.yaml
+│   ├── crossplane-provider-config.yaml
+│   ├── crossplane-provider-external-secret.yaml
+│   └── crossplane-provider.yaml
+├── values-azure-nonprod.yaml
+├── values-azure-preprod.yaml
+├── values-azure-prod.yaml
+├── values-azure-uat.yaml
+└── values.yaml
+```
 
 
 
