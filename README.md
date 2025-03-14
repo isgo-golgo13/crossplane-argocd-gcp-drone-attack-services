@@ -398,13 +398,50 @@ kubectl annotate serviceaccount \
 ```
 
 
-To deploy this Helm Chart for GCP Provider.
+To generate the dependencies for the Helm Chart.
+
+```shell
+helm dependency build ./crossplane-gitops-control-plane
+```
+
+To verify the dependencies.
+
+```shell
+helm dependency list ./crossplane-gitops-control-plane
+```
+
+
+To deploy this Helm Chart for GCP Provider to the Crossplane Control-Plane Cluster.
 
 ```shell
 helm upgrade --install crossplane-gitops-control-plane ./crossplane-gitops-control-plane \
   --namespace crossplane-system \
   --create-namespace \
   -f values-gcp-nonprod.yaml
+```
+
+The helm install will automate the following on the Crossplane Control-Plane Kubernetes Cluster.
+
+- Create the `crossplane-system` (standard required namespace) namespace (if not present)
+- Provision Crossplane, ESO, ArgoCD and Cert-Manager 
+- Configure ESO to control GCP IAM Workload Identity (WID) Secret Credentials
+- Configures Crossplane to reference ESO controlled GCP IAM WID Secret Credentials in GCP `ProviderConfig`
+
+To verify the installation.
+
+```shell
+kubectl get pods -n crossplane-system
+kubectl get pods -n external-secrets
+kubectl get pods -n argocd
+kubectl get pods -n cert-manager
+```
+
+To verify the ESO Secrets.
+
+```shell
+kubectl get clustersecretstore -A
+kubectl get externalsecret -n external-secrets
+kubectl get secret gcp-crossplane-creds -n external-secrets -o yaml
 ```
 
 
