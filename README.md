@@ -552,6 +552,60 @@ kubectl annotate serviceaccount \
 Now KinD’s Crossplane control plane can authenticate to Azure without long-lived credentials.
 
 
+To generate the dependencies for the Helm Chart.
+
+```shell
+helm dependency build ./crossplane-azure-control-plane
+```
+
+To verify the dependencies.
+
+```shell
+helm dependency list ./crossplane-azure-control-plane
+```
+
+To deploy this Helm Chart for Azure Provider to the Crossplane Control-Plane Cluster.
+
+```shell
+helm upgrade --install crossplane-azure-control-plane ./crossplane-azure-control-plane \
+  --namespace crossplane-system \
+  --create-namespace \
+  -f values-azure-nonprod.yaml
+```
+
+The helm install will automate the following on the Crossplane Control-Plane Kubernetes Cluster.
+
+- Create the `crossplane-system` (standard required namespace) namespace (if not present)
+- Provision Crossplane, ESO, ArgoCD and Cert-Manager 
+- Configure ESO to control Azure Entra ID (Azure AD) Federated Workload Identity (FWI) Secret Credentials
+- Configures Crossplane to reference ESO controlled Azure Entra ID FWI Secret Credentials in Azure `ProviderConfig`
+
+To verify the installation.
+
+```shell
+kubectl get pods -n crossplane-system
+kubectl get pods -n external-secrets
+kubectl get pods -n argocd
+kubectl get pods -n cert-manager
+```
+
+To verify the ESO Secrets.
+
+```shell
+kubectl get clustersecretstore -A
+kubectl get externalsecret -n external-secrets
+kubectl get secret azure-crossplane-creds -n external-secrets -o yaml
+```
+
+To verify the Crossplane `GCP ProviderConfig`
+
+```shell
+kubectl get providerconfig azure-provider-config -n crossplane-system -o yaml
+```
+
+
+
+
 The final Azure variant of the Crossplane Provider Helm Chart is as follows.
 
 ```shell
