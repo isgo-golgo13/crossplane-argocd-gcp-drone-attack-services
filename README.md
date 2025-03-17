@@ -643,9 +643,29 @@ gcloud services list --enabled --project=cxp-gcp
 
 
 #### Create a GCP IAM Service Account
+```shell
+gcloud iam service-accounts create $GCP_IAM_SERVICE_ACCOUNT \
+    --description="IAM Service Account for GKE Crossplane Workload Identity" \
+    --display-name="GKE Crossplane Workload Identity"
+```
 
 
 #### Configure Workload Identity Federation
+```shell
+gcloud iam workload-identity-pools create $WORKLOAD_IDENTITY_POOL \
+    --project=$GCP_PROJECT_ID \
+    --location="global" \
+    --display-name="GKE Crossplane Workload Identity Pool"
+
+gcloud iam workload-identity-pools providers create-oidc $WORKLOAD_IDENTITY_PROVIDER \
+    --project=$GCP_PROJECT_ID \
+    --location="global" \
+    --workload-identity-pool=$WORKLOAD_IDENTITY_POOL \
+    --display-name="GKE Crossplane OIDC Provider" \
+    --attribute-mapping="google.subject=assertion.sub" \
+    --issuer-uri="https://container.googleapis.com/v1/projects/${GCP_PROJECT_ID}/locations/${GCP_REGION}/clusters/crossplane-control-plane-gke"
+```
+
 
 
 
