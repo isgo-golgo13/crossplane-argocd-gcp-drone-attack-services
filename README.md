@@ -527,7 +527,7 @@ kubectl get providerconfig gcp-provider-config -n crossplane-system -o yaml
 ```
 
 
-If `ESO`, `Cert-Manager` and `ArgoCD` already already installed on the target Kubernetes Control-Plane Cluster, the `crossplane-gcp-crossplane-provider` Helm Chart provides conditional checks to install only the required.
+If `ESO`, `Cert-Manager` and `ArgoCD` already installed on the target Kubernetes Control-Plane Cluster, the `crossplane-gcp-crossplane-provider` Helm Chart provides conditional checks to install only the required.
 
 ```shell
 helm upgrade --install crossplane-gcp-control-plane ./crossplane-gcp-control-plane \
@@ -538,6 +538,18 @@ helm upgrade --install crossplane-gcp-control-plane ./crossplane-gcp-control-pla
   --set certManager.enabled=false \
   -f values.yaml
 ```
+
+If `ESO` and `ArgoCD` already installed on the target Kubernetes Control-Plane Cluster the Helm Chart is deployed as follows.
+
+```shell
+helm upgrade --install crossplane-gcp-control-plane ./crossplane-gcp-control-plane \
+  --namespace crossplane-system \
+  --create-namespace \
+  --set argocd.enabled=false \
+  --set externalSecrets.enabled=false \
+  -f values.yaml
+```
+
 
 
 
