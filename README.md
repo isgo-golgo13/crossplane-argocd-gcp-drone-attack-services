@@ -558,6 +558,103 @@ For production environments that require the Crossplane Control-Plane Cluster in
 **The Crossplane Control-Plane Cluster Factory using KinD to Create GCP GKE Control-Plane Cluster**
 
 
+#### Export (Required) Vars
+
+```shell
+export GCP_PROJECT_ID="cxp-gcp"
+export GCP_REGION="us-west4"
+
+export WORKLOAD_IDENTITY_POOL="gke-crossplane-wi-pool"
+export WORKLOAD_IDENTITY_PROVIDER="gke-crossplane-wi-provider"
+
+export GCP_IAM_SERVICE_ACCOUNT="gke-crossplane-sa"
+export GCP_IAM_SERVICE_ACCOUNT_EMAIL="${GCP_IAM_SERVICE_ACCOUNT}@${GCP_PROJECT_ID}.iam.gserviceaccount.com"
+
+export GKE_K8S_NAMESPACE="crossplane-system"
+export GKE_K8S_SERVICE_ACCOUNT="crossplane-sa"
+```
+
+
+
+The prerequiste GCP CLI commands are required.
+
+GCP Login and Set GCP Project
+```shell
+gcloud auth login
+#gcloud config set project <PROJECT_ID>
+gcloud config set project cxp-gcp
+```
+
+Verify the Set Poject
+
+```shell
+gcloud projects list
+
+
+PROJECT_ID  NAME     PROJECT_NUMBER
+cxp-gcp     cxp-gcp  XXXXXXXXXXXX
+```
+
+
+
+
+#### Allow the GCP APIs
+
+```shell
+gcloud services enable \
+    iam.googleapis.com \
+    iamcredentials.googleapis.com \
+    cloudresourcemanager.googleapis.com \
+    container.googleapis.com \
+    serviceusage.googleapis.com \
+    cloudbilling.googleapis.com \
+    sqladmin.googleapis.com \
+    dns.googleapis.com \
+    compute.googleapis.com \
+    pubsub.googleapis.com \
+    storage.googleapis.com \
+    monitoring.googleapis.com \
+    logging.googleapis.com \
+    secretmanager.googleapis.com \
+    --project=cxp-gcp
+```
+
+For only the APIs GCP GKE, GCP IAM and GCP Cloud Storage, the CLI change is as follows.
+
+```shell
+gcloud services enable \
+    iam.googleapis.com \
+    iamcredentials.googleapis.com \
+    cloudresourcemanager.googleapis.com \
+    serviceusage.googleapis.com \
+    container.googleapis.com \
+    storage.googleapis.com \
+    secretmanager.googleapis.com \
+    --project=cxp-gcp
+```
+
+
+To verify the GCP API Services are now allowed.
+
+```shell
+gcloud services list --enabled --project=cxp-gcp
+```
+
+
+
+#### Create a GCP IAM Service Account
+
+
+#### Configure Workload Identity Federation
+
+
+
+#### Grant the Required GCP IAM Permissions
+
+
+
+#### Configure (Associate) KinD Kubernetes Service Account to Workload Identity
+
 
 
 
