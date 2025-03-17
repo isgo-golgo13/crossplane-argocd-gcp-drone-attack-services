@@ -683,7 +683,6 @@ gcloud projects add-iam-policy-binding $GCP_PROJECT_ID \
 ```
 
 
-
 #### Configure (Associate) GCP GKE Kubernetes Service Account to Workload Identity
 ```shell
 gcloud iam service-accounts add-iam-policy-binding $GCP_IAM_SERVICE_ACCOUNT_EMAIL \
