@@ -1,38 +1,83 @@
 gcp:
-  projectId: "your-gcp-project-id"
+  projectId: "gcp-project-id"
 
 crossplane:
   namespace: "crossplane-system"
   serviceAccount: "crossplane-sa"
   providerImage: "crossplane/provider-gcp:v0.22.0"
+  replicas: 3
+  enableCompositionRevisions: true
+  podDisruptionBudget:
+    enabled: true
+    minAvailable: 2
+  leaderElection:
+    enabled: true
+  rbacManager:
+    enabled: true
+  securityContext:
+    runAsNonRoot: true
+  tolerations:
+    - key: "CriticalAddonsOnly"
+      operator: "Exists"
+    - key: "node-role.kubernetes.io/control-plane"
+      operator: "Exists"
 
 eso:
+  enabled: true  # Toggle installation ON/OFF
   refreshInterval: "1h"
 
 argocd:
-  enabled: true
+  enabled: true  # Toggle installation ON/OFF
   namespace: "argocd"
   insecure: true  # Set to false when SSO/TLS is configured
 
 externalSecrets:
+  enabled: true  # Toggle installation ON/OFF
   namespace: "external-secrets"
   clusterSecretStoreName: "gcp-workload-identity-store"
 
 certManager:
-  enabled: true
+  enabled: true  # Toggle installation ON/OFF
   namespace: "cert-manager"
 
 helm:
   dependencies:
-    - name: argo-cd
-      version: "5.51.3"
-      repository: "https://argoproj.github.io/argo-helm"
-    - name: external-secrets
-      version: "0.9.10"
-      repository: "https://charts.external-secrets.io"
     - name: crossplane
       version: "1.14.2"
       repository: "https://charts.crossplane.io/stable"
+      values:
+        args:
+          - "--enable-composition-revisions"
+        replicas: 3
+        podDisruptionBudget:
+          enabled: true
+          minAvailable: 2
+        leaderElection:
+          enabled: true
+        rbacManager:
+          enabled: true
+        securityContext:
+          runAsNonRoot: true
+        tolerations:
+          - key: "CriticalAddonsOnly"
+            operator: "Exists"
+          - key: "node-role.kubernetes.io/control-plane"
+            operator: "Exists"
+
+    {{- if .Values.argocd.enabled }}
+    - name: argo-cd
+      version: "5.51.3"
+      repository: "https://argoproj.github.io/argo-helm"
+    {{- end }}
+
+    {{- if .Values.externalSecrets.enabled }}
+    - name: external-secrets
+      version: "0.9.10"
+      repository: "https://charts.external-secrets.io"
+    {{- end }}
+
+    {{- if .Values.certManager.enabled }}
     - name: cert-manager
       version: "1.14.2"
       repository: "https://charts.jetstack.io"
+    {{- end }}
