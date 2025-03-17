@@ -555,6 +555,9 @@ For production environments that require the Crossplane Control-Plane Cluster in
 
 
 
+**The Crossplane Control-Plane Cluster Factory using KinD to Create GCP GKE Control-Plane Cluster**
+
+
 
 
 
