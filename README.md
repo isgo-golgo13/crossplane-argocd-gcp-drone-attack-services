@@ -696,6 +696,8 @@ kubectl annotate serviceaccount \
     iam.gke.io/gcp-service-account=$GCP_IAM_SERVICE_ACCOUNT_EMAIL
 ```
 
+The new GKE cluster is now ready to run Crossplane.
+
 
 
 
