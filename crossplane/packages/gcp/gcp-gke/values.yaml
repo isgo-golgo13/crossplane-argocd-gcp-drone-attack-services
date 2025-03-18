@@ -1,4 +1,4 @@
-projectId: "cp-gcp-drone-svcs-project"
+projectId: "cxp-gcp"
 
 gke:
   clusterName: "gke-cluster"
@@ -22,3 +22,19 @@ gke:
       - key: "node-type"
         value: "infra"
         effect: "NO_SCHEDULE"
+
+  # Helm Chart Deployment Config
+  helm:
+    enabled: true
+    releaseName: "gke-cluster"
+    namespace: "crossplane-system"
+    repo: "https://github.com/isgo-golgo13/crossplane-argocd-gcp-drone-attack-services.git"
+    chartPath: "crossplane/packages/gcp/gcp-gke"
+    version: "0.1.0"
+    values:
+      projectId: "cp-gcp-drone-svcs-project"
+      clusterName: "gke-cluster"
+      region: "us-west4"
+      nodeCount: 3
+      networkRef: "shared-vpc"
+      providerConfig: "gcp-provider"
