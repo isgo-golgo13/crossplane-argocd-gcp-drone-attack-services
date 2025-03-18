@@ -405,6 +405,13 @@ kubeletConfigPatches:
     cgroupDriver: systemd
 ```
 
+To **create** the cluster.
+
+```shell
+kind create cluster --config crossplane-control-plane-cluster/crossplane-control-plane-kind-cluster-config.yaml
+```
+
+
 
 
 #### Export (Required) Vars
