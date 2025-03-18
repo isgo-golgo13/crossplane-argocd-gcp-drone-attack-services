@@ -327,6 +327,86 @@ GCP IAM Workload Identity credentials provided. This KinD Crossplane Control-Pla
 
 First the KinD Cluster serving as the Crossplane-Control Plane directly provisioning resources in GCP.
 
+
+#### Kubenetes Cluster Configuration (KinD) for Crossplane
+
+```yaml
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: kind-crossplane
+nodes:
+  - role: control-plane
+    image: kindest/node:v1.29.0 # Update to latest stable Kubernetes version
+    extraMounts:
+      - hostPath: /var/lib/kubelet
+        containerPath: /var/lib/kubelet
+      - hostPath: /var/lib/docker
+        containerPath: /var/lib/docker
+    kubeadmConfigPatches:
+      - |
+        kind: InitConfiguration
+        nodeRegistration:
+          kubeletExtraArgs:
+            authorization-mode: "Webhook"
+            anonymous-auth: "true"
+            feature-gates: "AllAlpha=true"
+            runtime-request-timeout: "10m"
+      - |
+        kind: ClusterConfiguration
+        apiServer:
+          extraArgs:
+            enable-admission-plugins: "NamespaceLifecycle,LimitRanger,ServiceAccount,ResourceQuota,NodeRestriction,MutatingAdmissionWebhook,ValidatingAdmissionWebhook"
+    extraPortMappings:
+      - containerPort: 80
+        hostPort: 80
+        protocol: TCP
+      - containerPort: 443
+        hostPort: 443
+        protocol: TCP
+      - containerPort: 6443
+        hostPort: 6443
+        protocol: TCP
+  - role: worker
+    image: kindest/node:v1.29.0
+  - role: worker
+    image: kindest/node:v1.29.0
+  - role: worker
+    image: kindest/node:v1.29.0
+networking:
+  disableDefaultCNI: false
+  kubeProxyMode: "iptables"
+  podSubnet: "10.244.0.0/16"
+  serviceSubnet: "10.96.0.0/12"
+featureGates:
+  APIServerTracing: true
+  CrossNamespaceVolumeDataSource: true
+containerdConfigPatches:
+  - | 
+    [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
+      runtime_type = "io.containerd.runc.v2"
+      runtime_engine = ""
+      runtime_root = ""
+      privileged_without_host_devices = false
+      base_runtime_spec = ""
+      no_pivot = false
+      discard_unpacked_layers = false
+      systemd_cgroup = true
+    [plugins."io.containerd.grpc.v1.cri"]
+      disable_cgroup = false
+      disable_apparmor = false
+      disable_seccomp = false
+kubeletConfigPatches:
+  - |
+    kind: KubeletConfiguration
+    apiVersion: kubelet.config.k8s.io/v1beta1
+    featureGates:
+      APIServerTracing: true
+    maxPods: 110
+    cgroupDriver: systemd
+```
+
+
+
 #### Export (Required) Vars
 
 ```shell
