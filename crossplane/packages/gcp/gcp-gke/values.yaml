@@ -32,7 +32,7 @@ gke:
     chartPath: "crossplane/packages/gcp/gcp-gke"
     version: "0.1.0"
     values:
-      projectId: "cp-gcp-drone-svcs-project"
+      projectId: "cxp-gcp"
       clusterName: "gke-cluster"
       region: "us-west4"
       nodeCount: 3
