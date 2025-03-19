@@ -365,6 +365,25 @@ To change the sources
 - Requires Rust 1.75+
 
 
+TODO: Write workflow now
+
+- (Platform Expert) Create CXP Cluster
+- (Platform Expert) Configure (Set) GCP ProjectId Region 
+- (Platform Expert) Run GCP IAM Workload Identity Script
+- (Platform Expert) Run Helm Chart for CXP Provider Chart
+- (Platform Expert) Verify the Helm Chart for CXP Provider Deploy
+- (Platform Expert) Run Helm Dependency Update for Crossplane Parent Helm Chart to Generate Manifests for Crossplane
+
+- (Client) Create XR API Claim to Push to CXP Cluster
+  - `kubectl apply -f gcpgke-claim.yaml`
+- (Client) Verify XR API Claim Deploy to CXP Cluster
+  - `kubectl get gcpgke-claims` 
+
+
+
+- 
+
+
 
 
 
