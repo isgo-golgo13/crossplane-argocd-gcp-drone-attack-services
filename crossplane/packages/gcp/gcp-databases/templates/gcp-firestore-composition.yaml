@@ -22,3 +22,24 @@ spec:
           toFieldPath: "metadata.name"
         - fromFieldPath: "spec.region"
           toFieldPath: "spec.forProvider.locationId"
+
+    - name: helm-release-firestore
+      base:
+        apiVersion: helm.crossplane.io/v1beta1
+        kind: Release
+        metadata:
+          name: firestore-db
+        spec:
+          forProvider:
+            chart:
+              name: gcp-databases
+              repository: "https://github.com/isgo-golgo13/crossplane-argocd-gcp-drone-attack-services.git"
+              version: "1.0.0"
+            namespace: crossplane-system
+            values:
+              firestore:
+                region: {{ .Values.firestore.region }}
+                type: {{ .Values.firestore.type }}
+                providerConfig: {{ .Values.firestore.providerConfig }}
+          providerConfigRef:
+            name: gcp-provider

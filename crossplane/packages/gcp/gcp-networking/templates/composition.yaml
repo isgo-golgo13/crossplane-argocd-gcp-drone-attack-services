@@ -17,7 +17,7 @@ spec:
             routingConfig:
               routingMode: REGIONAL
           providerConfigRef:
-            name: {{ .Values.networking.providerConfig }}
+            name: "{{ .Values.networking.providerConfig }}"
       patches:
         - fromFieldPath: "spec.sharedVpcName"
           toFieldPath: "metadata.name"
@@ -33,15 +33,15 @@ spec:
             direction: INGRESS
             networkSelector:
               matchControllerRef: true
-            allowed: {{ .Values.networking.firewallRules }}
+            allowed: "{{ .Values.networking.firewallRules }}"
           providerConfigRef:
-            name: {{ .Values.networking.providerConfig }}
+            name: "{{ .Values.networking.providerConfig }}"
       patches:
         - fromFieldPath: "spec.projectId"
           toFieldPath: "spec.forProvider.project"
 
     - name: private-link
-      condition: {{ .Values.networking.privateLink }}
+      condition: "{{ .Values.networking.privateLink }}"
       base:
         apiVersion: servicenetworking.gcp.crossplane.io/v1beta1
         kind: Connection
@@ -49,9 +49,32 @@ spec:
           forProvider:
             networkSelector:
               matchControllerRef: true
-            reservedPeeringRanges: {{ .Values.networking.reservedPeeringRanges }}
+            reservedPeeringRanges: "{{ .Values.networking.reservedPeeringRanges }}"
           providerConfigRef:
-            name: {{ .Values.networking.providerConfig }}
+            name: "{{ .Values.networking.providerConfig }}"
       patches:
         - fromFieldPath: "spec.projectId"
           toFieldPath: "spec.forProvider.project"
+
+    - name: helm-release-networking
+      base:
+        apiVersion: helm.crossplane.io/v1beta1
+        kind: Release
+        metadata:
+          name: networking-infra
+        spec:
+          forProvider:
+            chart:
+              name: gcp-networking
+              repository: "https://github.com/isgo-golgo13/crossplane-argocd-gcp-drone-attack-services.git"
+              version: "1.0.0"
+            namespace: crossplane-system
+            values:
+              networking:
+                providerConfig: "{{ .Values.networking.providerConfig }}"
+                sharedVpcName: "{{ .Values.networking.sharedVpcName }}"
+                firewallRules: "{{ .Values.networking.firewallRules }}"
+                reservedPeeringRanges: "{{ .Values.networking.reservedPeeringRanges }}"
+                privateLink: "{{ .Values.networking.privateLink }}"
+          providerConfigRef:
+            name: gcp-provider
