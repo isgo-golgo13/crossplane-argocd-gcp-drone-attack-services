@@ -1,0 +1,34 @@
+apiVersion: v2
+name: crossplane-gcp-infra
+description: "Crossplane GCP Infrastructure Packages"
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+dependencies:
+  - name: gcp-gke
+    version: "1.0.0"
+    repository: "file://packages/gcp/gcp-gke"
+  - name: gcp-networking
+    version: "1.0.0"
+    repository: "file://packages/gcp/gcp-networking"
+  - name: gcp-databases
+    version: "1.0.0"
+    repository: "file://packages/gcp/gcp-databases"
+  - name: gcp-cloudrun
+    version: "1.0.0"
+    repository: "file://packages/gcp/gcp-cloudrun"
+  - name: gcp-cloudstorage
+    version: "1.0.0"
+    repository: "file://packages/gcp/gcp-cloudstorage"
+  - name: gcp-app-engine
+    version: "1.0.0"
+    repository: "file://packages/gcp/gcp-app-engine"
+  - name: gcp-pubsub
+    version: "1.0.0"
+    repository: "file://packages/gcp/gcp-pubsub"
+  - name: gcp-apigee
+    version: "1.0.0"
+    repository: "file://packages/gcp/gcp-apigee"
+  - name: gcp-eventarc
+    version: "1.0.0"
+    repository: "file://packages/gcp/gcp-eventarc"
