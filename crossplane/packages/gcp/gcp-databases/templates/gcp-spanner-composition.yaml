@@ -25,3 +25,25 @@ spec:
           toFieldPath: "spec.forProvider.config"
         - fromFieldPath: "spec.nodeCount"
           toFieldPath: "spec.forProvider.nodeCount"
+
+    - name: helm-release-spanner
+      base:
+        apiVersion: helm.crossplane.io/v1beta1
+        kind: Release
+        metadata:
+          name: spanner-instance
+        spec:
+          forProvider:
+            chart:
+              name: gcp-databases
+              repository: "https://github.com/isgo-golgo13/crossplane-argocd-gcp-drone-attack-services.git"
+              version: "1.0.0"
+            namespace: crossplane-system
+            values:
+              spanner:
+                region: {{ .Values.spanner.region }}
+                instanceName: {{ .Values.spanner.instanceName }}
+                nodeCount: {{ .Values.spanner.nodeCount }}
+                providerConfig: {{ .Values.spanner.providerConfig }}
+          providerConfigRef:
+            name: gcp-provider

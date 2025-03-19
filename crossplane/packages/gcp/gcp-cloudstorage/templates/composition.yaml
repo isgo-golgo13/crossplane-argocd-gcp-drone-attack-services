@@ -31,3 +31,23 @@ spec:
           toFieldPath: "spec.forProvider.versioning.enabled"
         - fromFieldPath: "spec.publicAccessPrevention"
           toFieldPath: "spec.forProvider.publicAccessPrevention"
+
+    - name: helm-release-cloudstorage
+      base:
+        apiVersion: helm.crossplane.io/v1beta1
+        kind: Release
+        metadata:
+          name: cloudstorage-bucket
+        spec:
+          forProvider:
+            chart:
+              name: gcp-cloudstorage
+              repository: "https://github.com/isgo-golgo13/crossplane-argocd-gcp-drone-attack-services.git"
+              version: "1.0.0"
+            namespace: crossplane-system
+            values:
+              cloudstorage:
+                buckets: {{ .Values.cloudstorage.buckets }}
+                providerConfig: {{ .Values.cloudstorage.providerConfig }}
+          providerConfigRef:
+            name: gcp-provider

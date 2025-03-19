@@ -32,3 +32,27 @@ spec:
           toFieldPath: "spec.forProvider.transport.pubsub.topic"
         - fromFieldPath: "spec.triggers[0].destinationService"
           toFieldPath: "spec.forProvider.destination.cloudRun.service"
+
+    - name: helm-release-eventarc
+      base:
+        apiVersion: helm.crossplane.io/v1beta1
+        kind: Release
+        metadata:
+          name: eventarc-trigger
+        spec:
+          forProvider:
+            chart:
+              name: gcp-eventarc
+              repository: "https://github.com/isgo-golgo13/crossplane-argocd-gcp-drone-attack-services.git"
+              version: "1.0.0"
+            namespace: crossplane-system
+            values:
+              eventarc:
+                region: "{{ .Values.eventarc.region }}"
+                providerConfig: "{{ .Values.eventarc.providerConfig }}"
+                triggers: 
+                  - name: "{{ .Values.eventarc.triggers[0].name }}"
+                    topic: "{{ .Values.eventarc.triggers[0].topic }}"
+                    destinationService: "{{ .Values.eventarc.triggers[0].destinationService }}"
+          providerConfigRef:
+            name: gcp-provider
