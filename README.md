@@ -283,9 +283,25 @@ gke:
       providerConfig: "gcp-provider"
 ```
 
+The `crossplane/` directory is the parent Helm Chart.
+
+- The parent Helm Chart contains its over-arching `Chart.yaml` file, a `default` values.yaml file and a range of `values-{env}.yaml` subchart overrides values files.
+
+- The parent Helm Chart acts as a single-point-of-configuration for all subcharts.
 
 
+The `crossplane/packages/gcp/gcp-*/`are the child Helm Charts (subcharts).
 
+- The child Helm Charts **DO NOT** need their own `Chart.yaml`.
+- The child Helm Charts provides own `values.yaml` which gets overriden at the parent-level values-*.yaml **IF** the parent provides default values.
+
+
+Helm sees `crossplane/packages/gcp/gcp-*` as **logical subcharts**.
+
+- Instead of using Helm `dependencies` construct (in the Chart.yaml) this structure treats the subcharts as 
+packaged resources.
+
+- The parent Helm release (`crossplane/`) applies all the `gcp-*` Helm Charts in one go. The exception is to provide on/off conditional feature flags to cherrypick specific subcharts (ONLY GCP GKE).
 
 
 **This pattern of Crossplane resources follows in the rest of the 10 GCP resources.**
