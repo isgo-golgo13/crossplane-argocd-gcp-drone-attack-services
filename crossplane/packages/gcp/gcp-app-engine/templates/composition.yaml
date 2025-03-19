@@ -1,23 +1,42 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
-  name: gcp-appengine
+  name: gcp-app-engine
 spec:
   compositeTypeRef:
     apiVersion: appengine.enginevector.io/v1alpha1
     kind: XGCPAppEngine
   resources:
-    - name: app-engine-app
+    - name: app-engine
       base:
         apiVersion: appengine.gcp.crossplane.io/v1beta1
         kind: Application
         spec:
           forProvider:
             locationId: {{ .Values.appengine.region }}
+            servingStatus: "SERVING"
           providerConfigRef:
             name: {{ .Values.appengine.providerConfig }}
       patches:
-        - fromFieldPath: "spec.appId"
+        - fromFieldPath: "spec.projectId"
           toFieldPath: "metadata.name"
         - fromFieldPath: "spec.region"
           toFieldPath: "spec.forProvider.locationId"
+
+    - name: helm-release
+      base:
+        apiVersion: helm.crossplane.io/v1beta1
+        kind: Release
+        spec:
+          forProvider:
+            chart:
+              name: {{ .Values.appengine.helm.chartName }}
+              repository: {{ .Values.appengine.helm.repoUrl }}
+              version: {{ .Values.appengine.helm.chartVersion }}
+            namespace: {{ .Values.appengine.helm.namespace }}
+            values:
+              projectId: {{ .Values.projectId }}
+              region: {{ .Values.appengine.region }}
+              instanceClass: {{ .Values.appengine.instanceClass }}
+          providerConfigRef:
+            name: {{ .Values.appengine.providerConfig }}
