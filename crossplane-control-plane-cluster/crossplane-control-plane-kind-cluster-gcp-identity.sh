@@ -101,5 +101,5 @@ kubectl annotate serviceaccount \
 
 echo "KinD Kubernetes Service Account is now linked to Workload Identity!"
 
-### Done!
-echo "KinD Crossplane IAM Setup Complete! Your KinD Cluster is now ready to deploy Crossplane."
+### Done
+echo "KinD Crossplane IAM Setup Complete! The KinD Cluster is now ready to deploy Crossplane."
