@@ -1,71 +1,12 @@
 projectId: "cxp-gcp"
 
-gke:
-  clusterName: "gke-cluster"
-  region: "us-west4"
-  nodeCount: 3
-  networkRef: "shared-vpc"
-  providerConfig: "gcp-provider"
-  helm:
-    chartName: "gke-cluster"
-    repoUrl: "https://charts.enginevector.io"
-    chartVersion: "1.0.0"
-    namespace: "gke"
-
-networking:
-  sharedVpcName: "shared-vpc"
-  providerConfig: "gcp-provider"
-  helm:
-    chartName: "gcp-networking"
-    repoUrl: "https://charts.enginevector.io"
-    chartVersion: "1.0.0"
-    namespace: "networking"
-
-databases:
-  providerConfig: "gcp-provider"
-  spanner:
-    instanceName: "spanner-instance"
-    region: "us-west4"
-    nodeCount: 3
-  firestore:
-    databaseId: "firestore-db"
-    region: "us-west4"
-  helm:
-    chartName: "gcp-databases"
-    repoUrl: "https://charts.enginevector.io"
-    chartVersion: "1.0.0"
-    namespace: "databases"
-
-cloudrun:
-  serviceName: "cloudrun-api"
-  region: "us-west4"
-  providerConfig: "gcp-provider"
-  helm:
-    chartName: "gcp-cloudrun"
-    repoUrl: "https://charts.enginevector.io"
-    chartVersion: "1.0.0"
-    namespace: "cloudrun"
-
-appengine:
-  region: "us-west4"
-  instanceClass: "F2"
-  providerConfig: "gcp-provider"
-  helm:
-    chartName: "gcp-app-engine"
-    repoUrl: "https://charts.enginevector.io"
-    chartVersion: "1.0.0"
-    namespace: "appengine"
-
-pubsub:
-  providerConfig: "gcp-provider"
-  topics:
-    - name: "apigee-events"
-      subscribers:
-        - "gke-backend-service"
-        - "cloudrun-service"
-        - "appengine-service"
-  helm:
-    chartName: "gcp-pubsub"
-    repoUrl: "https://charts.enginevector.io"
-    chartVersion: "1.0.0"
-    namespace: "pubsub"
+subcharts:
+  gcp-apigee: false
+  gcp-app-engine: false
+  gcp-cloudrun: false
+  gcp-cloudstorage: false
+  gcp-databases: false
+  gcp-eventarc: false
+  gcp-gke: true
+  gcp-networking: false
+  gcp-pubsub: false

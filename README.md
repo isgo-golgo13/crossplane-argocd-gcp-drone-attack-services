@@ -304,6 +304,9 @@ packaged resources.
 - The parent Helm release (`crossplane/`) applies all the `gcp-*` Helm Charts in one go. The exception is to provide on/off conditional feature flags to cherrypick specific subcharts (ONLY GCP GKE).
 
 
+To keep all values.yaml overrides as first class citizen to the subcharts, only the parent values.yaml will just provide an over-arching `projectId`. Each subchart will reference its own values.yaml.
+
+
 **This pattern of Crossplane resources follows in the rest of the 10 GCP resources.**
 
 
