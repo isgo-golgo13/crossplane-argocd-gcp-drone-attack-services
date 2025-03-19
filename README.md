@@ -103,7 +103,7 @@ A view into how to provide the packaging for GCP GKE Cluster is provided here wi
 
 The `XRD` (CompositeResourceDefinition) for GCP GKE Cluster is as follows.
 
-```
+```yaml
 apiVersion: apiextensions.crossplane.io/v1
 kind: CompositeResourceDefinition
 metadata:
@@ -143,7 +143,7 @@ spec:
 
 The `Composition` for GCP GKE Cluster is as follows.
 
-```
+```yaml
 apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
@@ -172,11 +172,60 @@ spec:
           toFieldPath: "spec.forProvider.location"
         - fromFieldPath: "spec.nodeCount"
           toFieldPath: "spec.forProvider.initialNodeCount"
+
+    - name: gke-nodepool
+      base:
+        apiVersion: container.gcp.crossplane.io/v1beta1
+        kind: NodePool
+        spec:
+          forProvider:
+            clusterRef:
+              name: {{ .Values.gke.clusterName }}
+            locations:
+              - {{ .Values.gke.region }}
+            autoscaling:
+              minNodeCount: {{ .Values.gke.nodePool.minNodeCount }}
+              maxNodeCount: {{ .Values.gke.nodePool.maxNodeCount }}
+            management:
+              autoRepair: {{ .Values.gke.nodePool.autoRepair }}
+              autoUpgrade: {{ .Values.gke.nodePool.autoUpgrade }}
+            config:
+              machineType: {{ .Values.gke.nodePool.machineType }}
+              diskSizeGb: {{ .Values.gke.nodePool.diskSizeGb }}
+              diskType: {{ .Values.gke.nodePool.diskType }}
+              labels: {{ .Values.gke.nodePool.labels }}
+              taints: {{ .Values.gke.nodePool.taints }}
+          providerConfigRef:
+            name: {{ .Values.gke.providerConfig }}
+      patches:
+        - fromFieldPath: "spec.clusterName"
+          toFieldPath: "spec.forProvider.clusterRef.name"
+
+    - name: gke-helm-release
+      base:
+        apiVersion: helm.crossplane.io/v1beta1
+        kind: Release
+        spec:
+          forProvider:
+            chart:
+              name: {{ .Values.gke.helm.chartPath }}
+              repository: {{ .Values.gke.helm.repo }}
+              version: {{ .Values.gke.helm.version }}
+            namespace: {{ .Values.gke.helm.namespace }}
+            values:
+              projectId: {{ .Values.gke.helm.values.projectId }}
+              clusterName: {{ .Values.gke.helm.values.clusterName }}
+              region: {{ .Values.gke.helm.values.region }}
+              nodeCount: {{ .Values.gke.helm.values.nodeCount }}
+              networkRef: {{ .Values.gke.helm.values.networkRef }}
+              providerConfig: {{ .Values.gke.helm.values.providerConfig }}
+          providerConfigRef:
+            name: {{ .Values.gke.providerConfig }}
 ```
 
 The `Claim` for GCP GKE Cluster is as follows.
 
-```
+```yaml
 apiVersion: gke.example.com/v1alpha1
 kind: GCPGKEClaim
 metadata:
@@ -187,6 +236,57 @@ spec:
   region: {{ .Values.gke.region }}
   nodeCount: {{ .Values.gke.nodeCount }}
 ```
+
+The **values.yaml** file for the GCP GKE subchart Crossplane will deploy as it sees a new XR API Claim pushed
+to the Crossplane Control-Plane Cluster is here.
+
+```yaml
+projectId: "cxp-gcp"
+
+gke:
+  clusterName: "gke-cluster"
+  region: "us-west4"
+  nodeCount: 3
+  networkRef: "shared-vpc"
+  providerConfig: "gcp-provider"
+  nodePool:
+    name: "default-node-pool"
+    machineType: "n1-standard-1"
+    diskSizeGb: 100
+    diskType: "pd-standard"
+    minNodeCount: 1
+    maxNodeCount: 3
+    autoRepair: true
+    autoUpgrade: true
+    labels:
+      environment: "nonprod"
+      team: "platform-engineering"
+    taints:
+      - key: "node-type"
+        value: "infra"
+        effect: "NO_SCHEDULE"
+
+  # Helm Chart Deployment Config
+  helm:
+    enabled: true
+    releaseName: "gke-cluster"
+    namespace: "crossplane-system"
+    repo: "https://github.com/isgo-golgo13/crossplane-argocd-gcp-drone-attack-services.git"
+    chartPath: "crossplane/packages/gcp/gcp-gke"
+    version: "0.1.0"
+    values:
+      projectId: "cxp-gcp"
+      clusterName: "gke-cluster"
+      region: "us-west4"
+      nodeCount: 3
+      networkRef: "shared-vpc"
+      providerConfig: "gcp-provider"
+```
+
+
+
+
+
 
 **This pattern of Crossplane resources follows in the rest of the 10 GCP resources.**
 
