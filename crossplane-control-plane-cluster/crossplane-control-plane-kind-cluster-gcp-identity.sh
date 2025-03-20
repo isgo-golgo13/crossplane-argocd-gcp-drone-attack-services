@@ -72,9 +72,9 @@ gcloud iam workload-identity-pools providers create-oidc $WORKLOAD_IDENTITY_PROV
 
 echo "Workload Identity Federation Configured."
 
-# ⏳ **Wait for Workload Identity Pool to be fully registered in GCP**
+# **Wait for Workload Identity Pool to be fully registered in GCP**
 echo "Waiting for Workload Identity Pool to propagate..."
-sleep 30
+sleep 45
 
 # **Verify that the identity pool now exists**
 echo "Verifying Workload Identity Pool..."
