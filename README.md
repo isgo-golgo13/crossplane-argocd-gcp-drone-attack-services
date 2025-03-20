@@ -365,13 +365,23 @@ To change the sources
 - Requires Rust 1.75+
 
 
-TODO: Write workflow now
+#### Ordered Workflow
+
+**For GCP CXP Deployments**
 
 - (Platform Expert) Create CXP Cluster
 - (Platform Expert) Configure (Set) GCP ProjectId Region 
+
+```shell
+gcloud config set project cxp-gcp
+gcloud config set compute/region us-west4
+gcloud config set compute/zone us-west4-a
+```
+
+
 - (Platform Expert) Run GCP IAM Workload Identity Script
 - (Platform Expert) Run Helm Chart for CXP Provider Chart
-- (Platform Expert) Verify the Helm Chart for CXP Provider Deploy
+- (Platform Expert) Verify the Helm Chart for CXP Provider Deploy (`crossplane-gcp-control-plane`)
 - (Platform Expert) Run Helm Dependency Update for Crossplane Parent Helm Chart to Generate Manifests for Crossplane
 
 - (Client) Create XR API Claim to Push to CXP Cluster
@@ -380,6 +390,44 @@ TODO: Write workflow now
   - `kubectl get gcpgke-claims` 
 
 
+** To drop/delete all provisoned client resources through the XR API Claim**
+
+```shell
+kubectl get gcpgke-claims
+```
+
+Delete the XR API Claim Resources.
+
+```shell
+kubectl delete gcpgke-claims gke-cluster-claim
+```
+
+Verify the GCP Resources Deletion.
+
+```shell
+kubectl get managed
+```
+This lists all managed GCP resources under Crossplane control. Once the list is empty, all resources are deleted.
+Verification in the GCP Portal of the GKE cluster is deleted.
+
+
+**Force** Deletion of GCP (GKE) Resources (using **kubectl**)
+
+```shell
+kubectl get managed
+kubectl delete managed <resource-name>
+```
+
+**Force** Deletion of GCP (GKE) Resources (using **GCP gloud CLI**)
+
+```shell
+gcloud container clusters delete <gke-cluster-name> --region=us-west4 --project=cxp-gcp
+```
+
+
+**For Azure CXP Deployments**
+
+In-Progress
 
 - 
 
@@ -664,6 +712,7 @@ kubectl annotate serviceaccount \
 ```
 
 
+
 To generate the dependencies for the Helm Chart.
 
 ```shell
@@ -769,6 +818,22 @@ For production environments that require the Crossplane Control-Plane Cluster in
 - Provide GCP IAM Workload Identity for the created GCP GKE Cluster
 - Provision the `crossplane-gcp-control-plane` Helm Chart configuring the ESO Secret for the GCP ProviderConfig 
 - Verify this GCP GKE Cluster Crossplane Control-Plane Cluster is finalized to provision GCP resources 
+
+
+
+To clean the GCP script dependencies.
+
+```shell
+gcloud iam service-accounts delete kind-crossplane-sa@cxp-gcp.iam.gserviceaccount.com --quiet
+```
+
+```shell
+gcloud iam workload-identity-pools delete kind-cxp-wi-pool --location="global" --quiet
+```
+
+
+
+
 
 
 
@@ -911,6 +976,38 @@ kubectl annotate serviceaccount \
     --namespace $GKE_K8S_NAMESPACE $GKE_K8S_SERVICE_ACCOUNT \
     iam.gke.io/gcp-service-account=$GCP_IAM_SERVICE_ACCOUNT_EMAIL
 ```
+
+
+**Final** GCP IAM Workload Identity Verifications (After Running Script)
+
+- Check the IAM Service Account Exists
+
+```shell
+gcloud iam service-accounts list --filter="email~kind-crossplane-sa"
+```
+
+- Check IF Workload Identity Pool and Provider Are Created
+
+```shell
+gcloud iam workload-identity-pools list --location="global"
+gcloud iam workload-identity-pools providers list --location="global" --workload-identity-pool="kind-crossplane-wi-pool"
+```
+
+- Verify IAM Roles Are Attached
+
+```shell
+gcloud projects get-iam-policy cxp-gcp --flatten="bindings[].members" --format='table(bindings.role, bindings.members)' | grep kind-crossplane-sa
+```
+
+- Verify the KinD Service Account is Annotated Correctly
+
+```shell
+kubectl get serviceaccount crossplane-sa -n crossplane-system -o yaml | grep "iam.gke.io/gcp-service-account"
+```
+
+
+
+
 
 The new GKE cluster is now ready to run Crossplane.
 
