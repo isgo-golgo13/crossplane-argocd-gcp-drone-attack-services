@@ -10,8 +10,8 @@ echo "Setting Up GCP IAM Workload Identity for KinD Crossplane Control Plane..."
 export GCP_PROJECT_ID="cxp-gcp"
 export GCP_REGION="us-west4"
 
-export WORKLOAD_IDENTITY_POOL="kind-crossplane-wi-pool"
-export WORKLOAD_IDENTITY_PROVIDER="kind-crossplane-wi-provider"
+export WORKLOAD_IDENTITY_POOL="kind-cxp-wi-pool"
+export WORKLOAD_IDENTITY_PROVIDER="kind-cxp-wi-provider"
 
 export GCP_IAM_SERVICE_ACCOUNT="kind-crossplane-sa"
 export GCP_IAM_SERVICE_ACCOUNT_EMAIL="${GCP_IAM_SERVICE_ACCOUNT}@${GCP_PROJECT_ID}.iam.gserviceaccount.com"
@@ -51,7 +51,7 @@ echo "Required GCP APIs enabled."
 echo "Creating GCP IAM Service Account..."
 gcloud iam service-accounts create $GCP_IAM_SERVICE_ACCOUNT \
   --description="IAM Service Account for KinD Crossplane Workload Identity" \
-  --display-name="KinD Crossplane Workload Identity"
+  --display-name="KinD-CXP Workload ID"
 
 echo "IAM Service Account Created: $GCP_IAM_SERVICE_ACCOUNT"
 
@@ -60,17 +60,25 @@ echo "Configuring Workload Identity Federation..."
 gcloud iam workload-identity-pools create $WORKLOAD_IDENTITY_POOL \
   --project=$GCP_PROJECT_ID \
   --location="global" \
-  --display-name="KinD Crossplane Workload Identity Pool"
+  --display-name="KinD-CXP WI Pool"
 
 gcloud iam workload-identity-pools providers create-oidc $WORKLOAD_IDENTITY_PROVIDER \
   --project=$GCP_PROJECT_ID \
   --location="global" \
   --workload-identity-pool=$WORKLOAD_IDENTITY_POOL \
-  --display-name="KinD Crossplane OIDC Provider" \
+  --display-name="KinD-CXP OIDC Provider" \
   --attribute-mapping="google.subject=assertion.sub" \
   --issuer-uri="https://container.googleapis.com/v1/projects/${GCP_PROJECT_ID}/locations/${GCP_REGION}/clusters/kind-crossplane-cluster"
 
 echo "Workload Identity Federation Configured."
+
+# ⏳ **Wait for Workload Identity Pool to be fully registered in GCP**
+echo "Waiting for Workload Identity Pool to propagate..."
+sleep 30
+
+# **Verify that the identity pool now exists**
+echo "Verifying Workload Identity Pool..."
+gcloud iam workload-identity-pools list --location="global"
 
 ### (6) Grant Required IAM Permissions
 echo "Granting IAM Roles to Service Account..."
