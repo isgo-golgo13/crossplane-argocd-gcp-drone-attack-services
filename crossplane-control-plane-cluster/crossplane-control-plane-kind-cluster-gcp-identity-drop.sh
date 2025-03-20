@@ -19,9 +19,9 @@ export GCP_IAM_SERVICE_ACCOUNT_EMAIL="${GCP_IAM_SERVICE_ACCOUNT}@${GCP_PROJECT_I
 export KIND_K8S_NAMESPACE="crossplane-system"
 export KIND_K8S_SERVICE_ACCOUNT="crossplane-sa"
 
-echo "Verifying Resources Before Deletion..."
+echo "Verifying Resources Prior To Deletion..."
 
-### (1) Remove IAM Policy Bindings
+### (1) Remove IAM Policy Bindings (Force Remove)
 echo "Revoking IAM Roles from Service Account..."
 gcloud projects remove-iam-policy-binding $GCP_PROJECT_ID \
   --member="serviceAccount:$GCP_IAM_SERVICE_ACCOUNT_EMAIL" \
@@ -37,7 +37,7 @@ gcloud projects remove-iam-policy-binding $GCP_PROJECT_ID \
 
 echo "IAM Policy Bindings Removed."
 
-### (2) Delete Workload Identity Provider
+### (2) Delete Workload Identity Provider (Force Remove)
 echo "Deleting Workload Identity Provider..."
 gcloud iam workload-identity-pools providers delete $WORKLOAD_IDENTITY_PROVIDER \
   --workload-identity-pool=$WORKLOAD_IDENTITY_POOL \
@@ -46,7 +46,7 @@ gcloud iam workload-identity-pools providers delete $WORKLOAD_IDENTITY_PROVIDER 
 
 echo "Workload Identity Provider Deleted."
 
-### (3) Delete Workload Identity Pool
+### (3) Delete Workload Identity Pool (Force Remove)
 echo "Deleting Workload Identity Pool..."
 gcloud iam workload-identity-pools delete $WORKLOAD_IDENTITY_POOL \
   --project=$GCP_PROJECT_ID \
@@ -54,13 +54,13 @@ gcloud iam workload-identity-pools delete $WORKLOAD_IDENTITY_POOL \
 
 echo "Workload Identity Pool Deleted."
 
-### (4) Delete GCP IAM Service Account
+### (4) Delete GCP IAM Service Account (Force Remove)
 echo "Deleting GCP IAM Service Account..."
 gcloud iam service-accounts delete $GCP_IAM_SERVICE_ACCOUNT_EMAIL --quiet || true
 
 echo "IAM Service Account Deleted."
 
-### (5) Remove Kubernetes Service Account Annotations
+### (5) Remove Kubernetes Service Account Annotations (Ensure Reset)
 echo "Removing Kubernetes Service Account Annotations..."
 kubectl annotate serviceaccount \
   --namespace $KIND_K8S_NAMESPACE $KIND_K8S_SERVICE_ACCOUNT \
@@ -68,5 +68,11 @@ kubectl annotate serviceaccount \
 
 echo "Kubernetes Service Account Annotations Removed."
 
+### (6) Final Verification of Cleanup
+echo "Running Final Verification..."
+gcloud iam workload-identity-pools list --location="global" || true
+gcloud iam service-accounts list --filter="email:$GCP_IAM_SERVICE_ACCOUNT_EMAIL" || true
+kubectl get namespace $KIND_K8S_NAMESPACE || true
+
 ### Done
-echo "All Resources Cleaned Up! You are now ready for a fresh setup."
+echo "ALL RESOURCES CLEANED UP! You are now ready for a fresh setup."
