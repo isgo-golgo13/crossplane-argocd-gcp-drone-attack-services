@@ -506,212 +506,70 @@ Crossplane will reference a Kubernetes ExternalSecret resource that will generat
 ![crossplane-gcp-credentials-workflow](docs/gcp-provider-config-creds-workflow.png)
 
 
-**The Crossplane Control-Plane Cluster using GCP GKE **
+**The Crossplane Control-Plane Cluster using GCP GKE**
 
 This version of using Crosslane will provision a GCP GKE Kubernetes Cluster as the Crossplane Control-Plane Cluster with 
-GCP IAM Workload Identity credentials provided. This KinD Crossplane Control-Plane Cluster will drive all XR API Claims to GCP using its included ESO `ExternalSecret` referenced in its Crossplane deployed `ProviderConfig`. Later in the sections that follow, will use a graduated version of this workflow to use KinD Crossplane Control-Plane Cluster to serve as a Crossplane Control-Plane Cluster **Factory** that will create a Crossplane Control-Plane GKE Kubernetes Cluster for production environments that require the Control-Plane Cluster serving as a regulated private GCP GKE Cluster. This GCP GKE Crossplane Cluster in-turn would own the leadership of provisioning all GCP cloud resources from this point forward. The KinD Cluster and its GCP IAM configuraiton is stored in Git as a shell script and/or a local `Terraform` module.
+GCP IAM Workload Identity credentials provided. This GCP GKE Crossplane Control-Plane Cluster will drive all XR API Claims to GCP using its included ESO `ExternalSecret` referenced in its Crossplane deployed `ProviderConfig`.  This GCP GKE Crossplane Cluster in-turn would own the leadership of provisioning all GCP cloud resources from this point forward.
 
-First the KinD Cluster serving as the Crossplane-Control Plane directly provisioning resources in GCP.
+To create the GCP GKE Cluster serving as the Crossplane-Control Plane directly provisioning resources in GCP there are three provided approaches.
 
+- Provide Go Cobra CLI API application (using Go Cobra CPI and GCP packages) to create a GCP GKE Cluster with an associated GCP IAM Workload Identity Credentials to allow Crossplane (deployed in a second stage) to draw the XR API requested GCP resources.
 
-#### Kubenetes Cluster Configuration (KinD) for Crossplane
-
-```yaml
-kind: Cluster
-apiVersion: kind.x-k8s.io/v1alpha4
-name: crossplane-ha-control-plane
-networking:
-  disableDefaultCNI: false
-  podSubnet: "10.244.0.0/16"
-  serviceSubnet: "10.96.0.0/12"
-nodes:
-  # Control Plane Nodes
-  - role: control-plane
-    image: kindest/node:v1.31.0
-    extraPortMappings:
-      - containerPort: 6443
-        hostPort: 6443
-    extraMounts:
-      - hostPath: /var/run/docker.sock
-        containerPath: /var/run/docker.sock
-  - role: control-plane
-    image: kindest/node:v1.31.0
-  - role: control-plane
-    image: kindest/node:v1.31.0
-
-  # Worker Nodes
-  - role: worker
-    image: kindest/node:v1.31.0
-  - role: worker
-    image: kindest/node:v1.31.0
-  - role: worker
-    image: kindest/node:v1.31.0
-
-```
-
-To **create** the cluster.
+The directory structure for this CLI API is as follows.
 
 ```shell
-kind create cluster --config crossplane-control-plane-cluster/crossplane-control-plane-kind-cluster-config.yaml
+cxp-control-plane-gcp-gke-workload-identity-go/
+├── cmd/
+│   └── root.go
+│   └── create.go
+├── internal/
+│   └── config/
+│       └── config.go
+├── pkg/
+│   └── gke/
+│       └── cluster.go
+│   └── identity/
+│       └── workload_identity.go
+├── Dockerfile
+├── Makefile
+└── main.go
 ```
 
-To **verify** the creation of the cluster.
+To clean up the resources (a destructor of the GCP resources) the following project will do this.
 
 ```shell
-kubectl cluster-info --context kind-kind-crossplane
-kubectl get nodes
-kubectl get pods -A
-```
-
-
-
-#### Export (Required) Vars
-
-```shell
-# Set the GCP Project
-export GCP_PROJECT_ID="gcp-project-id"
-export GCP_REGION="us-west4"  # Change to preferred region
-
-# Set the Workload Identity Pool & Provider Name
-export WORKLOAD_IDENTITY_POOL="kind-crossplane-wi-pool"
-export WORKLOAD_IDENTITY_PROVIDER="kind-crossplane-wi-provider"
-
-# Set the GCP IAM Service Account (for Crossplane & ESO)
-export GCP_IAM_SERVICE_ACCOUNT="kind-crossplane-sa"
-export GCP_IAM_SERVICE_ACCOUNT_EMAIL="${GCP_IAM_SERVICE_ACCOUNT}@${GCP_PROJECT_ID}.iam.gserviceaccount.com"
-
-# Set the Kubernetes Namespace and Service Account (in KinD)
-export KIND_K8S_NAMESPACE="crossplane-system"
-export KIND_K8S_SERVICE_ACCOUNT="crossplane-sa"
-```
-
-
-
-The prerequiste GCP CLI commands are required.
-
-GCP Login and Set GCP Project
-```shell
-gcloud auth login
-#gcloud config set project <PROJECT_ID>
-gcloud config set project cxp-gcp
-```
-
-Verify the Set Poject
-
-```shell
-gcloud projects list
-
-
-PROJECT_ID  NAME     PROJECT_NUMBER
-cxp-gcp     cxp-gcp  XXXXXXXXXXXX
+cxp-control-plane-gcp-gke-workload-identity-drop-go/
+├── cmd/
+│   ├── root.go
+│   └── delete.go
+├── internal/
+│   └── config/
+│       └── config.go
+├── pkg/
+│   ├── gke/
+│   │   └── cleanup.go
+│   └── identity/
+│       └── teardown.go
+├── Dockerfile
+├── Makefile
+└── main.go
 ```
 
 
 
 
-#### Allow the GCP APIs
+- Provide Go OpenAPI application (using Go GCP packages) to create a GCP GKE Cluster with an associated GCP IAM Workload Identity Credentials to allow Crossplane (deployed in a second stage) to draw the XR API requested GCP resources.
 
-```shell
-gcloud services enable \
-    iam.googleapis.com \
-    iamcredentials.googleapis.com \
-    cloudresourcemanager.googleapis.com \
-    container.googleapis.com \
-    serviceusage.googleapis.com \
-    cloudbilling.googleapis.com \
-    sqladmin.googleapis.com \
-    dns.googleapis.com \
-    compute.googleapis.com \
-    pubsub.googleapis.com \
-    storage.googleapis.com \
-    monitoring.googleapis.com \
-    logging.googleapis.com \
-    secretmanager.googleapis.com \
-    --project=cxp-gcp
-```
-
-For only the APIs GCP GKE, GCP IAM and GCP Cloud Storage, the CLI change is as follows.
-
-```shell
-gcloud services enable \
-    iam.googleapis.com \
-    iamcredentials.googleapis.com \
-    cloudresourcemanager.googleapis.com \
-    serviceusage.googleapis.com \
-    container.googleapis.com \
-    storage.googleapis.com \
-    secretmanager.googleapis.com \
-    --project=cxp-gcp
-```
+- Provide a Terraform CDKTF (Cloud Developer Kit Transpiler Framewwork) in Go to create a GCP GKE Cluster with an associated GCP IAM Workload Identity Credentials to allow Crossplane (deployed in a second stage) to draw the XR API requested GCP resources.
 
 
-To verify the GCP API Services are now allowed.
-
-```shell
-gcloud services list --enabled --project=cxp-gcp
-```
+The workflow(s) use GCP GKE Cluster to associate a GCP IAM Workload Identity Credential to a Kubernetes Service Account (KSA) in stage one. In stage two a `Crossplane GCP GKE Control-Plane Conversion Helm Chart` will convert the GCP GKE Cluster into a Crossplane Control Plane Cluster with the provisionary configurations including the inherited GCP IAM Workload Identity in its Kubernetes Secrets. This Helm Chart depends on Crossplane CRDs getting installed and after this installation, it will deploy the required ESO `ClusterSecretStore` and `ExternalSecret` to register Crossplane to aquire dynamically the GCP IAM Workload Identity Secrets and avoid long-lived secret credentials storage.
 
 
 
 
-#### Create a GCP IAM Service Account
 
-```shell
-gcloud iam service-accounts create $GCP_IAM_SERVICE_ACCOUNT \
-  --description="IAM Service Account for KinD Crossplane Workload Identity" \
-  --display-name="KinD Crossplane Workload Identity"
-```
-
-#### Configure Workload Identity Federation
-
-```shell
-gcloud iam workload-identity-pools create $WORKLOAD_IDENTITY_POOL \
-  --project=$GCP_PROJECT_ID \
-  --location="global" \
-  --display-name="KinD Crossplane Workload Identity Pool"
-
-gcloud iam workload-identity-pools providers create-oidc $WORKLOAD_IDENTITY_PROVIDER \
-  --project=$GCP_PROJECT_ID \
-  --location="global" \
-  --workload-identity-pool=$WORKLOAD_IDENTITY_POOL \
-  --display-name="KinD Crossplane OIDC Provider" \
-  --attribute-mapping="google.subject=assertion.sub" \
-  --issuer-uri="https://container.googleapis.com/v1/projects/${GCP_PROJECT_ID}/locations/${GCP_REGION}/clusters/kind-crossplane-cluster"
-```
-
-
-#### Grant the Required GCP IAM Permissions
-
-```shell
-# Bind IAM roles for Crossplane and ESO operations
-gcloud projects add-iam-policy-binding $GCP_PROJECT_ID \
-  --member="serviceAccount:$GCP_IAM_SERVICE_ACCOUNT_EMAIL" \
-  --role="roles/iam.workloadIdentityUser"
-
-gcloud projects add-iam-policy-binding $GCP_PROJECT_ID \
-  --member="serviceAccount:$GCP_IAM_SERVICE_ACCOUNT_EMAIL" \
-  --role="roles/secretmanager.secretAccessor"  # ESO Needs Secret Access
-
-gcloud projects add-iam-policy-binding $GCP_PROJECT_ID \
-  --member="serviceAccount:$GCP_IAM_SERVICE_ACCOUNT_EMAIL" \
-  --role="roles/resourcemanager.projectIamAdmin"  # Crossplane needs IAM access
-``` 
-
-
-#### Configure (Associate) KinD Kubernetes Service Account to Workload Identity
-
-```shell
-gcloud iam service-accounts add-iam-policy-binding $GCP_IAM_SERVICE_ACCOUNT_EMAIL \
-  --project=$GCP_PROJECT_ID \
-  --role=roles/iam.workloadIdentityUser \
-  --member="principalSet://iam.googleapis.com/projects/$GCP_PROJECT_ID/locations/global/workloadIdentityPools/$WORKLOAD_IDENTITY_POOL/attribute.google.subject/${KIND_K8S_SERVICE_ACCOUNT}"
-
-kubectl annotate serviceaccount \
-  --namespace $KIND_K8S_NAMESPACE $KIND_K8S_SERVICE_ACCOUNT \
-  iam.gke.io/gcp-service-account=$GCP_IAM_SERVICE_ACCOUNT_EMAIL
-```
-
-
+#### Kubenetes Cluster Configuration (for GCP GKE) for Crossplane
 
 To generate the dependencies for the Helm Chart.
 
@@ -814,196 +672,12 @@ crossplane-gcp-control-plane/
 
 For production environments that require the Crossplane Control-Plane Cluster in the GCP Cloud running as a GKE Cluster the following workflow will provide how to provision the GCP GKE Crossplane Control-Plane Cluster from a local Crossplane Control-Plane Cluster using a Control-Plane-for-Control-Plane provisioning pattern. 
 
-- Create a GCP GKE Cluster from the KinD Crossplane Control-Plane Cluster through XR API Claim 
+- Create a GCP GKE Cluster from the GCP GKE Crossplane Control-Plane Cluster through XR API Claim 
 - Provide GCP IAM Workload Identity for the created GCP GKE Cluster
 - Provision the `crossplane-gcp-control-plane` Helm Chart configuring the ESO Secret for the GCP ProviderConfig 
 - Verify this GCP GKE Cluster Crossplane Control-Plane Cluster is finalized to provision GCP resources 
 
 
-
-To clean the GCP script dependencies.
-
-```shell
-gcloud iam service-accounts delete kind-crossplane-sa@cxp-gcp.iam.gserviceaccount.com --quiet
-```
-
-```shell
-gcloud iam workload-identity-pools delete kind-cxp-wi-pool --location="global" --quiet
-```
-
-
-
-
-
-
-
-**The Crossplane Control-Plane Cluster Factory using KinD to Create GCP GKE Control-Plane Cluster**
-
-
-#### Export (Required) Vars
-
-```shell
-export GCP_PROJECT_ID="cxp-gcp"
-export GCP_REGION="us-west4"
-
-export WORKLOAD_IDENTITY_POOL="gke-crossplane-wi-pool"
-export WORKLOAD_IDENTITY_PROVIDER="gke-crossplane-wi-provider"
-
-export GCP_IAM_SERVICE_ACCOUNT="gke-crossplane-sa"
-export GCP_IAM_SERVICE_ACCOUNT_EMAIL="${GCP_IAM_SERVICE_ACCOUNT}@${GCP_PROJECT_ID}.iam.gserviceaccount.com"
-
-export GKE_K8S_NAMESPACE="crossplane-system"
-export GKE_K8S_SERVICE_ACCOUNT="crossplane-sa"
-```
-
-
-
-The prerequiste GCP CLI commands are required.
-
-GCP Login and Set GCP Project
-```shell
-gcloud auth login
-#gcloud config set project <PROJECT_ID>
-gcloud config set project cxp-gcp
-```
-
-Verify the Set Poject
-
-```shell
-gcloud projects list
-
-
-PROJECT_ID  NAME     PROJECT_NUMBER
-cxp-gcp     cxp-gcp  XXXXXXXXXXXX
-```
-
-
-
-
-#### Allow the GCP APIs
-
-```shell
-gcloud services enable \
-    iam.googleapis.com \
-    iamcredentials.googleapis.com \
-    cloudresourcemanager.googleapis.com \
-    container.googleapis.com \
-    serviceusage.googleapis.com \
-    cloudbilling.googleapis.com \
-    sqladmin.googleapis.com \
-    dns.googleapis.com \
-    compute.googleapis.com \
-    pubsub.googleapis.com \
-    storage.googleapis.com \
-    monitoring.googleapis.com \
-    logging.googleapis.com \
-    secretmanager.googleapis.com \
-    --project=cxp-gcp
-```
-
-For only the APIs GCP GKE, GCP IAM and GCP Cloud Storage, the CLI change is as follows.
-
-```shell
-gcloud services enable \
-    iam.googleapis.com \
-    iamcredentials.googleapis.com \
-    cloudresourcemanager.googleapis.com \
-    serviceusage.googleapis.com \
-    container.googleapis.com \
-    storage.googleapis.com \
-    secretmanager.googleapis.com \
-    --project=cxp-gcp
-```
-
-
-To verify the GCP API Services are now allowed.
-
-```shell
-gcloud services list --enabled --project=cxp-gcp
-```
-
-
-
-#### Create a GCP IAM Service Account
-```shell
-gcloud iam service-accounts create $GCP_IAM_SERVICE_ACCOUNT \
-    --description="IAM Service Account for GKE Crossplane Workload Identity" \
-    --display-name="GKE Crossplane Workload Identity"
-```
-
-
-#### Configure Workload Identity Federation
-```shell
-gcloud iam workload-identity-pools create $WORKLOAD_IDENTITY_POOL \
-    --project=$GCP_PROJECT_ID \
-    --location="global" \
-    --display-name="GKE Crossplane Workload Identity Pool"
-
-gcloud iam workload-identity-pools providers create-oidc $WORKLOAD_IDENTITY_PROVIDER \
-    --project=$GCP_PROJECT_ID \
-    --location="global" \
-    --workload-identity-pool=$WORKLOAD_IDENTITY_POOL \
-    --display-name="GKE Crossplane OIDC Provider" \
-    --attribute-mapping="google.subject=assertion.sub" \
-    --issuer-uri="https://container.googleapis.com/v1/projects/${GCP_PROJECT_ID}/locations/${GCP_REGION}/clusters/crossplane-control-plane-gke"
-```
-
-
-#### Grant the Required GCP IAM Permissions
-```shell
-gcloud projects add-iam-policy-binding $GCP_PROJECT_ID \
-    --member="serviceAccount:$GCP_IAM_SERVICE_ACCOUNT_EMAIL" \
-    --role="roles/iam.workloadIdentityUser"
-
-gcloud projects add-iam-policy-binding $GCP_PROJECT_ID \
-    --member="serviceAccount:$GCP_IAM_SERVICE_ACCOUNT_EMAIL" \
-    --role="roles/secretmanager.secretAccessor"
-
-gcloud projects add-iam-policy-binding $GCP_PROJECT_ID \
-    --member="serviceAccount:$GCP_IAM_SERVICE_ACCOUNT_EMAIL" \
-    --role="roles/resourcemanager.projectIamAdmin"
-```
-
-
-#### Configure (Associate) GCP GKE Kubernetes Service Account to Workload Identity
-```shell
-gcloud iam service-accounts add-iam-policy-binding $GCP_IAM_SERVICE_ACCOUNT_EMAIL \
-    --project=$GCP_PROJECT_ID \
-    --role=roles/iam.workloadIdentityUser \
-    --member="principalSet://iam.googleapis.com/projects/$GCP_PROJECT_ID/locations/global/workloadIdentityPools/$WORKLOAD_IDENTITY_POOL/attribute.google.subject/${GKE_K8S_SERVICE_ACCOUNT}"
-
-kubectl annotate serviceaccount \
-    --namespace $GKE_K8S_NAMESPACE $GKE_K8S_SERVICE_ACCOUNT \
-    iam.gke.io/gcp-service-account=$GCP_IAM_SERVICE_ACCOUNT_EMAIL
-```
-
-
-**Final** GCP IAM Workload Identity Verifications (After Running Script)
-
-- Check the IAM Service Account Exists
-
-```shell
-gcloud iam service-accounts list --filter="email~kind-crossplane-sa"
-```
-
-- Check IF Workload Identity Pool and Provider Are Created
-
-```shell
-gcloud iam workload-identity-pools list --location="global"
-gcloud iam workload-identity-pools providers list --location="global" --workload-identity-pool="kind-crossplane-wi-pool"
-```
-
-- Verify IAM Roles Are Attached
-
-```shell
-gcloud projects get-iam-policy cxp-gcp --flatten="bindings[].members" --format='table(bindings.role, bindings.members)' | grep kind-crossplane-sa
-```
-
-- Verify the KinD Service Account is Annotated Correctly
-
-```shell
-kubectl get serviceaccount crossplane-sa -n crossplane-system -o yaml | grep "iam.gke.io/gcp-service-account"
-```
 
 
 
