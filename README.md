@@ -506,9 +506,9 @@ Crossplane will reference a Kubernetes ExternalSecret resource that will generat
 ![crossplane-gcp-credentials-workflow](docs/gcp-provider-config-creds-workflow.png)
 
 
-**The Crossplane Control-Plane Cluster using KinD (No Cost Version)**
+**The Crossplane Control-Plane Cluster using GCP GKE **
 
-This version of using Crosslane will use no-cost KinD Kubernetes Cluster as the Crossplane Control-Plane Cluster with 
+This version of using Crosslane will provision a GCP GKE Kubernetes Cluster as the Crossplane Control-Plane Cluster with 
 GCP IAM Workload Identity credentials provided. This KinD Crossplane Control-Plane Cluster will drive all XR API Claims to GCP using its included ESO `ExternalSecret` referenced in its Crossplane deployed `ProviderConfig`. Later in the sections that follow, will use a graduated version of this workflow to use KinD Crossplane Control-Plane Cluster to serve as a Crossplane Control-Plane Cluster **Factory** that will create a Crossplane Control-Plane GKE Kubernetes Cluster for production environments that require the Control-Plane Cluster serving as a regulated private GCP GKE Cluster. This GCP GKE Crossplane Cluster in-turn would own the leadership of provisioning all GCP cloud resources from this point forward. The KinD Cluster and its GCP IAM configuraiton is stored in Git as a shell script and/or a local `Terraform` module.
 
 First the KinD Cluster serving as the Crossplane-Control Plane directly provisioning resources in GCP.
