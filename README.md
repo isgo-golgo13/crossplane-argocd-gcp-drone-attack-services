@@ -547,7 +547,7 @@ cxp-control-plane-gcp-gke-workload-identity-drop-go/
 │       └── config.go
 ├── pkg/
 │   ├── gke/
-│   │   └── cleanup.go
+│   │   └── teardown.go
 │   └── identity/
 │       └── teardown.go
 ├── Dockerfile
