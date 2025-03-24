@@ -24,7 +24,7 @@ gcloud services enable container.googleapis.com \
     cloudresourcemanager.googleapis.com
 
 ### === STEP 3: Create GKE Private Cluster === ###
-echo "🚀 Creating private GKE cluster: $CLUSTER_NAME"
+echo "Creating private GKE cluster: $CLUSTER_NAME"
 gcloud container clusters create "$CLUSTER_NAME" \
     --region="$REGION" \
     --release-channel=regular \
@@ -42,18 +42,18 @@ gcloud container clusters create "$CLUSTER_NAME" \
 echo "GKE cluster created."
 
 ### === STEP 4: Get kubeconfig === ###
-echo "🔐 Getting kubeconfig for GKE cluster..."
+echo "Getting kubeconfig for GKE cluster..."
 gcloud container clusters get-credentials "$CLUSTER_NAME" \
     --region "$REGION"
 
 ### === STEP 5: Create GCP IAM Service Account (GSA) === ###
-echo "🚀 Creating GCP IAM Service Account: $GSA_NAME"
+echo "Creating GCP IAM Service Account: $GSA_NAME"
 gcloud iam service-accounts create "$GSA_NAME" \
     --description="GSA for Crossplane to use Workload Identity" \
     --display-name="Crossplane GSA"
 
 ### === STEP 6: Create Kubernetes Namespace & Service Account === ###
-echo "🚀 Creating namespace and KSA: $KSA_NAME"
+echo "Creating namespace and KSA: $KSA_NAME"
 kubectl create namespace "$NAMESPACE" || true
 kubectl create serviceaccount "$KSA_NAME" -n "$NAMESPACE" || true
 
@@ -61,7 +61,7 @@ kubectl create serviceaccount "$KSA_NAME" -n "$NAMESPACE" || true
 GSA_EMAIL="$GSA_NAME@$PROJECT_ID.iam.gserviceaccount.com"
 MEMBER="serviceAccount:$WORKLOAD_POOL[$NAMESPACE/$KSA_NAME]"
 
-echo "🔐 Allowing KSA to impersonate GSA..."
+echo "Allowing KSA to impersonate GSA..."
 gcloud iam service-accounts add-iam-policy-binding "$GSA_EMAIL" \
   --role="roles/iam.workloadIdentityUser" \
   --member="$MEMBER"
