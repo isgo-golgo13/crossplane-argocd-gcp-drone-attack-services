@@ -1,7 +1,7 @@
 package gke
 
 import (
-	"cxpcli/internal/config"
+	"cxp-gcp-control-plane/internal/config"
 	"os/exec"
 )
 

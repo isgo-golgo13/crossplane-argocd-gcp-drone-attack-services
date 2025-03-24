@@ -1,6 +1,6 @@
 package main
 
-import "cxpcli/cmd"
+import "cxp-gcp-control-plane/cmd"
 
 func main() {
 	cmd.Execute()

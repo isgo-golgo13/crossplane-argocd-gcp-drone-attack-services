@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"cxpcli/internal/config"
-	"cxpcli/pkg/gke"
-	"cxpcli/pkg/identity"
+	"cxp-gcp-control-plane/internal/config"
+	"cxp-gcp-control-plane/pkg/gke"
+	"cxp-gcp-control-plane/pkg/identity"
 	"fmt"
 
 	"github.com/spf13/cobra"
