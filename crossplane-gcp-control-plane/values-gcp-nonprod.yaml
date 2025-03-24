@@ -22,6 +22,8 @@ crossplane:
     - key: "node-role.kubernetes.io/control-plane"
       operator: "Exists"
 
+  controllerConfigName: "crossplane-provider-controller-config"
+
 eso:
   enabled: true  # Toggle installation ON/OFF
   refreshInterval: "1h"
