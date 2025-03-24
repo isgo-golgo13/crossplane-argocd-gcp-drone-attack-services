@@ -1,7 +1,7 @@
 package identity
 
 import (
-	"cxpcli/internal/config"
+	"cxp-gcp-control-plane/internal/config"
 	"fmt"
 	"os/exec"
 )
