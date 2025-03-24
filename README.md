@@ -477,17 +477,17 @@ helm repo update
 helm install crossplane crossplane-stable/crossplane \
   --namespace crossplane-system \
   --create-namespace \
-  --set args="{--enable-composition-revisions}" \
+  --set 'args[0]=--enable-composition-revisions' \
   --set replicas=3 \
   --set podDisruptionBudget.enabled=true \
   --set podDisruptionBudget.minAvailable=2 \
-  --set leaderElection.enabled=true \
-  --set rbacManager.enabled=true \
+  --set leaderElection=true \
+  --set rbacManager.deploy=true \
   --set securityContext.runAsNonRoot=true \
-  --set tolerations[0].key="CriticalAddonsOnly" \
-  --set tolerations[0].operator="Exists" \
-  --set tolerations[1].key="node-role.kubernetes.io/control-plane" \
-  --set tolerations[1].operator="Exists"
+  --set 'tolerations[0].key=CriticalAddonsOnly' \
+  --set 'tolerations[0].operator=Exists' \
+  --set 'tolerations[1].key=node-role.kubernetes.io/control-plane' \
+  --set 'tolerations[1].operator=Exists'
 ```
 
 In-Progress
