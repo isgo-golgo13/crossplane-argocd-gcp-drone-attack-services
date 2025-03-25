@@ -651,15 +651,13 @@ helm install crossplane-gcp-control-plane \
 
 
 
-
-
-
 The helm install will automate the following on the Crossplane Control-Plane Kubernetes Cluster.
 
 - Create the `crossplane-system` (standard required namespace) namespace (if not present)
 - Provision Crossplane, ESO, ArgoCD and Cert-Manager 
 - Configure ESO to control GCP IAM Workload Identity (WID) Secret Credentials
 - Configures Crossplane to reference ESO controlled GCP IAM WID Secret Credentials in GCP `ProviderConfig`
+
 
 To verify the installation.
 
@@ -715,12 +713,13 @@ helm upgrade --install crossplane-gcp-control-plane ./crossplane-gcp-control-pla
 The final GCP variant of the Crossplane Provider Helm Chart is as follows.
 
 ```shell
-crossplane-gcp-control-plane/
+crossplane-gcp-control-plane
 ├── Chart.yaml
-├── templates/
+├── templates
 │   ├── __helpers.tpl
 │   ├── crossplane-provider-cluster-secret-store.yaml
 │   ├── crossplane-provider-config.yaml
+│   ├── crossplane-provider-controller-config.yaml
 │   ├── crossplane-provider-external-secret.yaml
 │   └── crossplane-provider.yaml
 ├── values-gcp-nonprod.yaml
