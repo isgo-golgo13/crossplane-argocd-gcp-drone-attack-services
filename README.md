@@ -530,12 +530,19 @@ The workflow(s) use GCP GKE Cluster to associate a GCP IAM Workload Identity Cre
 
 
 
+#### Verify GCP IAM Workload Identity on GCP GKE Cluster (Pre-Install of Crossplane Control-Plane Configuration Helm Chart)
+
+```shell
+gcloud container clusters describe crossplane-control-plane \
+  --region us-west4 \
+  --format="value(workloadIdentityConfig.workloadPool)"
+```
+
+
 
 
 #### Kubernetes Cluster Configuration (for GCP GKE) for Crossplane
 
-
-##
 
 The GCP GKE Crossplane Configuraiton Helm Chart is required to have its dependencies pre-generated prior to deploy
 to the GCP GKE Cluster as follows.
