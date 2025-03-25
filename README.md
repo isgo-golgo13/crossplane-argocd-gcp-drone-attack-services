@@ -707,6 +707,22 @@ helm upgrade --install crossplane-gcp-control-plane ./crossplane-gcp-control-pla
   -f values.yaml
 ```
 
+**Validate ESO and IRSA Post-Deploy**
+
+```shell
+kubectl get externalsecret -n external-secrets
+kubectl describe externalsecret gcp-crossplane-creds -n external-secrets
+```
+
+**Verify Generated Secret Exists**
+
+```shell
+kubectl get secret gcp-crossplane-creds -n external-secrets -o yaml
+```
+
+
+
+
 
 
 
@@ -737,10 +753,6 @@ For production environments that require the Crossplane Control-Plane Cluster in
 - Provide GCP IAM Workload Identity for the created GCP GKE Cluster
 - Provision the `crossplane-gcp-control-plane` Helm Chart configuring the ESO Secret for the GCP ProviderConfig 
 - Verify this GCP GKE Cluster Crossplane Control-Plane Cluster is finalized to provision GCP resources 
-
-
-
-
 
 
 
