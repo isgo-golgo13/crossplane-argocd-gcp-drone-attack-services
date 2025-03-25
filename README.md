@@ -530,12 +530,19 @@ The workflow(s) use GCP GKE Cluster to associate a GCP IAM Workload Identity Cre
 
 
 
-#### Verify GCP IAM Workload Identity on GCP GKE Cluster (Pre-Install of Crossplane Control-Plane Configuration Helm Chart)
+Verify GCP IAM Workload Identity on GCP GKE Cluster (Pre-Install of Crossplane Control-Plane Configuration Helm Chart)
 
 ```shell
 gcloud container clusters describe crossplane-control-plane \
   --region us-west4 \
   --format="value(workloadIdentityConfig.workloadPool)"
+```
+
+Verify if GSA contains the `iam.workloadIdentityUser` role for the KSA
+
+```shell
+gcloud iam service-accounts get-iam-policy gke-crossplane-sa@cxp-gcp.iam.gserviceaccount.com \
+  --format=json
 ```
 
 
