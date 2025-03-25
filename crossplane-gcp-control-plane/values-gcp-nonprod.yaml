@@ -41,27 +41,3 @@ externalSecrets:
 certManager:
   enabled: true  # Toggle installation ON/OFF
   namespace: "cert-manager"
-
-helm:
-  dependencies:
-    - name: crossplane
-      version: "1.14.2"
-      repository: "https://charts.crossplane.io/stable"
-      values:
-        args:
-          - "--enable-composition-revisions"
-        replicas: 3
-        podDisruptionBudget:
-          enabled: true
-          minAvailable: 2
-        leaderElection:
-          enabled: true
-        rbacManager:
-          enabled: true
-        securityContext:
-          runAsNonRoot: true
-        tolerations:
-          - key: "CriticalAddonsOnly"
-            operator: "Exists"
-          - key: "node-role.kubernetes.io/control-plane"
-            operator: "Exists"
