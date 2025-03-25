@@ -711,7 +711,7 @@ The new GKE cluster is now ready to run Crossplane.
 
 
 
-### Azure Workflow
+### Azure Workflow (using Azure AKS Cluster for Control-Plane Cluster)
 
 Provisioning Azure Entra ID service account credentials for the Crossplane `ProviderConfig` is done using Azure Entra (previously Azure AD) for the Service Account) and a Kubernetes Secret using Kubernetes-Native `External Secrets Operator` (ESO `ClusterSecretStore` CR and ESO `ExternalSecret` CR) and `Azure Entra ID Federated Workload Identity`. Azure Entra ID natively provides OIDC federation. The Kubernetes Service Account (KSA) is directly associated with the Azure Identity.
 
@@ -722,73 +722,8 @@ Crossplane will reference a Kubernetes ExternalSecret resource that will generat
 
 ![crossplane-azure-credentials-workflow](docs/azure-provider-config-creds-workflow.png)
 
-#### Export (Required) Vars
 
-```shell
-# Set your Azure subscription ID and resource group
-export AZURE_SUBSCRIPTION_ID="your-subscription-id"
-export AZURE_RESOURCE_GROUP="crossplane-rg"
-export AZURE_REGION="eastus"
-
-# Set Workload Identity details
-export WORKLOAD_IDENTITY_NAME="kind-crossplane-wi"
-export WORKLOAD_IDENTITY_CLIENT_NAME="kind-crossplane-client"
-export WORKLOAD_IDENTITY_TENANT_ID=$(az account show --query tenantId -o tsv)
-
-# Set the Kubernetes namespace and service account in KinD
-export KIND_K8S_NAMESPACE="crossplane-system"
-export KIND_K8S_SERVICE_ACCOUNT="crossplane-sa"
-```
-
-#### Create a Azure Entra ID (Azure AD) Application for Workload Identity
-
-```shell
-az ad app create --display-name "$WORKLOAD_IDENTITY_CLIENT_NAME"
-```
-
-This registers an app in Azure AD that Crossplane will use for authentication.
-
-**Get the App (Client) ID**
-
-```shell
-export WORKLOAD_IDENTITY_CLIENT_ID=$(az ad app list --display-name "$WORKLOAD_IDENTITY_CLIENT_NAME" --query "[0].appId" -o tsv)
-```
-
-#### Create the a Federated Identity Credential for KinD
-
-```shell
-az ad app federated-credential create \
-  --id $WORKLOAD_IDENTITY_CLIENT_ID \
-  --parameters '{
-    "name": "'$WORKLOAD_IDENTITY_NAME'",
-    "issuer": "https://oidc.eks.amazonaws.com/id/your-kind-cluster",
-    "subject": "'system:serviceaccount:'$KIND_K8S_NAMESPACE':'$KIND_K8S_SERVICE_ACCOUNT'",
-    "audiences": ["api://AzureADTokenExchange"]
-  }'
-```
-
-This allows KinD* to assume the identity of the Azure AD app. See down in the sections that follow for the AKS Crossplane Control-Plane Cluster.
-
-### Assign RBAC Permissions for Crossplane
-
-```shell
-az role assignment create --assignee $WORKLOAD_IDENTITY_CLIENT_ID \
-  --role "Contributor" \
-  --scope "/subscriptions/$AZURE_SUBSCRIPTION_ID"
-```
-
-This grants Crossplane permission to manage Azure resources.
-
-
-#### Configure (Associate) KinD Kubernetes Service Account to Azure Workload Identity
-
-```shell
-kubectl annotate serviceaccount \
-  --namespace $KIND_K8S_NAMESPACE $KIND_K8S_SERVICE_ACCOUNT \
-  azure.workload.identity/client-id=$WORKLOAD_IDENTITY_CLIENT_ID
-```
-
-Now KinD’s Crossplane control plane can authenticate to Azure without long-lived credentials.
+**TODO**
 
 
 To generate the dependencies for the Helm Chart.
