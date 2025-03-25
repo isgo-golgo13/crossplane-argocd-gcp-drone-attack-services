@@ -556,6 +556,20 @@ The association should show.
 }
 ```
 
+ **Verify** KSA annotation that links to the GSA
+
+```shell
+kubectl get serviceaccount crossplane-sa \
+  -n crossplane-system \
+  -o jsonpath='{.metadata.annotations.iam\.gke\.io/gcp-service-account}'
+```
+
+This should show
+
+```shell
+gke-crossplane-sa@cxp-gcp.iam.gserviceaccount.com
+```
+
 
 
 #### Kubernetes Cluster Configuration (for GCP GKE) for Crossplane
