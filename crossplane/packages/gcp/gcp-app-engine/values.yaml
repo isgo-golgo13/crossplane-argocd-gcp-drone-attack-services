@@ -1,4 +1,4 @@
-projectId: "cp-gcp-drone-svcs-project"
+projectId: "cxp-gcp"
 
 appengine:
   appId: "appengine-app"

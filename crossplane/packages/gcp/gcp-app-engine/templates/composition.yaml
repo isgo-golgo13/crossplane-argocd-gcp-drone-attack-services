@@ -22,21 +22,3 @@ spec:
           toFieldPath: "metadata.name"
         - fromFieldPath: "spec.region"
           toFieldPath: "spec.forProvider.locationId"
-
-    - name: helm-release
-      base:
-        apiVersion: helm.crossplane.io/v1beta1
-        kind: Release
-        spec:
-          forProvider:
-            chart:
-              name: {{ .Values.appengine.helm.chartName }}
-              repository: {{ .Values.appengine.helm.repoUrl }}
-              version: {{ .Values.appengine.helm.chartVersion }}
-            namespace: {{ .Values.appengine.helm.namespace }}
-            values:
-              projectId: {{ .Values.projectId }}
-              region: {{ .Values.appengine.region }}
-              instanceClass: {{ .Values.appengine.instanceClass }}
-          providerConfigRef:
-            name: {{ .Values.appengine.providerConfig }}
