@@ -23,25 +23,3 @@ spec:
           toFieldPath: "metadata.name"
         - fromFieldPath: "spec.region"
           toFieldPath: "spec.forProvider.region"
-
-    - name: helm-release-cloudrun
-      base:
-        apiVersion: helm.crossplane.io/v1beta1
-        kind: Release
-        metadata:
-          name: cloudrun-service
-        spec:
-          forProvider:
-            chart:
-              name: gcp-cloudrun
-              repository: "https://github.com/isgo-golgo13/crossplane-argocd-gcp-drone-attack-services.git"
-              version: "1.0.0"
-            namespace: crossplane-system
-            values:
-              cloudrun:
-                serviceName: {{ .Values.cloudrun.serviceName }}
-                image: {{ .Values.cloudrun.image }}
-                providerConfig: {{ .Values.cloudrun.providerConfig }}
-                region: {{ .Values.cloudrun.region }}
-          providerConfigRef:
-            name: gcp-provider

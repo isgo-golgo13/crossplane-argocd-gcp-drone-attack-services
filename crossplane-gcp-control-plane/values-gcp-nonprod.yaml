@@ -1,5 +1,5 @@
 gcp:
-  projectId: "gcp-project-id"
+  projectId: "cxp-gcp"
 
 crossplane:
   namespace: "crossplane-system"
@@ -65,21 +65,3 @@ helm:
             operator: "Exists"
           - key: "node-role.kubernetes.io/control-plane"
             operator: "Exists"
-
-    {{- if .Values.argocd.enabled }}
-    - name: argo-cd
-      version: "5.51.3"
-      repository: "https://argoproj.github.io/argo-helm"
-    {{- end }}
-
-    {{- if .Values.externalSecrets.enabled }}
-    - name: external-secrets
-      version: "0.9.10"
-      repository: "https://charts.external-secrets.io"
-    {{- end }}
-
-    {{- if .Values.certManager.enabled }}
-    - name: cert-manager
-      version: "1.14.2"
-      repository: "https://charts.jetstack.io"
-    {{- end }}

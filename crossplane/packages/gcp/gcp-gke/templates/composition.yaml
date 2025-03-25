@@ -54,24 +54,3 @@ spec:
       patches:
         - fromFieldPath: "spec.clusterName"
           toFieldPath: "spec.forProvider.clusterRef.name"
-
-    - name: gke-helm-release
-      base:
-        apiVersion: helm.crossplane.io/v1beta1
-        kind: Release
-        spec:
-          forProvider:
-            chart:
-              name: {{ .Values.gke.helm.chartPath }}
-              repository: {{ .Values.gke.helm.repo }}
-              version: {{ .Values.gke.helm.version }}
-            namespace: {{ .Values.gke.helm.namespace }}
-            values:
-              projectId: {{ .Values.gke.helm.values.projectId }}
-              clusterName: {{ .Values.gke.helm.values.clusterName }}
-              region: {{ .Values.gke.helm.values.region }}
-              nodeCount: {{ .Values.gke.helm.values.nodeCount }}
-              networkRef: {{ .Values.gke.helm.values.networkRef }}
-              providerConfig: {{ .Values.gke.helm.values.providerConfig }}
-          providerConfigRef:
-            name: {{ .Values.gke.providerConfig }}
