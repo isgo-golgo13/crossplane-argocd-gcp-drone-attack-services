@@ -827,6 +827,7 @@ crossplane-gitops-control-plane/
 │   ├── crossplane-provider-external-secret.yaml
 │   ├── crossplane-provider-cluster-secret-store.yaml
 │   ├── crossplane-provider.yaml
+│   ├── crossplane-provider-controller-config.yaml
 │   ├── crossplane-provider-config.yaml
 │
 ├── Chart.yaml
