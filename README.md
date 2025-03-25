@@ -31,20 +31,20 @@ The Crossplane equivalent structure of Terraform modules is through a templated 
 
 ## Crossplane XRD API Structure (Helm)
 ```
-├── crossplane
+├── crossplane -------------------------------------> Deployed to `crossplane-system` namespace
 │   ├── Chart.yaml                      
 │   ├── packages
 │   │   ├── gcp-apigee                  
 │   │   │   ├── templates
-│   │   │   │   ├── claim.yaml
-│   │   │   │   ├── composition.yaml
-│   │   │   │   └── xrd.yaml
+│   │   │   │   ├── claim.yaml 
+│   │   │   │   ├── composition.yaml ---------------> Deployed to Cluster Scope (no target namespace)
+│   │   │   │   └── xrd.yaml -----------------------> Deployed to Cluster Scope (no target namespace)
 │   │   │   └── values.yaml
 │   │   ├── gcp-app-engine
 │   │   │   ├── templates
 │   │   │   │   ├── claim.yaml
-│   │   │   │   ├── composition.yaml
-│   │   │   │   └── xrd.yaml
+│   │   │   │   ├── composition.yaml ---------------> Deployed to Cluster Scope (no target namespace)
+│   │   │   │   └── xrd.yaml -----------------------> Deployed to Cluster Scope (no target namespace)
 │   │   │   └── values.yaml
 │   │   ├── gcp-cloudrun
 │   │   │   ├── templates
@@ -70,8 +70,8 @@ The Crossplane equivalent structure of Terraform modules is through a templated 
 │   │   ├── gcp-gke                       
 │   │   │   ├── templates
 │   │   │   │   ├── claim.yaml
-│   │   │   │   ├── composition.yaml
-│   │   │   │   └── xrd.yaml
+│   │   │   │   ├── composition.yaml ---------------> Deployed to Cluster Scope (no target namespace)
+│   │   │   │   └── xrd.yaml -----------------------> Deployed to Cluster Scope (no target namespace)
 │   │   │   └── values.yaml
 │   │   ├── gcp-networking                
 │   │   │   ├── templates
@@ -200,27 +200,6 @@ spec:
       patches:
         - fromFieldPath: "spec.clusterName"
           toFieldPath: "spec.forProvider.clusterRef.name"
-
-    - name: gke-helm-release
-      base:
-        apiVersion: helm.crossplane.io/v1beta1
-        kind: Release
-        spec:
-          forProvider:
-            chart:
-              name: {{ .Values.gke.helm.chartPath }}
-              repository: {{ .Values.gke.helm.repo }}
-              version: {{ .Values.gke.helm.version }}
-            namespace: {{ .Values.gke.helm.namespace }}
-            values:
-              projectId: {{ .Values.gke.helm.values.projectId }}
-              clusterName: {{ .Values.gke.helm.values.clusterName }}
-              region: {{ .Values.gke.helm.values.region }}
-              nodeCount: {{ .Values.gke.helm.values.nodeCount }}
-              networkRef: {{ .Values.gke.helm.values.networkRef }}
-              providerConfig: {{ .Values.gke.helm.values.providerConfig }}
-          providerConfigRef:
-            name: {{ .Values.gke.providerConfig }}
 ```
 
 The `Claim` for GCP GKE Cluster is as follows.
@@ -265,22 +244,6 @@ gke:
       - key: "node-type"
         value: "infra"
         effect: "NO_SCHEDULE"
-
-  # Helm Chart Deployment Config
-  helm:
-    enabled: true
-    releaseName: "gke-cluster"
-    namespace: "crossplane-system"
-    repo: "https://github.com/isgo-golgo13/crossplane-argocd-gcp-drone-attack-services.git"
-    chartPath: "crossplane/packages/gcp/gcp-gke"
-    version: "0.1.0"
-    values:
-      projectId: "cxp-gcp"
-      clusterName: "gke-cluster"
-      region: "us-west4"
-      nodeCount: 3
-      networkRef: "shared-vpc"
-      providerConfig: "gcp-provider"
 ```
 
 The `crossplane/` directory is the parent Helm Chart.
