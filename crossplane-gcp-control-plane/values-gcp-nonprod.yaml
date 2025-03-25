@@ -21,23 +21,28 @@ crossplane:
       operator: "Exists"
     - key: "node-role.kubernetes.io/control-plane"
       operator: "Exists"
-
   controllerConfigName: "crossplane-provider-controller-config"
 
 eso:
-  enabled: true  # Toggle installation ON/OFF
+  enabled: true
   refreshInterval: "1h"
 
 argocd:
-  enabled: true  # Toggle installation ON/OFF
+  enabled: true
   namespace: "argocd"
-  insecure: true  # Set to false when SSO/TLS is configured
+  insecure: true  
+  tls:
+    enabled: false  # Turn on later for Dex/SSO/TLS ingress
+  ha:
+    enabled: true
+  applicationSet:
+    enabled: true
 
 externalSecrets:
-  enabled: true  # Toggle installation ON/OFF
+  enabled: true
   namespace: "external-secrets"
   clusterSecretStoreName: "gcp-workload-identity-store"
 
 certManager:
-  enabled: true  # Toggle installation ON/OFF
+  enabled: true
   namespace: "cert-manager"
