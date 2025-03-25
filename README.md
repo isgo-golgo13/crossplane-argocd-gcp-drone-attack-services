@@ -783,12 +783,13 @@ kubectl get providerconfig azure-provider-config -n crossplane-system -o yaml
 The final Azure variant of the Crossplane Provider Helm Chart is as follows.
 
 ```shell
-crossplane-azure-control-plane/
+crossplane-azure-control-plane
 ├── Chart.yaml
-├── templates/
+├── templates
 │   ├── __helpers.tpl
 │   ├── crossplane-provider-cluster-secret-store.yaml
 │   ├── crossplane-provider-config.yaml
+│   ├── crossplane-provider-controller-config.yaml
 │   ├── crossplane-provider-external-secret.yaml
 │   └── crossplane-provider.yaml
 ├── values-azure-nonprod.yaml
