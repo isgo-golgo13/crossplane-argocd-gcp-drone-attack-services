@@ -11,6 +11,7 @@ NAMESPACE="crossplane-system"
 WORKLOAD_POOL="${PROJECT_ID}.svc.id.goog"
 WORKLOAD_IDENTITY_POOL="crossplane-pool"
 WORKLOAD_IDENTITY_PROVIDER="crossplane-provider"
+GCP_SECRET_NAME="gcp-crossplane-creds"  # ⚠️ Must exist in GCP Secret Manager
 
 ### === STEP 1: Set Project === ###
 echo "Setting GCP project..."
@@ -21,7 +22,8 @@ echo "Enabling required GCP APIs..."
 gcloud services enable container.googleapis.com \
     iam.googleapis.com \
     iamcredentials.googleapis.com \
-    cloudresourcemanager.googleapis.com
+    cloudresourcemanager.googleapis.com \
+    secretmanager.googleapis.com
 
 ### === STEP 3: Create GKE Private Cluster === ###
 echo "Creating private GKE cluster: $CLUSTER_NAME"
@@ -72,8 +74,12 @@ kubectl annotate serviceaccount "$KSA_NAME" \
   --namespace "$NAMESPACE" \
   iam.gke.io/gcp-service-account="$GSA_EMAIL" --overwrite
 
-echo "Workload Identity binding complete."
+### STEP 9: Grant GSA access to GCP Secret Manager === ###
+echo "Granting GSA access to GCP Secret Manager secret: $GCP_SECRET_NAME"
+gcloud secrets add-iam-policy-binding "$GCP_SECRET_NAME" \
+  --member="serviceAccount:$GSA_EMAIL" \
+  --role="roles/secretmanager.secretAccessor" \
+  --project="$PROJECT_ID"
 
-### DONE ###
-echo "GKE cluster is ready with Workload Identity configured!"
-echo "You can now deploy Crossplane using your Helm chart and reference the KSA '$KSA_NAME' in namespace '$NAMESPACE'!"
+echo "Workload Identity binding + secret access complete."
+echo "You can now deploy the Helm chart using the KSA '$KSA_NAME' in namespace '$NAMESPACE'."
