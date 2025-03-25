@@ -569,29 +569,90 @@ The workflow(s) use GCP GKE Cluster to associate a GCP IAM Workload Identity Cre
 
 
 
-#### Kubenetes Cluster Configuration (for GCP GKE) for Crossplane
+#### Kubernetes Cluster Configuration (for GCP GKE) for Crossplane
 
-To generate the dependencies for the Helm Chart.
 
-```shell
-helm dependency build ./crossplane-gcp-control-plane
+##
+
+The GCP GKE Crossplane Configuraiton Helm Chart is required to have its dependencies pre-generated prior to deploy
+to the GCP GKE Cluster as follows.
+
+The provided `Chart.yaml` is structured as follows.
+
+```yaml
+apiVersion: v2
+name: crossplane-gcp-control-plane
+description: A Helm chart for setting up a AWS GitOps-based Crossplane control plane with ArgoCD and External Secrets Operator.
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+
+dependencies:
+  - name: argo-cd
+    version: "5.51.3" # Match the latest stable version
+    repository: "https://argoproj.github.io/argo-helm"
+
+  - name: external-secrets
+    version: "0.9.10" # Match the latest stable version
+    repository: "https://charts.external-secrets.io"
+
+  - name: crossplane
+    version: "1.14.2" # Match the latest stable version
+    repository: "https://charts.crossplane.io/stable"
+
+  - name: cert-manager
+    version: "1.14.2" # Match the latest stable version
+    repository: "https://charts.jetstack.io"
 ```
 
-To verify the dependencies.
+### Generating the Chart Dependencies Workflow (Required)
 
 ```shell
-helm dependency list ./crossplane-gcp-control-plane
+helm dependency build crossplane-gcp-control-plane-cluster/
+```
+
+To verify the dependency list.
+
+```shell
+helm dependency list crossplane-gcp-control-plane-cluster/
 ```
 
 
-To deploy this Helm Chart for GCP Provider to the Crossplane Control-Plane Cluster.
+This will generate the following packaging structure.
 
 ```shell
-helm upgrade --install crossplane-gcp-control-plane ./crossplane-gcp-control-plane \
+./crossplane-gcp-control-plane/charts/
+  ├── crossplane-1.14.2.tgz
+  ├── argo-cd-5.51.3.tgz
+  ├── external-secrets-0.9.10.tgz
+  └── cert-manager-1.14.2.tgz
+```
+
+The GCP GKE Crossplane Configuraiton Helm Chart is **NOW** prepared for deploy.
+
+```shell
+helm install crossplane-gcp-control-plane \
+  ./crossplane-gcp-control-plane-cluster \
   --namespace crossplane-system \
   --create-namespace \
   -f values-gcp-nonprod.yaml
 ```
+
+
+#### Namespace Association (Post-Deploy)
+```shell
+| Dependency Chart     | Kubernetes Namespace  | Description                                           |
+|----------------------|-----------------------|-------------------------------------------------------|
+| crossplane           | crossplane-system     | Core Crossplane Controllers and APIs                  |
+| external-secrets     | external-secrets      | ESO for Non-Static Secret Syncing with IRSA/WID       |
+| argo-cd              | argocd                | GitOps Engine for Syncing Crossplane XR API Resources |
+| cert-manager         | cert-manager          | Certificate Controller for TLS                        |
+```
+
+
+
+
+
 
 The helm install will automate the following on the Crossplane Control-Plane Kubernetes Cluster.
 
