@@ -4,6 +4,7 @@ set -euo pipefail
 ### === CONFIGURATION === ###
 PROJECT_ID="cxp-gcp"
 REGION="us-west4"
+ZONE="${REGION}-a"
 CLUSTER_NAME="crossplane-control-plane"
 GSA_NAME="gke-crossplane-sa"
 KSA_NAME="crossplane-sa"
@@ -25,15 +26,18 @@ gcloud services enable container.googleapis.com \
     cloudresourcemanager.googleapis.com \
     secretmanager.googleapis.com
 
-### === STEP 3: Create GKE Private Cluster === ###
-echo "Creating private GKE cluster: $CLUSTER_NAME"
+### === STEP 3: Create GKE Private Cluster (Min Spec) === ###
+echo "Creating private GKE cluster (min-spec, no SSD overages): $CLUSTER_NAME"
 gcloud container clusters create "$CLUSTER_NAME" \
-    --region="$REGION" \
+    --zone="$ZONE" \
     --release-channel=regular \
     --enable-ip-alias \
     --enable-private-nodes \
     --enable-private-endpoint \
     --enable-shielded-nodes \
+    --disk-type=pd-standard \
+    --disk-size=50 \
+    --num-nodes=1 \
     --workload-pool="$WORKLOAD_POOL" \
     --enable-autoupgrade \
     --enable-autorepair \
@@ -46,7 +50,7 @@ echo "GKE cluster created."
 ### === STEP 4: Get kubeconfig === ###
 echo "Getting kubeconfig for GKE cluster..."
 gcloud container clusters get-credentials "$CLUSTER_NAME" \
-    --region "$REGION"
+    --zone "$ZONE"
 
 ### === STEP 5: Create GCP IAM Service Account (GSA) === ###
 echo "Creating GCP IAM Service Account: $GSA_NAME"
@@ -74,12 +78,23 @@ kubectl annotate serviceaccount "$KSA_NAME" \
   --namespace "$NAMESPACE" \
   iam.gke.io/gcp-service-account="$GSA_EMAIL" --overwrite
 
-### STEP 9: Grant GSA access to GCP Secret Manager === ###
+### === STEP 9: Grant GSA access to Secret Manager secret === ###
 echo "Granting GSA access to GCP Secret Manager secret: $GCP_SECRET_NAME"
 gcloud secrets add-iam-policy-binding "$GCP_SECRET_NAME" \
   --member="serviceAccount:$GSA_EMAIL" \
   --role="roles/secretmanager.secretAccessor" \
   --project="$PROJECT_ID"
 
+### === DONE === ###
+echo ""
 echo "Workload Identity binding + secret access complete."
-echo "You can now deploy the Helm chart using the KSA '$KSA_NAME' in namespace '$NAMESPACE'."
+echo "GKE private cluster '$CLUSTER_NAME' created successfully in zone '$ZONE'."
+echo ""
+echo "This is a PRIVATE cluster, run the following command to allow access from local machine:"
+echo ""
+echo "  gcloud container clusters update $CLUSTER_NAME \\"
+echo "    --zone=$ZONE \\"
+echo "    --enable-master-authorized-networks \\"
+echo "    --master-authorized-networks \$(curl -s ifconfig.me)/32"
+echo ""
+echo "Once that's done, you can helm install the Crossplane GCP control plane chart 🎉"
