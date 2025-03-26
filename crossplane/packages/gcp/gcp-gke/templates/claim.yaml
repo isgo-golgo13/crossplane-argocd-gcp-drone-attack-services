@@ -1,4 +1,4 @@
-apiVersion: gke.example.com/v1alpha1
+apiVersion: gke.enginevector.io/v1alpha1
 kind: GCPGKEClaim
 metadata:
   name: gke-claim
