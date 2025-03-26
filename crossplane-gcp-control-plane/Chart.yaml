@@ -1,23 +1,6 @@
 apiVersion: v2
 name: crossplane-gcp-control-plane
-description: A Helm chart for setting up a GCP GitOps-based Crossplane control plane with ArgoCD and External Secrets Operator.
+description: Crossplane GCP Control Plane Core
 type: application
-version: 1.0.0
-appVersion: "1.0.0"
-
-dependencies:
-  - name: argo-cd
-    version: "5.51.3"  # Match the latest stable version
-    repository: "https://argoproj.github.io/argo-helm"
-
-  - name: external-secrets
-    version: "0.9.10"  # Match the latest stable version
-    repository: "https://charts.external-secrets.io"
-
-  - name: crossplane
-    version: "1.14.2"  # Match the latest stable version
-    repository: "https://charts.crossplane.io/stable"
-
-  - name: cert-manager
-    version: "1.14.2"  # Match the latest stable version
-    repository: "https://charts.jetstack.io"
+version: 0.1.0
+appVersion: "1.0"

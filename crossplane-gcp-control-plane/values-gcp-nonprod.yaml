@@ -24,7 +24,6 @@ crossplane:
   controllerConfigName: "crossplane-provider-controller-config"
 
 eso:
-  enabled: true
   refreshInterval: "1h"
 
 argocd:
@@ -39,10 +38,8 @@ argocd:
     enabled: true
 
 externalSecrets:
-  enabled: true
   namespace: "external-secrets"
   clusterSecretStoreName: "gcp-workload-identity-store"
 
 certManager:
-  enabled: true
   namespace: "cert-manager"
