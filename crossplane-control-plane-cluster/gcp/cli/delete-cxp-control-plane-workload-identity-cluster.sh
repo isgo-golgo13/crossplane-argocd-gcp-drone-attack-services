@@ -1,59 +1,40 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-### === CONFIGURATION (MUST MATCH CREATE SCRIPT) === ###
+### === CONFIGURATION === ###
 PROJECT_ID="cxp-gcp"
-REGION="us-west4"
+ZONE="us-west4-a"
 CLUSTER_NAME="crossplane-control-plane"
 GSA_NAME="gke-crossplane-sa"
-NAMESPACE="crossplane-system"
-KSA_NAME="crossplane-sa"
-WORKLOAD_POOL="${PROJECT_ID}.svc.id.goog"
-
-### Full GSA email
 GSA_EMAIL="${GSA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com"
+KUBECONFIG_CONTEXT="gke_${PROJECT_ID}_${ZONE}_${CLUSTER_NAME}"
 
 echo "Starting GCP cleanup for project: $PROJECT_ID"
 
-### === STEP 1: Delete GKE Cluster === ###
+### === STEP 1: Delete GKE cluster === ###
 echo "Deleting GKE cluster: $CLUSTER_NAME ..."
-gcloud container clusters delete "$CLUSTER_NAME" \
-  --region="$REGION" \
-  --quiet || echo "Cluster already deleted or does not exist."
+if gcloud container clusters describe "$CLUSTER_NAME" --zone="$ZONE" &>/dev/null; then
+  gcloud container clusters delete "$CLUSTER_NAME" --zone="$ZONE" --quiet
+else
+  echo "Cluster already deleted or does not exist in zone '$ZONE'. Skipping."
+fi
 
-### === STEP 2: Remove IAM Policy Bindings from GSA === ###
-echo "Removing IAM policy bindings from GSA..."
-ROLES=(
-  "roles/iam.workloadIdentityUser"
-  "roles/container.admin"
-  "roles/compute.admin"
-  "roles/iam.serviceAccountUser"
-)
-
-for ROLE in "${ROLES[@]}"; do
-  gcloud projects remove-iam-policy-binding "$PROJECT_ID" \
-    --member="serviceAccount:$GSA_EMAIL" \
-    --role="$ROLE" \
-    --quiet || true
-done
-
-### === STEP 3: Delete GSA (Service Account) === ###
+### === STEP 2: Delete GSA === ###
 echo "Deleting GCP IAM Service Account: $GSA_EMAIL ..."
-gcloud iam service-accounts delete "$GSA_EMAIL" \
-  --quiet || echo "Service account already deleted or not found."
+if gcloud iam service-accounts describe "$GSA_EMAIL" &>/dev/null; then
+  gcloud iam service-accounts delete "$GSA_EMAIL" --quiet
+else
+  echo "GSA already deleted or does not exist. Skipping."
+fi
 
-### === STEP 4: Optionally Delete Workload Identity Pool and Provider (only if you created them) === ###
-# If you created custom WIF resources in your create script, uncomment this:
-# echo "🗑️ Deleting Workload Identity Pool and Provider..."
-# gcloud iam workload-identity-pools delete crossplane-pool \
-#   --location="global" \
-#   --quiet || echo "WIF pool not found or already deleted."
-
-### === STEP 5: Clean up local kubeconfig entries === ###
+### === STEP 3: Clean up kubeconfig context === ###
 echo "Cleaning kubeconfig context..."
-kubectl config delete-context "gke_${PROJECT_ID}_${REGION}_${CLUSTER_NAME}" || true
-kubectl config unset "contexts.gke_${PROJECT_ID}_${REGION}_${CLUSTER_NAME}" || true
-kubectl config unset "clusters.gke_${PROJECT_ID}_${REGION}_${CLUSTER_NAME}" || true
-kubectl config unset "users.gke_${PROJECT_ID}_${REGION}_${CLUSTER_NAME}" || true
+kubectl config delete-context "$KUBECONFIG_CONTEXT" 2>/dev/null || echo "Context not found, skipping."
+kubectl config unset "contexts.$KUBECONFIG_CONTEXT" 2>/dev/null || true
+kubectl config unset "clusters.$KUBECONFIG_CONTEXT" 2>/dev/null || true
+kubectl config unset "users.$KUBECONFIG_CONTEXT" 2>/dev/null || true
 
-echo "GCP GKE + IAM cleanup complete. All traces removed."
+### === DONE === ###
+echo ""
+echo "GCP GKE + IAM cleanup complete for '$CLUSTER_NAME'."
+echo "All cluster traces, IAM bindings, and kubeconfig context removed (if they existed)."

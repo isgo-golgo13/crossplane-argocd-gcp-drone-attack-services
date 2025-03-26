@@ -1,26 +1,6 @@
 apiVersion: v2
-name: crossplane-platform
-description: A Helm chart that deploys Crossplane-managed GCP resources
+name: gcp-gke
+description: A Helm Chart for Crossplane GCP GKE package
 type: application
 version: 0.1.0
 appVersion: "1.0"
-
-dependencies:
-  - name: gcp-apigee
-    condition: subcharts.gcp-apigee
-  - name: gcp-app-engine
-    condition: subcharts.gcp-app-engine
-  - name: gcp-cloudrun
-    condition: subcharts.gcp-cloudrun
-  - name: gcp-cloudstorage
-    condition: subcharts.gcp-cloudstorage
-  - name: gcp-databases
-    condition: subcharts.gcp-databases
-  - name: gcp-eventarc
-    condition: subcharts.gcp-eventarc
-  - name: gcp-gke
-    condition: subcharts.gcp-gke
-  - name: gcp-networking
-    condition: subcharts.gcp-networking
-  - name: gcp-pubsub
-    condition: subcharts.gcp-pubsub

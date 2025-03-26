@@ -12,7 +12,7 @@ NAMESPACE="crossplane-system"
 WORKLOAD_POOL="${PROJECT_ID}.svc.id.goog"
 WORKLOAD_IDENTITY_POOL="crossplane-pool"
 WORKLOAD_IDENTITY_PROVIDER="crossplane-provider"
-GCP_SECRET_NAME="gcp-crossplane-creds"  # ⚠️ Must exist in GCP Secret Manager
+GCP_SECRET_NAME="gcp-crossplane-creds"  # Must exist in GCP Secret Manager
 
 ### === STEP 1: Set Project === ###
 echo "Setting GCP project..."
@@ -26,14 +26,12 @@ gcloud services enable container.googleapis.com \
     cloudresourcemanager.googleapis.com \
     secretmanager.googleapis.com
 
-### === STEP 3: Create GKE Private Cluster (Min Spec) === ###
-echo "Creating private GKE cluster (min-spec, no SSD overages): $CLUSTER_NAME"
+### === STEP 3: Create GKE Public Cluster (Min Spec) === ###
+echo "Creating public GKE cluster (min-spec, no SSD overages): $CLUSTER_NAME"
 gcloud container clusters create "$CLUSTER_NAME" \
     --zone="$ZONE" \
     --release-channel=regular \
     --enable-ip-alias \
-    --enable-private-nodes \
-    --enable-private-endpoint \
     --enable-shielded-nodes \
     --disk-type=pd-standard \
     --disk-size=50 \
@@ -87,14 +85,11 @@ gcloud secrets add-iam-policy-binding "$GCP_SECRET_NAME" \
 
 ### === DONE === ###
 echo ""
-echo "Workload Identity binding + secret access complete."
-echo "GKE private cluster '$CLUSTER_NAME' created successfully in zone '$ZONE'."
+echo "Workload Identity binding and secret access are complete."
+echo "GKE public cluster '$CLUSTER_NAME' created successfully in zone '$ZONE'."
 echo ""
-echo "This is a PRIVATE cluster, run the following command to allow access from local machine:"
+echo "You can now deploy the Helm chart using:"
 echo ""
-echo "  gcloud container clusters update $CLUSTER_NAME \\"
-echo "    --zone=$ZONE \\"
-echo "    --enable-master-authorized-networks \\"
-echo "    --master-authorized-networks \$(curl -s ifconfig.me)/32"
-echo ""
-echo "Once that's done, you can helm install the Crossplane GCP control plane chart 🎉"
+echo "  helm install crossplane-gcp-control-plane ./crossplane-gcp-control-plane \\"
+echo "    --namespace crossplane-system \\"
+echo "    -f values-gcp-nonprod.yaml"
