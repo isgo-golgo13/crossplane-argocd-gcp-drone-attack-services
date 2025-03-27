@@ -492,12 +492,13 @@ helm install crossplane crossplane-stable/crossplane \
   --create-namespace \
   --set 'args[0]=--enable-composition-revisions' \
   --set replicas=1 \
+  --set podDisruptionBudget.enabled=false \
   --set rbacManager.deploy=true \
   --set securityContext.runAsNonRoot=true \
-  --set resources.requests.cpu=50m \
-  --set resources.requests.memory=128Mi \
   --set resources.limits.cpu=250m \
-  --set resources.limits.memory=512Mi
+  --set resources.limits.memory=512Mi \
+  --set resources.requests.cpu=50m \
+  --set resources.requests.memory=128Mi
 ```
 
 
