@@ -520,7 +520,7 @@ gcloud container clusters describe <cluster-name> \
   --format="value(workloadIdentityConfig.workloadPool)"
 ```
 
-Expected result.
+**Expected** result.
 
 ```shell
 project-id.svc.id.goog
@@ -558,6 +558,12 @@ gcloud iam service-accounts list --project <project-id>
 ```
 
 Verify the email matches the annotation showed.
+
+
+**4 Verify IAM association on the GSA**
+
+
+
 
 
 
