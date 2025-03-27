@@ -393,20 +393,18 @@ two approaches do it.
 ### GitOps First Approach
 
 The `GitOps First Approach` involves an architecture of the Crossplane Control-Plane Cluster working in conjunction with
-GitOps Agent ArgoCD to track all Crossplane XR API Claim requests enroute to a Git repository preregistered with ArgoCD to track Git recordings prior to
-ArgoCD dispatching the changes through Crossplane. This approach does **NOT** provide serving streamlined Crossplane XR API Claim requests directly to the
-Crossplane Control-Plane Cluster directly. This approach does provide higher-grade Git auditing, tracking and Git transaction reversal in the occurance of any
+GitOps Agent ArgoCD to track all Crossplane XR API Claim requests enroute to a Git repository preregistered with ArgoCD to track Git recordings prior to ArgoCD dispatching the changes through Crossplane. This approach does **NOT** provide serving streamlined Crossplane XR API Claim requests directly to the Crossplane Control-Plane Cluster directly. This approach does provide higher-grade Git auditing, tracking and Git transaction reversal in the occurance of any
 failed reconciliation events.
 
 The GitOps First Approach the Crossplane Control-Plane Cluster will require careful capacity planning of the required
-CLuster resources (CPU, CPU Cache and Memory) and logical VPC AZ planning that reduce and severly risk HA in low-latency network connections to avoid
-Crossplane and in-particular ArgoCD service disruption.
+CLuster resources (CPU, CPU Cache and Memory) and logical VPC AZ planning that reduce and severly risk HA in low-latency network connections to avoidCrossplane and in-particular ArgoCD service disruption.
 
 ### GitOps Last Approach
 
 The `GitOps Last Approach` involves an architecture of the Crossplane Control-Plane Cluster without a GitOps Agent (ArgoCD or FluxCD). This approach does provide serving streamlined Crossplane XR API Claim requests directly to the
 Crossplane Control-Plane Cluster directly. This approach does **NOT** provide higher-grade Git auditing, tracking and Git transaction reversal in the occurance of any
 failed reconciliation events.
+
 
 ## Upgrading Lifecycle of Crossplane Control Plane Cluster (API Versioning Clusters)
 
@@ -526,7 +524,8 @@ kubectl get pod crossplane-rbac-manager-564687c9dd-s96x9 -n crossplane-system -o
 ```
 
 
-### Pre-Verifcation of Exiting GCP IAM Workload Identity (WID) GKE Cluster (Pre-Created GKE Cluster)
+
+### Pre-Verifcation of Existing GCP IAM Workload Identity (WID) GKE Cluster (Pre-Created GKE Cluster)
 
 **(1) Verify GCP IAM WID is associated on the GKE Cluster**
 ```shell
