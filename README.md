@@ -577,7 +577,7 @@ Look for the following.
 IF these are **NOT** present, GCP IAM WID will **NOT** work.
 
 
-**5 Show the GCP Secrets**
+**5** `Show the GCP Secrets`
 
 ```shell
 gcloud secrets list --project <project-id>
