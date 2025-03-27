@@ -1,0 +1,41 @@
+# Default values for gcp-gke chart
+# These values can be overridden during helm install
+
+# GCP project and VPC configuration
+gcp:
+  projectId: "xxx-project"
+  region: "us-central1"
+  vpcHost:
+    projectId: "shared-vpc-host-project"
+    network: "shared-vpc-network"
+    subnetwork: "shared-subnet"
+
+# GKE cluster configuration
+gke:
+  # Default node pool configuration
+  nodePool:
+    machineType: "e2-standard-4"
+    minCount: 1
+    maxCount: 5
+    diskSizeGb: 100
+    diskType: "pd-standard"
+
+# Add-ons configuration
+addons:
+  certManager:
+    enabled: true
+    version: "1.12.0"
+  kyverno:
+    enabled: true
+    version: "2.7.2"
+  externalSecrets:
+    enabled: true
+    version: "0.8.1"
+  prometheus:
+    enabled: true
+    version: "45.7.1"
+
+# Crossplane composition configuration
+compositionName: "gcp-private-gke-clusters"
+claimName: "gcp-gke-cluster"
+providerConfigRef: "gcp-provider"
