@@ -560,7 +560,21 @@ gcloud iam service-accounts list --project <project-id>
 Verify the email matches the annotation showed.
 
 
-**4 Verify IAM association on the GSA**
+**4 Verify IAM binding (association) on the GSA**
+
+```shell
+gcloud projects get-iam-policy <project-id> \
+  --flatten="bindings[].members" \
+  --filter="bindings.members:<gsa-email>" \
+  --format="table(bindings.role)"
+```
+
+Look for the following.
+
+- `roles/iam.workloadIdentityUser`
+- `roles/secretmanager.secretAccessor`
+
+IF these are **NOT** present, GCP IAM WID will **NOT** work.
 
 
 
