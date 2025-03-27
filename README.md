@@ -427,7 +427,8 @@ The following applications are provided for this project.
     - Stores sortie status progressions to GCP Firestore NoSQL DB
         - Syncs to GCP Firestore DB at 25 Waypoint Radio Towers
 
-
+##
+##
 
 ## Installing Crossplane and Crossplane Control-Plane Architecture w/ ArgoCD
 
@@ -483,7 +484,25 @@ helm install crossplane crossplane-stable/crossplane \
   --set securityContext.runAsNonRoot=true
   ```
 
-  
+  Or to drop the CPU for lower-spec Cluster Nodes.
+
+```shell
+helm install crossplane crossplane-stable/crossplane \
+  --namespace crossplane-system \
+  --create-namespace \
+  --set 'args[0]=--enable-composition-revisions' \
+  --set replicas=1 \
+  --set rbacManager.deploy=true \
+  --set securityContext.runAsNonRoot=true \
+  --set resources.requests.cpu=50m \
+  --set resources.requests.memory=128Mi \
+  --set resources.limits.cpu=250m \
+  --set resources.limits.memory=512Mi
+```
+
+
+
+
 
 
 
