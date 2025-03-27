@@ -364,7 +364,7 @@ gcloud container clusters delete <gke-cluster-name> --region=us-west4 --project=
 
 In-Progress
 
-- 
+
 
 
 
@@ -373,8 +373,7 @@ In-Progress
 
 ## Registering XR API Packages to Crossplane (Platform Architecture Side)
 
-The following workflow and graphical diagrams will follow the sequence of **registering** the Crossplane XR API packages
-to the active Crossplane (AWS EKS) Control-Plane Cluster.
+The following workflow and graphical diagrams will follow the sequence of **registering** the Crossplane XR API packagesto the active Crossplane (AWS EKS) Control-Plane Cluster.
 
 ## Registering/Requesting XR API to Crossplane (Product Side)
 
