@@ -1,0 +1,467 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: {{ .Values.compositionName }}
+  labels:
+    provider: gcp
+    vpc: shared
+    cluster: gke
+spec:
+  compositeTypeRef:
+    apiVersion: gcp.platform.example.org/v1alpha1
+    kind: XGKECluster
+  writeConnectionSecretsToNamespace: crossplane-system
+  patchSets:
+    - name: common-parameters
+      patches:
+        - fromFieldPath: "spec.parameters.region"
+          toFieldPath: "spec.forProvider.location"
+        - fromFieldPath: "spec.parameters.projectId"
+          toFieldPath: "spec.forProvider.projectID"
+  resources:
+    # 1. GKE Cluster
+    - name: gke-cluster
+      base:
+        apiVersion: container.gcp.crossplane.io/v1beta2
+        kind: Cluster
+        metadata:
+          annotations:
+            crossplane.io/external-name: "" # Will be patched
+        spec:
+          forProvider:
+            initialClusterVersion: "1.31" # Will be patched if specified
+            releaseChannel:
+              channel: STABLE
+            networkConfig:
+              enableIntraNodeVisibility: true
+            masterAuthorizedNetworksConfig:
+              enabled: true
+            ipAllocationPolicy:
+              useIpAliases: true
+            loggingService: logging.googleapis.com/kubernetes
+            monitoringService: monitoring.googleapis.com/kubernetes
+            defaultMaxPodsConstraint:
+              maxPodsPerNode: 110
+            networkRef:
+              name: "" # Will be patched
+            subnetworkRef:
+              name: "" # Will be patched
+            privateClusterConfig:
+              enablePrivateEndpoint: true
+              enablePrivateNodes: true
+              masterIpv4CidrBlock: "172.16.0.16/28"
+            workloadIdentityConfig:
+              workloadPool: "" # Will be patched
+            addonsConfig:
+              httpLoadBalancing:
+                disabled: false
+              horizontalPodAutoscaling:
+                disabled: false
+              networkPolicyConfig:
+                disabled: false
+          writeConnectionSecretToRef:
+            namespace: crossplane-system
+            name: gke-cluster-connection
+          providerConfigRef:
+            name: {{ .Values.providerConfigRef }}
+      patches:
+        # Patch common parameters from the patchSet
+        - type: PatchSet
+          patchSetName: common-parameters
+          
+        # Cluster-specific patches
+        - fromFieldPath: "spec.parameters.clusterName"
+          toFieldPath: "metadata.annotations.crossplane.io/external-name"
+          
+        - fromFieldPath: "spec.parameters.clusterName"
+          toFieldPath: "metadata.name"
+          
+        - fromFieldPath: "spec.parameters.clusterName"
+          toFieldPath: "spec.writeConnectionSecretToRef.name"
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-connection"
+                
+        - fromFieldPath: "spec.parameters.kubernetesVersion"
+          toFieldPath: "spec.forProvider.initialClusterVersion"
+          
+        - fromFieldPath: "spec.parameters.vpcNetwork"
+          toFieldPath: "spec.forProvider.networkRef.name"
+          
+        - fromFieldPath: "spec.parameters.vpcSubnetwork"
+          toFieldPath: "spec.forProvider.subnetworkRef.name"
+          
+        - fromFieldPath: "spec.parameters.projectId"
+          toFieldPath: "spec.forProvider.workloadIdentityConfig.workloadPool"
+          transforms:
+            - type: string
+              string:
+                fmt: "%s.svc.id.goog"
+                
+        - fromFieldPath: "spec.parameters.zone"
+          toFieldPath: "spec.forProvider.location"
+          policy:
+            fromFieldPath: Required
+      connectionDetails:
+        - fromConnectionSecretKey: kubeconfig
+          name: kubeconfig
+        - fromFieldPath: "status.atProvider.endpoint"
+          name: endpoint
+
+    # 2. Node Pool for the GKE Cluster
+    - name: node-pool
+      base:
+        apiVersion: container.gcp.crossplane.io/v1beta2
+        kind: NodePool
+        metadata:
+          name: "" # Will be patched
+        spec:
+          forProvider:
+            clusterRef:
+              name: "" # Will be patched
+            initialNodeCount: 1
+            autoscaling:
+              enabled: true
+              minNodeCount: 1
+              maxNodeCount: 5
+            management:
+              autoRepair: true
+              autoUpgrade: true
+            nodeConfig:
+              machineType: "e2-standard-4"
+              diskSizeGb: 100
+              diskType: "pd-standard"
+              oauthScopes:
+                - https://www.googleapis.com/auth/devstorage.read_only
+                - https://www.googleapis.com/auth/logging.write
+                - https://www.googleapis.com/auth/monitoring
+                - https://www.googleapis.com/auth/servicecontrol
+                - https://www.googleapis.com/auth/service.management.readonly
+                - https://www.googleapis.com/auth/trace.append
+              workloadMetadataConfig:
+                mode: GKE_METADATA
+          providerConfigRef:
+            name: {{ .Values.providerConfigRef }}
+      patches:
+        - fromFieldPath: "spec.parameters.clusterName"
+          toFieldPath: "spec.forProvider.clusterRef.name"
+          
+        - fromFieldPath: "spec.parameters.nodePools[0].name"
+          toFieldPath: "metadata.name"
+          policy:
+            fromFieldPath: Fallback
+          transforms:
+            - type: string
+              string:
+                fmt: "main-pool"
+                
+        - fromFieldPath: "spec.parameters.nodePools[0].machineType"
+          toFieldPath: "spec.forProvider.nodeConfig.machineType"
+          policy:
+            fromFieldPath: Fallback
+          transforms:
+            - type: string
+              string:
+                fmt: "e2-standard-4"
+                
+        - fromFieldPath: "spec.parameters.nodePools[0].initialNodeCount"
+          toFieldPath: "spec.forProvider.initialNodeCount"
+          policy:
+            fromFieldPath: Fallback
+          transforms:
+            - type: int
+              int:
+                fromInteger: 1
+                
+        - fromFieldPath: "spec.parameters.nodePools[0].minNodeCount"
+          toFieldPath: "spec.forProvider.autoscaling.minNodeCount"
+          policy:
+            fromFieldPath: Fallback
+          transforms:
+            - type: int
+              int:
+                fromInteger: 1
+                
+        - fromFieldPath: "spec.parameters.nodePools[0].maxNodeCount"
+          toFieldPath: "spec.forProvider.autoscaling.maxNodeCount"
+          policy:
+            fromFieldPath: Fallback
+          transforms:
+            - type: int
+              int:
+                fromInteger: 5
+                
+        - fromFieldPath: "spec.parameters.nodePools[0].diskSizeGb"
+          toFieldPath: "spec.forProvider.nodeConfig.diskSizeGb"
+          policy:
+            fromFieldPath: Fallback
+          transforms:
+            - type: int
+              int:
+                fromInteger: 100
+                
+        - fromFieldPath: "spec.parameters.nodePools[0].diskType"
+          toFieldPath: "spec.forProvider.nodeConfig.diskType"
+          policy:
+            fromFieldPath: Fallback
+          transforms:
+            - type: string
+              string:
+                fmt: "pd-standard"
+
+    # 3. Helm Repository for Cert Manager
+    - name: cert-manager-repo
+      base:
+        apiVersion: helm.crossplane.io/v1beta1
+        kind: HelmRepository
+        metadata:
+          name: cert-manager-repo
+        spec:
+          url: https://charts.jetstack.io
+      patches:
+        - fromFieldPath: "spec.parameters.clusterName"
+          toFieldPath: "metadata.name"
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-cert-manager-repo"
+      readinessChecks:
+        - type: None
+
+    # 4. Helm Release for Cert Manager
+    - name: cert-manager
+      base:
+        apiVersion: helm.crossplane.io/v1beta1
+        kind: HelmRelease
+        metadata:
+          name: cert-manager
+        spec:
+          chart:
+            name: cert-manager
+            repository: cert-manager-repo
+            version: v1.12.0
+          namespace: cert-manager
+          createNamespace: true
+          values:
+            installCRDs: true
+            global:
+              leaderElection:
+                namespace: cert-manager
+      patches:
+        - fromFieldPath: "spec.parameters.clusterName"
+          toFieldPath: "metadata.name"
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-cert-manager"
+        - fromFieldPath: "spec.parameters.addons.certManager.enabled"
+          toFieldPath: "spec.chart.name"
+          policy:
+            fromFieldPath: Required
+          transforms:
+            - type: map
+              map:
+                if:
+                  ==:
+                    - fromValue: false
+                    - value: false
+                then: null
+                else: cert-manager
+      readinessChecks:
+        - type: None
+
+    # 5. Helm Repository for Kyverno
+    - name: kyverno-repo
+      base:
+        apiVersion: helm.crossplane.io/v1beta1
+        kind: HelmRepository
+        metadata:
+          name: kyverno-repo
+        spec:
+          url: https://kyverno.github.io/kyverno/
+      patches:
+        - fromFieldPath: "spec.parameters.clusterName"
+          toFieldPath: "metadata.name"
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-kyverno-repo"
+      readinessChecks:
+        - type: None
+
+    # 6. Helm Release for Kyverno
+    - name: kyverno
+      base:
+        apiVersion: helm.crossplane.io/v1beta1
+        kind: HelmRelease
+        metadata:
+          name: kyverno
+        spec:
+          chart:
+            name: kyverno
+            repository: kyverno-repo
+            version: v2.7.2
+          namespace: kyverno
+          createNamespace: true
+      patches:
+        - fromFieldPath: "spec.parameters.clusterName"
+          toFieldPath: "metadata.name"
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-kyverno"
+        - fromFieldPath: "spec.parameters.addons.kyverno.enabled"
+          toFieldPath: "spec.chart.name"
+          policy:
+            fromFieldPath: Required
+          transforms:
+            - type: map
+              map:
+                if:
+                  ==:
+                    - fromValue: false
+                    - value: false
+                then: null
+                else: kyverno
+      readinessChecks:
+        - type: None
+
+    # 7. Helm Repository for External Secrets
+    - name: external-secrets-repo
+      base:
+        apiVersion: helm.crossplane.io/v1beta1
+        kind: HelmRepository
+        metadata:
+          name: external-secrets-repo
+        spec:
+          url: https://charts.external-secrets.io
+      patches:
+        - fromFieldPath: "spec.parameters.clusterName"
+          toFieldPath: "metadata.name"
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-external-secrets-repo"
+      readinessChecks:
+        - type: None
+
+    # 8. Helm Release for External Secrets
+    - name: external-secrets
+      base:
+        apiVersion: helm.crossplane.io/v1beta1
+        kind: HelmRelease
+        metadata:
+          name: external-secrets
+        spec:
+          chart:
+            name: external-secrets
+            repository: external-secrets-repo
+            version: v0.8.1
+          namespace: external-secrets
+          createNamespace: true
+          values:
+            serviceAccount:
+              annotations:
+                iam.gke.io/gcp-service-account: external-secrets-sa@{{ .Values.gcp.projectId }}.iam.gserviceaccount.com
+      patches:
+        - fromFieldPath: "spec.parameters.clusterName"
+          toFieldPath: "metadata.name"
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-external-secrets"
+        - fromFieldPath: "spec.parameters.addons.externalSecrets.enabled"
+          toFieldPath: "spec.chart.name"
+          policy:
+            fromFieldPath: Required
+          transforms:
+            - type: map
+              map:
+                if:
+                  ==:
+                    - fromValue: false
+                    - value: false
+                then: null
+                else: external-secrets
+        - fromFieldPath: "spec.parameters.projectId"
+          toFieldPath: "spec.values.serviceAccount.annotations[iam\\.gke\\.io/gcp-service-account]"
+          transforms:
+            - type: string
+              string:
+                fmt: "external-secrets-sa@%s.iam.gserviceaccount.com"
+      readinessChecks:
+        - type: None
+
+    # 9. Helm Repository for Prometheus
+    - name: prometheus-repo
+      base:
+        apiVersion: helm.crossplane.io/v1beta1
+        kind: HelmRepository
+        metadata:
+          name: prometheus-repo
+        spec:
+          url: https://prometheus-community.github.io/helm-charts
+      patches:
+        - fromFieldPath: "spec.parameters.clusterName"
+          toFieldPath: "metadata.name"
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-prometheus-repo"
+      readinessChecks:
+        - type: None
+
+    # 10. Helm Release for Prometheus
+    - name: prometheus
+      base:
+        apiVersion: helm.crossplane.io/v1beta1
+        kind: HelmRelease
+        metadata:
+          name: prometheus
+        spec:
+          chart:
+            name: kube-prometheus-stack
+            repository: prometheus-repo
+            version: v45.7.1
+          namespace: monitoring
+          createNamespace: true
+          values:
+            grafana:
+              enabled: true
+              adminPassword: "admin-password" # This should be replaced with a secretRef in production
+            prometheus:
+              prometheusSpec:
+                retention: 10d
+                resources:
+                  requests:
+                    memory: 1Gi
+                storageSpec:
+                  volumeClaimTemplate:
+                    spec:
+                      storageClassName: standard
+                      resources:
+                        requests:
+                          storage: 50Gi
+      patches:
+        - fromFieldPath: "spec.parameters.clusterName"
+          toFieldPath: "metadata.name"
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-prometheus"
+        - fromFieldPath: "spec.parameters.addons.prometheus.enabled"
+          toFieldPath: "spec.chart.name"
+          policy:
+            fromFieldPath: Required
+          transforms:
+            - type: map
+              map:
+                if:
+                  ==:
+                    - fromValue: false
+                    - value: false
+                then: null
+                else: kube-prometheus-stack
+      readinessChecks:
+        - type: None

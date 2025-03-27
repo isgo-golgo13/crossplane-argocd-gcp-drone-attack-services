@@ -1,0 +1,41 @@
+apiVersion: gcp.platform.example.org/v1alpha1
+kind: GCPGKECluster
+metadata:
+  name: {{ .Values.claimName }}-poc  
+  namespace: crossplane-system  # This is just for the template; customers will use their own namespaces
+spec:
+  parameters:
+    projectId: {{ .Values.gcp.projectId }}
+    region: {{ .Values.gcp.region }}
+    zone: {{ .Values.gcp.region }}-a
+    vpcNetwork: {{ .Values.gcp.vpcHost.network }}
+    vpcSubnetwork: {{ .Values.gcp.vpcHost.subnetwork }}
+    
+    clusterName: example-private-gke-cluster
+    kubernetesVersion: "1.31"
+    privateCluster: true
+    enableWorkloadIdentity: true
+    
+    nodePools:
+      - name: main-pool
+        machineType: {{ .Values.gke.nodePool.machineType }}
+        initialNodeCount: {{ .Values.gke.nodePool.minCount }}
+        minNodeCount: {{ .Values.gke.nodePool.minCount }}
+        maxNodeCount: {{ .Values.gke.nodePool.maxCount }}
+        diskSizeGb: {{ .Values.gke.nodePool.diskSizeGb }}
+        diskType: {{ .Values.gke.nodePool.diskType }}
+    
+    addons:
+      certManager:
+        enabled: {{ .Values.addons.certManager.enabled }}
+      kyverno:
+        enabled: {{ .Values.addons.kyverno.enabled }}
+      externalSecrets:
+        enabled: {{ .Values.addons.externalSecrets.enabled }}
+      prometheus:
+        enabled: {{ .Values.addons.prometheus.enabled }}
+  compositionRef:
+    name: {{ .Values.compositionName }}
+  writeConnectionSecretToRef:
+    name: app-x-gke-cluster-connection
+    namespace: app-x  # The namespace where the connection secret will be written
