@@ -427,8 +427,7 @@ The following applications are provided for this project.
     - Stores sortie status progressions to GCP Firestore NoSQL DB
         - Syncs to GCP Firestore DB at 25 Waypoint Radio Towers
 
-##
-##
+
 
 ## Installing Crossplane and Crossplane Control-Plane Architecture w/ ArgoCD
 
