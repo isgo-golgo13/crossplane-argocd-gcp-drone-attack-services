@@ -605,59 +605,15 @@ Crossplane will reference a Kubernetes ExternalSecret resource that will generat
 
 **The Crossplane Control-Plane Cluster using GCP GKE**
 
-This version of using Crosslane will provision a GCP GKE Kubernetes Cluster as the Crossplane Control-Plane Cluster with 
-GCP IAM Workload Identity credentials provided. This GCP GKE Crossplane Control-Plane Cluster will drive all XR API Claims to GCP using its included ESO `ExternalSecret` referenced in its Crossplane deployed `ProviderConfig`.  This GCP GKE Crossplane Cluster in-turn would own the leadership of provisioning all GCP cloud resources from this point forward.
+This version of using Crosslane will provision a GCP GKE Kubernetes Cluster as the Crossplane Control-Plane Cluster with GCP IAM Workload Identity credentials provided. This GCP GKE Crossplane Control-Plane Cluster will drive all XR API Claims to GCP using its included ESO `ExternalSecret` referenced in its Crossplane deployed `ProviderConfig`.  This GCP GKE Crossplane Cluster in-turn would own the leadership of provisioning all GCP cloud resources from this point forward.
 
 To create the GCP GKE Cluster serving as the Crossplane-Control Plane directly provisioning resources in GCP there are three provided approaches.
 
-- Provide Go Cobra CLI API application (using Go Cobra CPI and GCP packages) to create a GCP GKE Cluster with an associated GCP IAM Workload Identity Credentials to allow Crossplane (deployed in a second stage) to draw the XR API requested GCP resources.
 
-The directory structure for this CLI API is as follows.
+- Provide a Terraform Module to create a GCP GKE Cluster with an associated GCP IAM Workload Identity Credentials to allow Crossplane (deployed in a second stage) to draw the XR API requested GCP resources.
 
-```shell
-cxp-control-plane-gcp-gke-workload-identity-go/
-├── cmd/
-│   └── root.go
-│   └── create.go
-├── internal/
-│   └── config/
-│       └── config.go
-├── pkg/
-│   └── gke/
-│       └── cluster.go
-│   └── identity/
-│       └── workload_identity.go
-├── Dockerfile
-├── Makefile
-└── main.go
-```
+- Provide a Terraform CDKTF (Cloud Developer Kit Transpiler Framewwork) Module in Go to create a GCP GKE Cluster with an associated GCP IAM Workload Identity Credentials to allow Crossplane (deployed in a second stage) to draw the XR API requested GCP resources.
 
-To clean up the resources (a destructor of the GCP resources) the following project will do this.
-
-```shell
-cxp-control-plane-gcp-gke-workload-identity-drop-go/
-├── cmd/
-│   ├── root.go
-│   └── delete.go
-├── internal/
-│   └── config/
-│       └── config.go
-├── pkg/
-│   ├── gke/
-│   │   └── teardown.go
-│   └── identity/
-│       └── teardown.go
-├── Dockerfile
-├── Makefile
-└── main.go
-```
-
-
-
-
-- Provide Go OpenAPI application (using Go GCP packages) to create a GCP GKE Cluster with an associated GCP IAM Workload Identity Credentials to allow Crossplane (deployed in a second stage) to draw the XR API requested GCP resources.
-
-- Provide a Terraform CDKTF (Cloud Developer Kit Transpiler Framewwork) in Go to create a GCP GKE Cluster with an associated GCP IAM Workload Identity Credentials to allow Crossplane (deployed in a second stage) to draw the XR API requested GCP resources.
 
 
 The workflow(s) use GCP GKE Cluster to associate a GCP IAM Workload Identity Credential to a Kubernetes Service Account (KSA) in stage one. In stage two a `Crossplane GCP GKE Control-Plane Conversion Helm Chart` will convert the GCP GKE Cluster into a Crossplane Control Plane Cluster with the provisionary configurations including the inherited GCP IAM Workload Identity in its Kubernetes Secrets. This Helm Chart depends on Crossplane CRDs getting installed and after this installation, it will deploy the required ESO `ClusterSecretStore` and `ExternalSecret` to register Crossplane to aquire dynamically the GCP IAM Workload Identity Secrets and avoid long-lived secret credentials storage.
