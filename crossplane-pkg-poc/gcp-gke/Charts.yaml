@@ -1,0 +1,11 @@
+apiVersion: v2
+name: gcp-gke
+description: A Helm chart for GCP GKE XR API Package
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+maintainers:
+  - name: EQL Platform Architecture Services
+    email: tom@eqlgames.com
+dependencies:
+  # You could add dependencies to other charts here if needed
