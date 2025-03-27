@@ -512,7 +512,7 @@ kubectl get pod crossplane-rbac-manager-564687c9dd-s96x9 -n crossplane-system -o
 
 ### Pre-Verifcation of Exiting GCP IAM Workload Identity (WID) GKE Cluster (Pre-Created GKE Cluster)
 
-**1 Verify GCP IAM WID is associated on the GKE Cluster**
+**(1) Verify GCP IAM WID is associated on the GKE Cluster**
 ```shell
 gcloud container clusters describe <cluster-name> \
   --zone <zone> \
@@ -529,7 +529,7 @@ project-id.svc.id.goog
 If this is **null** this is a show stopper until reconfigured.
 
 
-**2 Check for Service Accounts exist in ESO namespace**
+**(2) Check for Service Accounts exist in ESO namespace**
 
 ```shell
 kubectl get sa -n external-secrets
@@ -551,7 +551,7 @@ annotations:
 - IF it is **NOT** present, ESO is **NOT** using GCP IAM WID.
 - IF it is present, verify the GSA exists.
 
-**3 Verify the GSA exists**
+**(3) Verify the GSA exists**
 
 ```shell
 gcloud iam service-accounts list --project <project-id>
@@ -560,7 +560,7 @@ gcloud iam service-accounts list --project <project-id>
 Verify the email matches the annotation showed.
 
 
-**4 Verify IAM binding (association) on the GSA**
+**(4) Verify IAM binding (association) on the GSA**
 
 ```shell
 gcloud projects get-iam-policy <project-id> \
@@ -577,7 +577,7 @@ Look for the following.
 IF these are **NOT** present, GCP IAM WID will **NOT** work.
 
 
-**5** `Show the GCP Secrets`
+**(5) Show the GCP Secrets**
 
 ```shell
 gcloud secrets list --project <project-id>
@@ -586,6 +586,7 @@ gcloud secrets list --project <project-id>
 Confirm a secret exists that ESO is targeting. Later a `kubectl get externalsecret` to match.
 
 **IF steps 1-5 are verified OK**, then Crossplane GCP Control Plane Helm Chart can get installed.
+
 
 
 
