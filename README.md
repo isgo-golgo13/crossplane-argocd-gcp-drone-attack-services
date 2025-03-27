@@ -310,38 +310,10 @@ This uses the `Multple Claim Crossplane Model`.
 
 ## Crossplane XRD API Request (Claim) Architecture Workflow
 
-**Prerequsites for the workflow
-
-- Docker
-- Kubernetes Cluster (GCP)
-- GCP Cloud Account 
-- Helm 3.12+
-- ArgoCD Helm Chart Installed w/ ArgoCD ApplicationSet Controller enabled (default is disabled)
-    - Deploys to `argocd` namespace
-- Crossplane Helm Chart Installed
-    - Deploys to `crossplane-system` namespace
-
-
-To change the sources 
-
-- Requires Go 1.23+
-- Requires Rust 1.75+
-
-
-#### Ordered Workflow
-
 **For GCP CXP Deployments**
 
 - (Platform Expert) Create CXP Cluster
 - (Platform Expert) Configure (Set) GCP ProjectId Region 
-
-```shell
-gcloud config set project cxp-gcp
-gcloud config set compute/region us-west4
-gcloud config set compute/zone us-west4-a
-```
-
-
 - (Platform Expert) Run GCP IAM Workload Identity Script
 - (Platform Expert) Run Helm Chart for CXP Provider Chart
 - (Platform Expert) Verify the Helm Chart for CXP Provider Deploy (`crossplane-gcp-control-plane`)
@@ -353,7 +325,7 @@ gcloud config set compute/zone us-west4-a
   - `kubectl get gcpgke-claims` 
 
 
-** To drop/delete all provisoned client resources through the XR API Claim**
+**To drop/delete all provisoned client resources through the XR API Claim**
 
 ```shell
 kubectl get gcpgke-claims
