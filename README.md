@@ -441,7 +441,7 @@ helm install crossplane crossplane-stable/crossplane \
   --namespace crossplane-system \
   --create-namespace \
   --set 'args[0]=--enable-composition-revisions' \
-  --set replicas=3 \
+  --set replicas=1 \
   --set podDisruptionBudget.enabled=true \
   --set podDisruptionBudget.minAvailable=2 \
   --set leaderElection=true \
@@ -452,6 +452,22 @@ helm install crossplane crossplane-stable/crossplane \
   --set 'tolerations[1].key=node-role.kubernetes.io/control-plane' \
   --set 'tolerations[1].operator=Exists'
 ```
+
+To install without the Pod `tolerations` the Helm install changes to.
+
+```shell
+helm install crossplane crossplane-stable/crossplane \
+  --namespace crossplane-system \
+  --create-namespace \
+  --set 'args[0]=--enable-composition-revisions' \
+  --set replicas=1 \
+  --set podDisruptionBudget.enabled=true \
+  --set podDisruptionBudget.minAvailable=2 \
+  --set leaderElection=true \
+  --set rbacManager.deploy=true \
+  --set securityContext.runAsNonRoot=true
+```
+
 
 In-Progress
 
