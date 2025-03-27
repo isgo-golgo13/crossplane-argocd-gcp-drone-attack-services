@@ -577,7 +577,15 @@ Look for the following.
 IF these are **NOT** present, GCP IAM WID will **NOT** work.
 
 
+**5 Show the GCP Secrets**
 
+```shell
+gcloud secrets list --project <project-id>
+```
+
+Confirm a secret exists that ESO is targeting. Later a `kubectl get externalsecret` to match.
+
+**IF steps 1-5 are verified OK**, then Crossplane GCP Control Plane Helm Chart can get installed.
 
 
 
