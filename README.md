@@ -468,6 +468,24 @@ helm install crossplane crossplane-stable/crossplane \
   --set securityContext.runAsNonRoot=true
 ```
 
+Or without `PodDisruptionBudget` for nonprod evalations.
+
+```shell
+helm install crossplane crossplane-stable/crossplane \
+  --namespace crossplane-system \
+  --create-namespace \
+  --set 'args[0]=--enable-composition-revisions' \
+  --set replicas=1 \
+  --set podDisruptionBudget.enabled=true \
+  --set podDisruptionBudget.minAvailable=2 \
+  --set leaderElection=true \
+  --set rbacManager.deploy=true \
+  --set securityContext.runAsNonRoot=true
+  ```
+
+  
+
+
 
 In-Progress
 
