@@ -398,6 +398,55 @@ In-Progress
 
 
 
+
+## Registering XR API Packages to Crossplane (Platform Architecture Side)
+
+The following workflow and graphical diagrams will follow the sequence of **registering** the Crossplane XR API packages
+to the active Crossplane (AWS EKS) Control-Plane Cluster.
+
+## Registering/Requesting XR API to Crossplane (Product Side)
+
+The following workflow and graphical diagrams will follow the sequence of **registering/requesting** the Crossplane XR API packages
+to the active Crossplane (AWS EKS) Control-Plane Cluster through the client facing `XR API Claim`.
+
+##
+![api-claim-workflow](docs/gitops-last-gcp-gke-claim-request-flow.png)
+##
+
+
+## Provisioning XR APIs to Crossplane Workflow Architectures
+
+The following section drills over in-depth the two approaches clients request their Crossplane XR API Claims to Crossplane Control-Plane
+Cluster. The two approaches differ on fidelity of GitOps tracking the requests for cloud reources desired and the sequential routes each of these
+two approaches do it.
+
+- GitOps **First** Approach (Crossplane Control-Plane Cluster in conjunction with **ArgoCD** or `FluxCD`)
+- GitOps **Last** Approach (Crossplane Control-Plane Cluster **NOT** conjunction with ArgoCD or `FluxCD`)
+
+### GitOps First Approach
+
+The `GitOps First Approach` involves an architecture of the Crossplane Control-Plane Cluster working in conjunction with
+GitOps Agent ArgoCD to track all Crossplane XR API Claim requests enroute to a Git repository preregistered with ArgoCD to track Git recordings prior to
+ArgoCD dispatching the changes through Crossplane. This approach does **NOT** provide serving streamlined Crossplane XR API Claim requests directly to the
+Crossplane Control-Plane Cluster directly. This approach does provide higher-grade Git auditing, tracking and Git transaction reversal in the occurance of any
+failed reconciliation events.
+
+The GitOps First Approach the Crossplane Control-Plane Cluster will require careful capacity planning of the required
+CLuster resources (CPU, CPU Cache and Memory) and logical VPC AZ planning that reduce and severly risk HA in low-latency network connections to avoid
+Crossplane and in-particular ArgoCD service disruption.
+
+### GitOps Last Approach
+
+The `GitOps Last Approach` involves an architecture of the Crossplane Control-Plane Cluster without a GitOps Agent (ArgoCD or FluxCD). This approach does provide serving streamlined Crossplane XR API Claim requests directly to the
+Crossplane Control-Plane Cluster directly. This approach does **NOT** provide higher-grade Git auditing, tracking and Git transaction reversal in the occurance of any
+failed reconciliation events.
+
+## Upgrading Lifecycle of Crossplane Control Plane Cluster (API Versioning Clusters)
+
+In-Progress
+
+
+
 ## GCP Applications (GCP GKE App, GCP CloudRun App, GCP AppEngine App*)
 
 The following applications are provided for this project.
@@ -673,51 +722,12 @@ The provided `Chart.yaml` is structured as follows.
 ```yaml
 apiVersion: v2
 name: crossplane-gcp-control-plane
-description: A Helm chart for setting up a AWS GitOps-based Crossplane control plane with ArgoCD and External Secrets Operator.
+description: A Helm chart for GCP GitOps Crossplane Control Plane.
 type: application
 version: 1.0.0
 appVersion: "1.0.0"
-
-dependencies:
-  - name: argo-cd
-    version: "5.51.3" # Match the latest stable version
-    repository: "https://argoproj.github.io/argo-helm"
-
-  - name: external-secrets
-    version: "0.9.10" # Match the latest stable version
-    repository: "https://charts.external-secrets.io"
-
-  - name: crossplane
-    version: "1.14.2" # Match the latest stable version
-    repository: "https://charts.crossplane.io/stable"
-
-  - name: cert-manager
-    version: "1.14.2" # Match the latest stable version
-    repository: "https://charts.jetstack.io"
 ```
 
-### Generating the Chart Dependencies Workflow (Required)
-
-```shell
-helm dependency build crossplane-gcp-control-plane-cluster/
-```
-
-To verify the dependency list.
-
-```shell
-helm dependency list crossplane-gcp-control-plane-cluster/
-```
-
-
-This will generate the following packaging structure.
-
-```shell
-./crossplane-gcp-control-plane/charts/
-  ├── crossplane-1.14.2.tgz
-  ├── argo-cd-5.51.3.tgz
-  ├── external-secrets-0.9.10.tgz
-  └── cert-manager-1.14.2.tgz
-```
 
 The GCP GKE Crossplane Configuraiton Helm Chart is **NOW** prepared for deploy.
 
@@ -730,34 +740,6 @@ helm install crossplane-gcp-control-plane \
 ```
 
 
-#### Namespace Association (Post-Deploy)
-```shell
-| Dependency Chart     | Kubernetes Namespace  | Description                                           |
-|----------------------|-----------------------|-------------------------------------------------------|
-| crossplane           | crossplane-system     | Core Crossplane Controllers and APIs                  |
-| external-secrets     | external-secrets      | ESO for Non-Static Secret Syncing with IRSA/WID       |
-| argo-cd              | argocd                | GitOps Engine for Syncing Crossplane XR API Resources |
-| cert-manager         | cert-manager          | Certificate Controller for TLS                        |
-```
-
-
-
-The helm install will automate the following on the Crossplane Control-Plane Kubernetes Cluster.
-
-- Create the `crossplane-system` (standard required namespace) namespace (if not present)
-- Provision Crossplane, ESO, ArgoCD and Cert-Manager 
-- Configure ESO to control GCP IAM Workload Identity (WID) Secret Credentials
-- Configures Crossplane to reference ESO controlled GCP IAM WID Secret Credentials in GCP `ProviderConfig`
-
-
-To verify the installation.
-
-```shell
-kubectl get pods -n crossplane-system
-kubectl get pods -n external-secrets
-kubectl get pods -n argocd
-kubectl get pods -n cert-manager
-```
 
 To verify the ESO Secrets.
 
@@ -809,10 +791,6 @@ kubectl describe externalsecret gcp-crossplane-creds -n external-secrets
 ```shell
 kubectl get secret gcp-crossplane-creds -n external-secrets -o yaml
 ```
-
-
-
-
 
 
 
