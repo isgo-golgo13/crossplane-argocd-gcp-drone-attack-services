@@ -486,17 +486,16 @@ helm install crossplane crossplane-stable/crossplane \
   Or to drop the CPU for lower-spec Cluster Nodes.
 
 ```shell
-helm install crossplane crossplane-stable/crossplane \
+helm upgrade crossplane crossplane-stable/crossplane \
   --namespace crossplane-system \
-  --create-namespace \
   --set 'args[0]=--enable-composition-revisions' \
   --set replicas=1 \
   --set podDisruptionBudget.enabled=false \
   --set rbacManager.deploy=true \
-  --set rbacManager.resources.requests.cpu=50m \
-  --set rbacManager.resources.requests.memory=128Mi \
-  --set rbacManager.resources.limits.cpu=100m \
-  --set rbacManager.resources.limits.memory=256Mi \
+  --set rbacManager.resources.requests.cpu=25m \
+  --set rbacManager.resources.requests.memory=64Mi \
+  --set rbacManager.resources.limits.cpu=50m \
+  --set rbacManager.resources.limits.memory=128Mi \
   --set securityContext.runAsNonRoot=true \
   --set resources.limits.cpu=250m \
   --set resources.limits.memory=512Mi \
@@ -504,13 +503,62 @@ helm install crossplane crossplane-stable/crossplane \
   --set resources.requests.memory=128Mi
 ```
 
+Verify the CPU resources for the crossplane `rbacManager` deployed.
+
+```shell
+kubectl get pod crossplane-rbac-manager-564687c9dd-s96x9 -n crossplane-system -o=jsonpath='{.spec.containers[*].resources}'
+```
 
 
+### Pre-Verifcation of Exiting GCP IAM Workload Identity (WID) GKE Cluster (Pre-Created GKE Cluster)
+
+**1 Verify GCP IAM WID is associated on the GKE Cluster**
+```shell
+gcloud container clusters describe <cluster-name> \
+  --zone <zone> \
+  --project <project-id> \
+  --format="value(workloadIdentityConfig.workloadPool)"
+```
+
+Expected result.
+
+```shell
+project-id.svc.id.goog
+```
+
+If this is **null** this is a show stopper until reconfigured.
 
 
+**2 Check for Service Accounts exist in ESO namespace**
 
+```shell
+kubectl get sa -n external-secrets
+```
 
-In-Progress
+Find the ServiceAccount ESO is using. Then do.
+
+```shell
+kubectl get sa <eso-sa> -n external-secrets -o yaml
+```
+
+The expected `annotation` is.
+
+```shell
+annotations:
+  iam.gke.io/gcp-service-account: *-gsa@project.iam.gserviceaccount.com  # *-gsa is a placholder for actual gsa name
+```
+
+- IF it is **NOT** present, ESO is **NOT** using GCP IAM WID.
+- IF it is present, verify the GSA exists.
+
+**3 Verify the GSA exists**
+
+```shell
+gcloud iam service-accounts list --project <project-id>
+```
+
+Verify the email matches the annotation showed.
+
 
 
 ## Cloud Service Account and Crossplane ProviderConfig Workflow
