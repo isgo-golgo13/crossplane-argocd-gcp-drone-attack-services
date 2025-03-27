@@ -312,12 +312,8 @@ This uses the `Multple Claim Crossplane Model`.
 
 **For GCP CXP Deployments**
 
-- (Platform Expert) Create CXP Cluster
-- (Platform Expert) Configure (Set) GCP ProjectId Region 
-- (Platform Expert) Run GCP IAM Workload Identity Script
-- (Platform Expert) Run Helm Chart for CXP Provider Chart
-- (Platform Expert) Verify the Helm Chart for CXP Provider Deploy (`crossplane-gcp-control-plane`)
-- (Platform Expert) Run Helm Dependency Update for Crossplane Parent Helm Chart to Generate Manifests for Crossplane
+- (Platform Expert) Create Private GCP GKE CXP Cluster with GCP IAM Workload Identity (Terrform)
+- (Platform Expert) Run Helm Chart for CXP Provider Configuration Chart
 
 - (Client) Create XR API Claim to Push to CXP Cluster
   - `kubectl apply -f gcpgke-claim.yaml`
