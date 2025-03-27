@@ -494,6 +494,10 @@ helm install crossplane crossplane-stable/crossplane \
   --set replicas=1 \
   --set podDisruptionBudget.enabled=false \
   --set rbacManager.deploy=true \
+  --set rbacManager.resources.requests.cpu=50m \
+  --set rbacManager.resources.requests.memory=128Mi \
+  --set rbacManager.resources.limits.cpu=100m \
+  --set rbacManager.resources.limits.memory=256Mi \
   --set securityContext.runAsNonRoot=true \
   --set resources.limits.cpu=250m \
   --set resources.limits.memory=512Mi \
