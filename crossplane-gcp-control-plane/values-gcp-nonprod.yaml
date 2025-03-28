@@ -5,6 +5,7 @@ crossplane:
   namespace: "crossplane-system"
   serviceAccount: "crossplane-sa"
   providerImage: "crossplane/provider-gcp:v0.22.0"
+  controllerConfigName: "crossplane-provider-controller-config"
   replicas: 3
   enableCompositionRevisions: true
   podDisruptionBudget:
