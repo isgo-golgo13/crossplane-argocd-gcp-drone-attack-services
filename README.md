@@ -765,6 +765,19 @@ helm install crossplane-gcp-control-plane-provider ./crossplane-gcp-control-plan
 
 **NOTE** In Crossplane CRDS the `ControllerConfig` is now deprecated in-favor of `DeploymentRuntimeConfig` in v1beta1.
 
+Watch for the CRDS.
+
+```shell
+kubectl get crds | grep gcp
+```
+
+Watch for the GCP Crossplane Provider Status.
+
+```shell
+kubectl get provider crossplane-provider-gcp -n crossplane-system -o yaml | grep -A10 status:
+```
+
+
 
 **Crossplane GCP Provider Config Helm Chart**
 
