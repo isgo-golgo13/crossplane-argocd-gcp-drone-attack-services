@@ -745,11 +745,20 @@ appVersion: "1.0.0"
 
 The GCP GKE Crossplane Configuraiton Helm Chart is **NOW** prepared for deploy.
 
+
+To pre-render with `helm template`.
+
+```shell
+helm template crossplane-gcp-control-plane ./crossplane-gcp-control-plane-cluster \
+  --namespace crossplane-system \
+  -f values-gcp-nonprod.yaml
+```
+
+
 ```shell
 helm install crossplane-gcp-control-plane \
   ./crossplane-gcp-control-plane-cluster \
-  --namespace crossplane-system \
-  --create-namespace \
+  --namespace crossplane-system  \
   -f values-gcp-nonprod.yaml
 ```
 
