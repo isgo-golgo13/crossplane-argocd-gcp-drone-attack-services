@@ -324,7 +324,7 @@ credentials into the `External Secrets Operator` Secret referenced in the Crossp
 | Create GSA for ESO/Crossplane            | Yes                 | `google_service_account` resource                                                   |
 | Create KSA + bind to GSA                 | Yes                 | `kubernetes_service_account` + `google_service_account_iam_binding`                 |
 | Annotate KSA with GSA                    | Yes                 | `kubernetes_annotations` on KSA                                                     |
-| Create GCP Secret                        | Yes                 | `google_secret_manager_secret` with dummy placeholder                               |
+| Create GCP Secret                        | Yes                 | `google_secret_manager_secret` with ghost placeholder                               |
 | Grant GSA access to Secret               | Yes                 | `google_secret_manager_secret_iam_member` with `roles/secretmanager.secretAccessor` |
 | Output kubeconfig & Proxy (Bastion) info | Yes                 | Terraform `output` block with `gcloud` and `kubectl` access commands                |
 | Optional Proxy Host with NAT + Helm      | Yes                 | `google_compute_instance` + startup script with Helm & kubectl                      |
