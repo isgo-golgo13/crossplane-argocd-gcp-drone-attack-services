@@ -383,8 +383,7 @@ to the active Crossplane (AWS EKS) Control-Plane Cluster through the client faci
 
 ## Provisioning XR APIs to Crossplane Workflow Architectures
 
-The following section drills over in-depth the two approaches clients request their Crossplane XR API Claims to Crossplane Control-Plane
-Cluster. The two approaches differ on fidelity of GitOps tracking the requests for cloud reources desired and the sequential routes each of these
+The following section drills over in-depth the two approaches clients request their Crossplane XR API Claims to Crossplane Control-Plane Cluster. The two approaches differ on fidelity of GitOps tracking the requests for cloud reources desired and the sequential routes each of these
 two approaches do it.
 
 - GitOps **First** Approach (Crossplane Control-Plane Cluster in conjunction with **ArgoCD** or `FluxCD`)
@@ -455,7 +454,7 @@ helm install crossplane crossplane-stable/crossplane \
   --namespace crossplane-system \
   --create-namespace \
   --set 'args[0]=--enable-composition-revisions' \
-  --set replicas=1 \
+  --set replicas=3 \
   --set podDisruptionBudget.enabled=true \
   --set podDisruptionBudget.minAvailable=2 \
   --set leaderElection=true \
