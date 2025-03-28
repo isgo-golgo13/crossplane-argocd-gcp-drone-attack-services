@@ -312,7 +312,7 @@ This uses the `Multple Claim Crossplane Model`.
 
 ## Provisioning the GCP GKE Cluster for Crossplane (Terraform, Terraform CDKTF Go)
 
-### ✅ GCP GKE Terraform Module Capabilities
+### GCP GKE Terraform Module Features
 
 | Requirement                              | Covered in Module? | How is it Implemented?                                                               |
 |------------------------------------------|---------------------|-------------------------------------------------------------------------------------|
