@@ -749,7 +749,7 @@ The GCP GKE Crossplane Configuraiton Helm Chart is **NOW** prepared for deploy.
 To pre-render with `helm template`.
 
 ```shell
-helm template crossplane-gcp-control-plane ./crossplane-gcp-control-plane-cluster \
+helm template crossplane-gcp-control-plane ./crossplane-gcp-control-plane \
   --namespace crossplane-system \
   -f values-gcp-nonprod.yaml
 ```
@@ -757,7 +757,7 @@ helm template crossplane-gcp-control-plane ./crossplane-gcp-control-plane-cluste
 
 ```shell
 helm install crossplane-gcp-control-plane \
-  ./crossplane-gcp-control-plane-cluster \
+  ./crossplane-gcp-control-plane \
   --namespace crossplane-system  \
   -f values-gcp-nonprod.yaml
 ```
