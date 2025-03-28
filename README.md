@@ -748,25 +748,33 @@ The GCP GKE Crossplane Configuraiton Helm Chart is **NOW** prepared for deploy.
 
 First install the GCP Provider CRDs. These Crossplane CRDS are **CLUSTER SCOPED** (NO specific namespace)
 
-```shell
-kubectl apply -f https://raw.githubusercontent.com/crossplane/provider-gcp/v0.22.0/examples/crds.yaml
-```
-
 To pre-render with `helm template`.
 
 ```shell
-helm template crossplane-gcp-control-plane ./crossplane-gcp-control-plane \
-  --namespace crossplane-system \
-  -f ./crossplane-gcp-control-plane/values-gcp-nonprod.yaml
+helm template crossplane-gcp-control-plane-provider ./crossplane-gcp-control-plane-provider \
+  --namespace crossplane-system 
 ```
 
 
 ```shell
-helm install crossplane-gcp-control-plane \
-  ./crossplane-gcp-control-plane \
-  --namespace crossplane-system  \
-  -f ./crossplane-gcp-control-plane/values-gcp-nonprod.yaml
+helm install crossplane-gcp-control-plane-provider ./crossplane-gcp-control-plane-provider \
+  --namespace crossplane-system 
 ```
+
+Second pre-render the Crossplane Provider Config Helm Chart (ESO ClusterSecretStore, ESO ExternalSecret, Crossplane ProviderConfig)
+
+```shell
+helm template crossplane-gcp-control-plane-provider-config ./crossplane-gcp-control-plane-provider-config \
+  --namespace crossplane-system 
+```
+
+Now install.
+
+```shell
+helm install crossplane-gcp-control-plane-provider-config ./crossplane-gcp-control-plane-provider-config \
+  --namespace crossplane-system 
+```
+
 
 
 

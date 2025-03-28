@@ -1,0 +1,6 @@
+apiVersion: v2
+name: crossplane-gcp-control-plane-provider-config
+description: Crossplane ProviderConfig, ExternalSecret, ClusterSecretStore
+type: application
+version: 0.1.0
+appVersion: "v0.22.0"
