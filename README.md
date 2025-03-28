@@ -320,7 +320,7 @@ credentials into the `External Secrets Operator` Secret referenced in the Crossp
 
 | Requirement                              | Covered in Module? | How is it Implemented?                                                               |
 |------------------------------------------|---------------------|-------------------------------------------------------------------------------------|
-| Create private GKE cluster               | Yes                 | `google_container_cluster` with `private_cluster_config`                            |
+| Create Private GKE cluster               | Yes                 | `google_container_cluster` with `private_cluster_config`                            |
 | Enable GCP IAM Workload Identity         | Yes                 | `workload_identity_config` on GKE cluster                                           |
 | Create GSA for ESO/Crossplane            | Yes                 | `google_service_account` resource                                                   |
 | Create KSA + bind to GSA                 | Yes                 | `kubernetes_service_account` + `google_service_account_iam_binding`                 |
