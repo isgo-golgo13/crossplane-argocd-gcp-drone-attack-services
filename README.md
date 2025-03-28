@@ -751,7 +751,7 @@ To pre-render with `helm template`.
 ```shell
 helm template crossplane-gcp-control-plane ./crossplane-gcp-control-plane \
   --namespace crossplane-system \
-  -f values-gcp-nonprod.yaml
+  -f ./crossplane-gcp-control-plane/values-gcp-nonprod.yaml
 ```
 
 
@@ -759,7 +759,7 @@ helm template crossplane-gcp-control-plane ./crossplane-gcp-control-plane \
 helm install crossplane-gcp-control-plane \
   ./crossplane-gcp-control-plane \
   --namespace crossplane-system  \
-  -f values-gcp-nonprod.yaml
+  -f ./crossplane-gcp-control-plane/values-gcp-nonprod.yaml
 ```
 
 
