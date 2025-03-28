@@ -746,6 +746,12 @@ appVersion: "1.0.0"
 The GCP GKE Crossplane Configuraiton Helm Chart is **NOW** prepared for deploy.
 
 
+First install the GCP Provider CRDs.
+
+```shell
+kubectl apply -f https://raw.githubusercontent.com/crossplane/provider-gcp/v0.22.0/package/crds.yaml
+```
+
 To pre-render with `helm template`.
 
 ```shell
