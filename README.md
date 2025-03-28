@@ -308,6 +308,29 @@ Profile of the proceeding CLI issuance is as follows.
 This uses the `Multple Claim Crossplane Model`.
 
 
+
+
+## Provisioning the GCP GKE Cluster for Crossplane (Terraform, Terraform CDKTF Go)
+
+### ✅ GCP GKE Terraform Module Capabilities
+
+| Requirement                              | Covered in Module? | How is it Implemented?                                                               |
+|------------------------------------------|---------------------|-------------------------------------------------------------------------------------|
+| Create private GKE cluster               | Yes                 | `google_container_cluster` with `private_cluster_config`                            |
+| Enable GCP IAM Workload Identity         | Yes                 | `workload_identity_config` on GKE cluster                                           |
+| Create GSA for ESO/Crossplane            | Yes                 | `google_service_account` resource                                                   |
+| Create KSA + bind to GSA                 | Yes                 | `kubernetes_service_account` + `google_service_account_iam_binding`                 |
+| Annotate KSA with GSA                    | Yes                 | `kubernetes_annotations` on KSA                                                     |
+| Create GCP Secret                        | Yes                 | `google_secret_manager_secret` with dummy placeholder                               |
+| Grant GSA access to Secret               | Yes                 | `google_secret_manager_secret_iam_member` with `roles/secretmanager.secretAccessor` |
+| Output kubeconfig & Proxy (Bastion) info | Yes                 | Terraform `output` block with `gcloud` and `kubectl` access commands                |
+| Optional Proxy Host with NAT + Helm      | Yes                 | `google_compute_instance` + startup script with Helm & kubectl                      |
+
+
+
+
+
+
 ## Crossplane XRD API Request (Claim) Architecture Workflow
 
 **For GCP CXP Deployments**
@@ -521,6 +544,28 @@ Verify the CPU resources for the crossplane `rbacManager` deployed.
 ```shell
 kubectl get pod crossplane-rbac-manager-564687c9dd-s96x9 -n crossplane-system -o=jsonpath='{.spec.containers[*].resources}'
 ```
+
+
+**Installing External Secrets Operator**
+
+```shell
+helm install external-secrets \
+   external-secrets/external-secrets \
+    -n external-secrets \
+    --create-namespace 
+```
+
+**Installing Cert-Manager**
+
+
+**Installing ArgoCD with ArgoCD ApplicationSet Controller Optioned**
+
+
+
+
+
+
+
 
 
 
@@ -809,17 +854,6 @@ Crossplane will reference a Kubernetes ExternalSecret resource that will generat
 **TODO**
 
 
-To generate the dependencies for the Helm Chart.
-
-```shell
-helm dependency build ./crossplane-azure-control-plane
-```
-
-To verify the dependencies.
-
-```shell
-helm dependency list ./crossplane-azure-control-plane
-```
 
 To deploy this Helm Chart for Azure Provider to the Crossplane Control-Plane Cluster.
 
