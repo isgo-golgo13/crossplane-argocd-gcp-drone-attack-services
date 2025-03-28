@@ -1,5 +1,5 @@
 gcp:
-  projectId: "cxp-gcp"
+  projectId: "eql-hub"
 
 crossplane:
   namespace: "crossplane-system"
@@ -16,18 +16,12 @@ crossplane:
     enabled: true
   securityContext:
     runAsNonRoot: true
-  tolerations:
-    - key: "CriticalAddonsOnly"
-      operator: "Exists"
-    - key: "node-role.kubernetes.io/control-plane"
-      operator: "Exists"
-  controllerConfigName: "crossplane-provider-controller-config"
 
 eso:
   refreshInterval: "1h"
 
 argocd:
-  enabled: true
+  enabled: false
   namespace: "argocd"
   insecure: true  
   tls:
