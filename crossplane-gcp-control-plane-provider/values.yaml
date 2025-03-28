@@ -1,0 +1,3 @@
+crossplane:
+  providerImage: "crossplane/provider-gcp:v0.22.0"
+  controllerConfigName: "crossplane-provider-controller-config"

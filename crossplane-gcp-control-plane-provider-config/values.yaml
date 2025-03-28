@@ -1,0 +1,13 @@
+gcp:
+  projectId: "eql-hub"
+
+crossplane:
+  namespace: "crossplane-system"
+  serviceAccount: "crossplane-sa"
+
+eso:
+  refreshInterval: "1h"
+
+externalSecrets:
+  namespace: "external-secrets"
+  clusterSecretStoreName: "gcp-workload-identity-store"
