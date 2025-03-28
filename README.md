@@ -473,7 +473,7 @@ helm install crossplane crossplane-stable/crossplane \
   --namespace crossplane-system \
   --create-namespace \
   --set 'args[0]=--enable-composition-revisions' \
-  --set replicas=1 \
+  --set replicas=3 \
   --set podDisruptionBudget.enabled=true \
   --set podDisruptionBudget.minAvailable=2 \
   --set leaderElection=true \
@@ -927,27 +927,10 @@ The Chart.yaml is as follows.
 ```shell
 apiVersion: v2
 name: crossplane-gitops-control-plane
-description: A Helm chart for setting up a GitOps-based Crossplane control plane with ArgoCD and External Secrets Operator.
+description: A Helm Chart for GitOps Crossplane Control Plane.
 type: application
 version: 1.0.0
 appVersion: "1.0.0"
-
-dependencies:
-  - name: argo-cd
-    version: "5.51.3"  # Match the latest stable version
-    repository: "https://argoproj.github.io/argo-helm"
-
-  - name: external-secrets
-    version: "0.9.10"  # Match the latest stable version
-    repository: "https://charts.external-secrets.io"
-
-  - name: crossplane
-    version: "1.14.2"  # Match the latest stable version
-    repository: "https://charts.crossplane.io/stable"
-
-  - name: cert-manager
-    version: "1.14.2"  # Match the latest stable version
-    repository: "https://charts.jetstack.io"
 ```
 
 The GCP version of the Helm Chart resources are.
