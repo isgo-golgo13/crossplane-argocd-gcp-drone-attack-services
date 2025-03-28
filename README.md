@@ -750,6 +750,8 @@ First install the GCP Provider CRDs. These Crossplane CRDS are **CLUSTER SCOPED*
 
 To pre-render with `helm template`.
 
+**Crossplane GCP Provider Helm Chart**
+
 ```shell
 helm template crossplane-gcp-control-plane-provider ./crossplane-gcp-control-plane-provider \
   --namespace crossplane-system 
@@ -760,6 +762,9 @@ helm template crossplane-gcp-control-plane-provider ./crossplane-gcp-control-pla
 helm install crossplane-gcp-control-plane-provider ./crossplane-gcp-control-plane-provider \
   --namespace crossplane-system 
 ```
+
+
+**Crossplane GCP Provider Config Helm Chart**
 
 Second pre-render the Crossplane Provider Config Helm Chart (ESO ClusterSecretStore, ESO ExternalSecret, Crossplane ProviderConfig)
 
