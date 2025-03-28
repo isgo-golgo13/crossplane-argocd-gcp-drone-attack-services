@@ -312,6 +312,9 @@ This uses the `Multple Claim Crossplane Model`.
 
 ## Provisioning the GCP GKE Cluster for Crossplane (Terraform, Terraform CDKTF Go)
 
+The Git repository provides a Terraform GCP Module to create the GCP GKE Cluster with GCP IAM OIDC Workload Identity required to triangulate the WID
+credentials into the `External Secrets Operator` Secret referenced in the Crossplane Provider Helm Chart `ProviderConfig` resource.
+
 ### GCP GKE Terraform Module Features
 
 | Requirement                              | Covered in Module? | How is it Implemented?                                                               |
