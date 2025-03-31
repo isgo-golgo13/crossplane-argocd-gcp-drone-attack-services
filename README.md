@@ -550,7 +550,7 @@ kubectl get pod crossplane-rbac-manager-564687c9dd-s96x9 -n crossplane-system -o
 ```
 
 
-**Installing External Secrets Operator**
+**Installing External Secrets Operator Helm Chart**
 
 ```shell
 helm install external-secrets \
@@ -559,7 +559,12 @@ helm install external-secrets \
     --create-namespace 
 ```
 
-**Installing Cert-Manager**
+**Installing Cert-Manager Helm Chart**
+
+
+
+**Installing Kyverno Helm Chartr**
+
 
 
 **Installing ArgoCD with ArgoCD ApplicationSet Controller Optioned**
