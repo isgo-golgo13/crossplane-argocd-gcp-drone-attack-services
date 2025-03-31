@@ -740,8 +740,8 @@ The provided `Chart.yaml` is structured as follows.
 
 ```yaml
 apiVersion: v2
-name: crossplane-gcp-control-plane
-description: A Helm chart for GCP GitOps Crossplane Control Plane.
+name: crossplane-gcp-control-plane-provider
+description: A Helm chart for GCP GitOps Crossplane Provider CRD Install on Control Plane Cluster.
 type: application
 version: 1.0.0
 appVersion: "1.0.0"
