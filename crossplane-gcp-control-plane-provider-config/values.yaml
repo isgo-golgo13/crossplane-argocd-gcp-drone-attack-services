@@ -1,6 +1,8 @@
 gcp:
-  projectId: "eql-hub"
-
+  projectId: eql-hub
+  clusterName: eql
+  clusterLocation: us-central1-c
+  
 crossplane:
   namespace: "crossplane-system"
   serviceAccount: "crossplane-sa"

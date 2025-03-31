@@ -811,11 +811,53 @@ kubectl get externalsecret -n external-secrets
 kubectl get secret gcp-crossplane-creds -n external-secrets -o yaml
 ```
 
-To verify the Crossplane `GCP ProviderConfig`
+- The secret should exist. 
+- The secret should contain the key credentials.json
+
+Inspect the contents to ensure NOT empty.
+
+```shell
+kubectl get secret gcp-crossplane-creds -n external-secrets -o jsonpath="{.data.credentials\.json}" | base64 -d | jq
+```
+
+The secret should contain JSON credentials fetched from GCP Secret Manager.
+
+
+Verify ESO pod is using the annotated KSA-to-GSA
+
+```shell
+kubectl get sa external-secrets -n external-secrets -o yaml | grep -i iam.gke.io/gcp-service-account
+```
+
+This should show eso-gsa@eql-hub.iam.gserviceaccount.com
+
+
+Verify GKE Worload Identity Association (Binding)
+
+```shell
+gcloud iam service-accounts get-iam-policy eso-gsa@eql-hub.iam.gserviceaccount.com
+```
+
+This should include roles/iam.workloadIdentityUser for the correct KSA.
+
+
+
+To verify the Crossplane `GCP ProviderConfig` (Crossplane accepted it).
 
 ```shell
 kubectl get providerconfig gcp-provider-config -n crossplane-system -o yaml
 ```
+This should show. 
+
+```
+status:
+  conditions:
+    - type: Ready
+      status: "True"
+```
+
+
+
 
 
 If `ESO`, `Cert-Manager` and `ArgoCD` already installed on the target Kubernetes Control-Plane Cluster, the `crossplane-gcp-crossplane-provider` Helm Chart provides conditional checks to install only the required.
