@@ -2,6 +2,7 @@ gcp:
   projectId: eql-hub
   clusterName: eql
   clusterLocation: us-central1-c
+  gsaEmail: crossplane-gsa@eql-hub.iam.gserviceaccount.com
   
 crossplane:
   namespace: "crossplane-system"
