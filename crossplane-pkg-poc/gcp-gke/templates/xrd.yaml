@@ -1,9 +1,9 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: CompositeResourceDefinition
 metadata:
-  name: xgkeclusters.gcp.platform.org
+  name: xgkeclusters.gcp.eql.com
 spec:
-  group: gcp.platform.org
+  group: gcp.eql.com
   names:
     kind: XGKECluster
     plural: xgkeclusters

@@ -560,10 +560,28 @@ helm install external-secrets \
 ```
 
 **Installing Cert-Manager Helm Chart**
+```shell
+helm repo add jetstack https://charts.jetstack.io
+helm repo update
 
+helm install cert-manager jetstack/cert-manager \
+  --namespace cert-manager \
+  --create-namespace \
+  --set installCRDs=true
+```
 
 
 **Installing Kyverno Helm Chartr**
+```shell
+helm repo add kyverno https://kyverno.github.io/kyverno/
+helm repo update
+
+helm install kyverno kyverno/kyverno \
+  --namespace kyverno \
+  --create-namespace \
+  --set replicaCount=2
+```
+
 
 
 

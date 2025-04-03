@@ -3,7 +3,7 @@
 
 # GCP project and VPC configuration
 gcp:
-  projectId: "xxx-project"
+  projectId: "eql-hub"
   region: "us-central1"
   vpcHost:
     projectId: "shared-vpc-host-project"

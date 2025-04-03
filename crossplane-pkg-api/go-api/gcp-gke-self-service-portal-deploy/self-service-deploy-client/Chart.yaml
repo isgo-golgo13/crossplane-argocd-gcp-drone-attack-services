@@ -1,0 +1,6 @@
+apiVersion: v2
+name: self-service-deploy-client
+description: A Helm Chart for AWS Crossplane Self-Service Client
+type: application
+version: 1.0.0
+appVersion: "1.0.0"

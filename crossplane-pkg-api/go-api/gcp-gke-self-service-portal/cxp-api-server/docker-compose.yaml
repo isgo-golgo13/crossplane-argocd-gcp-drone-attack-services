@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VERSION: 1.0.0
+        BUILD_TIME: ${BUILD_TIME:-unknown}
+        COMMIT_HASH: ${COMMIT_HASH:-unknown}
+    container_name: cxp-api-server
+    ports:
+      - '8080:8080'
+    environment:
+      - PORT=8080
+      - LOG_LEVEL=info
+      - DEFAULT_NAMESPACE=appx
+      - CORS_ALLOWED_ORIGINS=*
+    volumes:
+      # Mount kubeconfig for development
+      - ${HOME}/.kube/config:/home/appuser/.kube/config:ro
+    restart: unless-stopped

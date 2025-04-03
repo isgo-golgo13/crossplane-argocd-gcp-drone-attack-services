@@ -1,0 +1,305 @@
+openapi: 3.0.3
+info:
+  title: Crossplane API Server
+  description: API for provisioning and managing EKS clusters with Crossplane
+  version: 1.0.0
+  contact:
+    name: Opptech Platform Architecture Group
+    email: twallick@opptech.com
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+  - url: https://cxp-api.example.com
+    description: Production server
+tags:
+  - name: clusters
+    description: EKS Cluster management endpoints
+  - name: health
+    description: Health check endpoints
+
+paths:
+  /api/clusters:
+    get:
+      summary: List all clusters
+      description: Retrieve a list of all clusters in the namespace
+      operationId: listClusters
+      tags:
+        - clusters
+      responses:
+        '200':
+          description: List of clusters
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClusterDetails'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      summary: Create a new cluster
+      description: Creates a new EKS or Fargate cluster with the given configuration
+      operationId: createCluster
+      tags:
+        - clusters
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateClusterRequest'
+      responses:
+        '202':
+          description: Cluster creation started
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateClusterResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/clusters/{name}:
+    get:
+      summary: Get a cluster by name
+      description: Retrieve details about a specific cluster by its name
+      operationId: getCluster
+      tags:
+        - clusters
+      parameters:
+        - name: name
+          in: path
+          description: Cluster name
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Cluster found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterDetails'
+        '404':
+          description: Cluster not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      summary: Delete a cluster
+      description: Delete a specific cluster by its name
+      operationId: deleteCluster
+      tags:
+        - clusters
+      parameters:
+        - name: name
+          in: path
+          description: Cluster name
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Cluster deletion initiated
+        '404':
+          description: Cluster not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/health:
+    get:
+      summary: Health check endpoint
+      description: Returns a 200 OK if the API is running properly
+      operationId: healthCheck
+      tags:
+        - health
+      responses:
+        '200':
+          description: API is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+
+components:
+  schemas:
+    CreateClusterRequest:
+      type: object
+      required:
+        - cluster_type
+        - cluster_name
+        - region
+      properties:
+        cluster_type:
+          type: string
+          description: Type of cluster (eks or fargate)
+          enum:
+            - eks
+            - fargate
+        cluster_name:
+          type: string
+          description: Name of the cluster
+          minLength: 3
+          maxLength: 40
+          pattern: '^[a-z0-9-]+$'
+        node_count:
+          type: integer
+          description: Number of nodes (for EKS clusters)
+          minimum: 1
+          maximum: 10
+        region:
+          type: string
+          description: AWS region
+          example: us-west-2
+      example:
+        cluster_type: eks
+        cluster_name: app-x-production-cluster
+        node_count: 3
+        region: us-west-2
+
+    CreateClusterResponse:
+      type: object
+      required:
+        - request_id
+        - status
+      properties:
+        request_id:
+          type: string
+          format: uuid
+          description: Unique identifier for the request
+        status:
+          type: string
+          description: Status of the request
+          example: PROVISIONING
+        message:
+          type: string
+          description: Optional message
+      example:
+        request_id: 3e4fd921-58c4-49c2-9a13-f42d0d0c8b52
+        status: PROVISIONING
+        message: Cluster provisioning has been initiated
+
+    ClusterType:
+      type: string
+      enum:
+        - eks
+        - fargate
+      description: Type of EKS cluster
+
+    ClusterStatus:
+      type: string
+      enum:
+        - PENDING
+        - PROVISIONING
+        - READY
+        - FAILED
+      description: Current status of the cluster
+
+    ClusterDetails:
+      type: object
+      required:
+        - name
+        - namespace
+        - cluster_type
+        - status
+        - request_id
+        - region
+        - created_at
+      properties:
+        name:
+          type: string
+          description: Name of the cluster
+        namespace:
+          type: string
+          description: Namespace where the cluster XR claim exists
+        cluster_type:
+          $ref: '#/components/schemas/ClusterType'
+        status:
+          $ref: '#/components/schemas/ClusterStatus'
+        request_id:
+          type: string
+          format: uuid
+          description: Unique identifier for the initial request
+        region:
+          type: string
+          description: AWS region where the cluster is deployed
+        node_count:
+          type: integer
+          description: Number of nodes (for EKS clusters)
+        kubeconfig:
+          type: string
+          description: Kubeconfig for connecting to the cluster (when ready)
+        created_at:
+          type: string
+          format: date-time
+          description: When the cluster was created
+      example:
+        name: app-x-production-cluster
+        namespace: appx
+        cluster_type: eks
+        status: READY
+        request_id: 3e4fd921-58c4-49c2-9a13-f42d0d0c8b52
+        region: us-west-2
+        node_count: 3
+        created_at: 2025-04-01T10:30:00Z
+
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          description: Error message
+        details:
+          type: string
+          description: Additional error details
+      example:
+        error: Cluster not found
+        details: Cluster 'my-nonexistent-cluster' not found in namespace 'appx'
+
+    HealthResponse:
+      type: object
+      required:
+        - status
+        - version
+      properties:
+        status:
+          type: string
+          description: Status of the API
+          example: ok
+        version:
+          type: string
+          description: Version of the API
+          example: 1.0.0
+      example:
+        status: ok
+        version: 1.0.0

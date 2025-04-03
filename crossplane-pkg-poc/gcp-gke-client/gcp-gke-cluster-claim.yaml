@@ -5,7 +5,7 @@ metadata:
   namespace: app-x  # The customer's tenant namespace
 spec:
   parameters:
-    projectId: "xxx-project"
+    projectId: "eql-hub"
     region: "us-central1"
     zone: "us-central1-a"
     vpcNetwork: "shared-vpc-network"
@@ -14,7 +14,7 @@ spec:
     clusterName: "app-x-gke-cluster"
     kubernetesVersion: "1.31"
     privateCluster: true
-    enableWorkloadIdentity: true
+    enableWorkloadIdentity: truek
     
     nodePools:
       - name: app-pool

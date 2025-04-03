@@ -8,7 +8,7 @@ metadata:
     cluster: gke
 spec:
   compositeTypeRef:
-    apiVersion: gcp.platform.example.org/v1alpha1
+    apiVersion: gcp.eql.com/v1alpha1
     kind: XGKECluster
   writeConnectionSecretsToNamespace: crossplane-system
   patchSets:
