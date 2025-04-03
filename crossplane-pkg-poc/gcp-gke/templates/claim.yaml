@@ -1,4 +1,4 @@
-apiVersion: gcp.platform.example.org/v1alpha1
+apiVersion: gcp.platform.eql.com/v1alpha1
 kind: GCPGKECluster
 metadata:
   name: {{ .Values.claimName }}-poc  
