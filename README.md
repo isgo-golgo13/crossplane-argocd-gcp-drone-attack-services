@@ -474,9 +474,7 @@ The following applications are provided for this project.
 To install `Crossplane` in HA configuration using the official Helm Chart.
 
 ```shell
-helm repo add crossplane-stable https://charts.crossplane.io/stable
-helm repo update
-
+helm repo add crossplane https://charts.crossplane.io/master/
 helm install crossplane crossplane-stable/crossplane \
   --namespace crossplane-system \
   --create-namespace \
@@ -487,6 +485,7 @@ helm install crossplane crossplane-stable/crossplane \
   --set leaderElection=true \
   --set rbacManager.deploy=true \
   --set securityContext.runAsNonRoot=true \
+  --set image.tag=v1.14.0         ### CRITICAL to add this image tag version exactly to install prerequiste CRDs
   --set 'tolerations[0].key=CriticalAddonsOnly' \
   --set 'tolerations[0].operator=Exists' \
   --set 'tolerations[1].key=node-role.kubernetes.io/control-plane' \
@@ -496,6 +495,7 @@ helm install crossplane crossplane-stable/crossplane \
 To install without the Pod `tolerations` the Helm install changes to.
 
 ```shell
+helm repo add crossplane https://charts.crossplane.io/master/
 helm install crossplane crossplane-stable/crossplane \
   --namespace crossplane-system \
   --create-namespace \
@@ -505,7 +505,8 @@ helm install crossplane crossplane-stable/crossplane \
   --set podDisruptionBudget.minAvailable=2 \
   --set leaderElection=true \
   --set rbacManager.deploy=true \
-  --set securityContext.runAsNonRoot=true
+  --set securityContext.runAsNonRoot=true \
+  --set image.tag=v1.14.0         ### CRITICAL to add this image tag version exactly to install prerequiste CRDs
 ```
 
 Or without `PodDisruptionBudget` for nonprod evalations.

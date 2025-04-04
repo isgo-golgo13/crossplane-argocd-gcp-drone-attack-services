@@ -1,30 +1,30 @@
-apiVersion: gcp.platform.org/v1alpha1
+apiVersion: gcp.platform.eql.com/v1alpha1
 kind: GCPGKECluster
 metadata:
-  name: app-x-gke
-  namespace: app-x  # The customer's tenant namespace
+  name: eql-gcp-gke-cluster
+  namespace: app-x
 spec:
   parameters:
-    projectId: "eql-hub"
-    region: "us-central1"
-    zone: "us-central1-a"
-    vpcNetwork: "shared-vpc-network"
-    vpcSubnetwork: "shared-subnet"
-    
+    projectId: eql-hub
+    region: us-central1
+    zone: us-central1-a
+    vpcNetwork: shared-vpc-network
+    vpcSubnetwork: shared-subnet
+
     clusterName: "eql-gcp-gke-private-cluster"
     kubernetesVersion: "1.31"
     privateCluster: true
-    enableWorkloadIdentity: truek
-    
+    enableWorkloadIdentity: true
+
     nodePools:
-      - name: app-pool
-        machineType: "e2-standard-8"
+      - name: main-pool
+        machineType: e2-standard-8
         initialNodeCount: 2
         minNodeCount: 2
         maxNodeCount: 8
         diskSizeGb: 200
-        diskType: "pd-ssd"
-    
+        diskType: pd-ssd
+
     addons:
       certManager:
         enabled: true
@@ -34,12 +34,9 @@ spec:
         enabled: true
       prometheus:
         enabled: true
-        
-  # The customer references the pre-registered composition by name
+
   compositionRef:
     name: gcp-private-gke-clusters
-    
-  # The connection details for accessing the cluster will be written to this secret
   writeConnectionSecretToRef:
-    name: app-x-gke-connection
+    name: eql-gcp-gke-cluster-connection
     namespace: app-x
